@@ -1,4 +1,4 @@
-import '../App.css';
+import '../../App.css';
 import PinCodeInput from "./pincodeinput";
 import {useEffect, useRef, useState} from "react";
 

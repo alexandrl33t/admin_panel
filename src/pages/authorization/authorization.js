@@ -1,7 +1,7 @@
 import 'antd/dist/antd.min.css';
-import '../App.css';
+import '../../App.css';
 import {useNavigate} from "react-router-dom";
-import Header from "../components/header";
+import Header from "../../components/header";
 import {Button, Checkbox, Form, Input} from "antd";
 function Authorization() {
   const navigateTo = useNavigate();

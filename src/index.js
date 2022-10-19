@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'normalize.css';
 import './App.css'
-import {router} from "./routs/router";
+import {router} from "./routes/router";
 import reportWebVitals from './reportWebVitals';
 import {
     RouterProvider,

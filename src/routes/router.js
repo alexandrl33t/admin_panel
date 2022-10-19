@@ -1,7 +1,7 @@
 import {createBrowserRouter} from "react-router-dom";
-import Authorization from "../authorization/authorization";
-import TwoFactorsAuthentication from "../authorization/twoFactorsAuthentication";
-import HomePage from "../mainpage/homepage";
+import Authorization from "../pages/authorization/authorization";
+import TwoFactorsAuthentication from "../pages/authorization/twoFactorsAuthentication";
+import HomePage from "../pages/mainpage/homepage";
 import React from "react";
 import NotFoundPage from "../components/notFoundPage";
 
