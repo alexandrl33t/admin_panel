@@ -1,10 +1,17 @@
 import { useRef, useEffect } from 'react';
-
+import {useNavigate} from "react-router-dom";
 export default function PinCodeInput(props) {
     const {
         digits,
-        changeHandler
+        changeHandler,
+        firstInputRef
     } = props;
+    const navigateTo = useNavigate();
+
+    useEffect(() => {
+        inputRefs.current[0].focus();
+        firstInputRef.current = inputRefs.current[0];
+    }, [firstInputRef]);
     const length = digits.length;
     // здесь будут ссылки на input-элементы
     const inputRefs = useRef([]);
@@ -18,9 +25,10 @@ export default function PinCodeInput(props) {
     useEffect(() => {
         digits.forEach((value, index) => {
             if (value.match(/^[0-9]$/)) {
-                inputRefs.current[index].style.backgroundColor = '#dfd';
+                inputRefs.current[index].style.backgroundColor = '#c6f7ee';
+                // inputRefs.current[index].style.border= 'hidden';
             } else {
-                inputRefs.current[index].style.backgroundColor = '#fdd';
+                inputRefs.current[index].style.backgroundColor = '#000';
             }
         });
     }, [digits]);
@@ -55,13 +63,18 @@ export default function PinCodeInput(props) {
         // смещаем фокус на следующее поле для ввода следующей цифры
         if (index < length - 1) {
             inputRefs.current[index + 1].focus();
-        } else { // или убираем фокус, если это было последнее поле
-            inputRefs.current[index].blur();
+        } else { // проверка кода и переход на последнюю страницу, если это было последнее поле
+
+            //Здесь должна быть проверка кода
+            navigateTo(`/home`)
         }
     }
+    const divStyle = {
+        margin: '10px',
+    };
 
     return (
-        <div>
+        <div style={divStyle}>
             {digits.map((digit, index) => (
                 <input
                     className="pincode"

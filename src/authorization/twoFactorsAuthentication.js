@@ -1,11 +1,34 @@
 import '../App.css';
 import PinCodeInput from "./pincodeinput";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
-const initDigits = ['', '', '', ''];
+const initDigits = ['', '', '', '', ''];
 export function TwoFactorsAuthentication() {
-    let number = "+79999999999"
+
+    const number = '+79999992323';
+    const name = 'Иван'
+
     const [digits, setDigits] = useState(initDigits);
+
+    const firstInputRef = useRef();
+
+    const clear = (event) => {
+        if (event?.key==="Backspace"){
+            event.preventDefault();
+            setDigits(initDigits);
+            firstInputRef.current.focus();
+        }
+    }
+    useEffect(() => {
+        const onKeypress = e => clear(e);
+
+        document.addEventListener('keydown', onKeypress, false);
+
+        return () => {
+            document.removeEventListener('keydown', onKeypress, false);
+        };
+    }, []);
+
     const hideNumber = (number, replaceTo = '*', elemsHide = 4, sliceFromback = 4) => {
         let result = number.match(/^(\(?\+?\d{1,2}\)? ?\(?\d{1,3}\)? ?\d+? ?\d+? ?\d+)$/);
         if (result !== null) {
@@ -30,15 +53,23 @@ export function TwoFactorsAuthentication() {
         }
     }
     return (
+        <>
         <div id="wrapper">
+            {name && (
+                <h1>Здравствуйте, {name}!</h1>
+            )
+            }
             <form>
-            <h1>Аутентификация аккаунта</h1>
-            <p>
+                <h2>Аутентификация аккаунта</h2>
+                <p>
                 Пожалуйста, введите код, отправленный Вам на телефон в приложении Telegram на номер {hideNumber(number)}
             </p>
-                <PinCodeInput digits={digits} changeHandler={setDigits} />
+                <PinCodeInput digits={digits}
+                              changeHandler={setDigits}
+                              firstInputRef={firstInputRef}  />
             </form>
         </div>
+        </>
     );
 }
 export default TwoFactorsAuthentication;

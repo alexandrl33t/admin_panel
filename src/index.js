@@ -1,24 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import Authorization from './authorization/authorization';
-import TwoFactorsAuthentication from "./authorization/twoFactorsAuthentication";
+import 'normalize.css';
+import './App.css'
+import {router} from "./routs/router";
 import reportWebVitals from './reportWebVitals';
 import {
-    createBrowserRouter,
     RouterProvider,
 } from "react-router-dom";
 
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Authorization />,
-    },
-    {
-        path: "/two-factors-authentication",
-        element: <TwoFactorsAuthentication />,
-    },
-]);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
