@@ -1,39 +1,44 @@
 import {
     QuestionCircleOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     AppstoreOutlined,
     UserOutlined,
     TableOutlined
 } from '@ant-design/icons';
 import { Button, Menu } from 'antd';
-import React, { useState } from 'react';
-function getItem(label, key, icon, children, type) {
-    return {
-        key,
-        icon,
-        children,
-        label,
-        type,
-    };
-}
+import React, { useState} from 'react';
 
-const menuItems = [
-    getItem('Объекты', 'objects', <AppstoreOutlined />),
-    getItem('Пользователи', 'users', <UserOutlined />),
-    getItem('Каталог', 'catalog', <TableOutlined />),
-    getItem('Помощь', 'help', <QuestionCircleOutlined />,)
-];
-const MainMenu = () => {
+const MainMenu = (state) => {
+    const { openedPage, setOpenedPage} = state
+
     const [collapsed, setCollapsed] = useState(false);
+    function getItem(label, key, icon, children, type) {
+        return {
+            key,
+            icon,
+            children,
+            label,
+            type,
+        };
+    }
+
+    const menuItems = [
+        getItem('Объекты', 'objects', <AppstoreOutlined />),
+        getItem('Пользователи', 'users', <UserOutlined />),
+        getItem('Каталог', 'catalog', <TableOutlined />),
+        getItem('Помощь', 'help', <QuestionCircleOutlined />,)
+    ];
+
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
     };
+
+    const handleClick = (e) => {
+        setOpenedPage(e.key)
+    };
+
     return (
+        <>
         <div
-            style={{
-                width: 256,
-            }}
         >
             <Button
                 type="primary"
@@ -42,17 +47,17 @@ const MainMenu = () => {
                     marginBottom: 16,
                 }}
             >
-                {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </Button>
             <Menu
-                defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}
+                defaultSelectedKeys={[openedPage]}
                 mode="inline"
                 theme="light"
                 inlineCollapsed={collapsed}
                 items={menuItems}
+                onClick={handleClick}
             />
         </div>
+    </>
     );
 };
 export default MainMenu;

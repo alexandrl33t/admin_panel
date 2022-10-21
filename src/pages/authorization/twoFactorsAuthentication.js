@@ -1,6 +1,7 @@
 import '../../App.css';
 import PinCodeInput from "./pincodeinput";
 import {useEffect, useRef, useState} from "react";
+import {Form} from "antd";
 
 const initDigits = ['', '', '', '', ''];
 export function TwoFactorsAuthentication() {
@@ -54,12 +55,11 @@ export function TwoFactorsAuthentication() {
     }
     return (
         <>
-        <div id="wrapper">
             {name && (
                 <h1>Здравствуйте, {name}!</h1>
             )
             }
-            <form>
+            <Form>
                 <h2>Аутентификация аккаунта</h2>
                 <p>
                 Пожалуйста, введите код, отправленный Вам на телефон в приложении Telegram на номер {hideNumber(number)}
@@ -67,8 +67,7 @@ export function TwoFactorsAuthentication() {
                 <PinCodeInput digits={digits}
                               changeHandler={setDigits}
                               firstInputRef={firstInputRef}  />
-            </form>
-        </div>
+            </Form>
         </>
     );
 }

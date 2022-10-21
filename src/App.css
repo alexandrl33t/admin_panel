@@ -54,9 +54,10 @@ table{
 }
 #wrapper{
   position: absolute;
-  width: 400px;
+  width: 500px;
   left: 50%;
-  margin-left: -200px;
+  margin-left: -250px;
+  margin-right: 0;
   top: 40%;
   margin-top: -75px;
   text-align: center;
@@ -79,5 +80,13 @@ input.pincode:active, input.pincode:focus {
   -moz-box-shadow:0 0 10px #fcd2dd;
   -webkit-box-shadow:0 0 10px #fcd2dd;
   box-shadow:0 0 10px #b2b2b2;
+}
+
+.rightSide {
+  margin: 50px 10px 50px;
+  padding: 20px;
+  width: 100%;
+  justify-content: space-evenly;
+  transition: width 1s;
 }
 
