@@ -64,7 +64,7 @@ const Objects = () => {
         <div className="rightSide" style={{
             width: "100%",
         }}>
-            <Row gutter={[0, 20]}>
+            <Row gutter={[0, 24]}>
                 <Col span={24}>
                     <Search placeholder="Искать" onSearch={onSearch} />
                 </Col>
@@ -96,10 +96,8 @@ const Objects = () => {
                     </Select>
                 </Col>
             </Row>
-            <Row>
-                <ShowObjects />
-            </Row>
 
+            <ShowObjects />
         </div>
     );
 }

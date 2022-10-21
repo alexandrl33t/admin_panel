@@ -39,7 +39,7 @@ function Login(state) {
                 </Form.Item>
                 <Row gutter={5}>
                     <Col offset={8}>
-                        <Form.Item name="remember" valuePropName="checked" wrapperCol={{ span: 30 }}>
+                        <Form.Item name="remember" wrapperCol={{ span: 30 }}>
                             <Checkbox>Запомнить меня</Checkbox>
                         </Form.Item>
                     </Col>

@@ -90,3 +90,20 @@ input.pincode:active, input.pincode:focus {
   transition: width 1s;
 }
 
+.objectPic {
+  position: relative;
+  overflow: hidden;
+}
+
+img.absolute {
+  position: relative;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.picSmaller {
+  position: relative;
+  height: 300px;
+  left: 50%;
+}
+
