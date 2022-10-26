@@ -1,41 +1,85 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@381&family=Open+Sans&family=Orbitron:wght@486&display=swap');
 
 *{
-  font-family: 'Open Sans', 'sans-serif', 'FontAwesome';
+  font-family: 'Josefin Sans', sans-serif;
+  color: rgba(0, 0, 0, 0.8);
 }
 body{
-  background: rgb(236, 246, 255);
   margin: 0;
 }
+
+#root {
+  width: 100%;
+}
+.bg-black {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  background-size: 300% 300%;
+  background-image: linear-gradient(
+          -45deg,
+          rgb(0, 0, 0) 20%,
+          rgb(35, 34, 34) 30%,
+          rgba(0, 0, 0, 0.48) 21%,
+          rgb(24, 24, 24) 100%
+  );
+}
+
+.bg-white {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  background: #fafdff1a;
+}
+
 #header {
-  display: flex;
+  display: block;
+  position: static;
   height:auto;
-  background: #3e7cb6;
-  padding-top: 0;
+  padding: 10px;
   width: 100%;
   border: hidden;
-  -moz-box-shadow:0 0 20px #8c8c8c;
-  -webkit-box-shadow:0 0 20px #858585;
-  box-shadow:0 0 20px #888888;
-  margin: 0;
+  -moz-box-shadow:0 0 20px #fff1f1;
+  -webkit-box-shadow:0 0 20px #ec4747;
+  box-shadow:0 0 20px rgba(0, 0, 0, 0.31);
+  margin-top: 0;
+  text-align: center;
+  left: 0;
+  background-image: linear-gradient(
+          -45deg,
+          rgb(9, 174, 255) 0%,
+          rgb(143, 162, 255) 25%,
+          rgba(255, 21, 21, 0.48) 51%,
+          rgb(252, 145, 145) 100%
+  );
+  background-size: 200%;
+  backdrop-filter: blur(200px);
+  animation: AnimateBG 20s ease infinite;
+}
+
+@keyframes AnimateBG {
+  0%{background-position:20% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:20% 50%}
 }
 
 #header h1{
   font-size: 3em;
-  color: rgb(255, 255 ,255);
-  margin: auto;
+  color: rgb(255, 255, 255);
+  padding-top: 20px;
+  margin: 0 auto 0;
+  white-space: nowrap;
+  transition: letter-spacing 0.01s;
+  animation: slideAnimation 0.5s;
 }
 
-h2 {
-  color: rgb(111, 119, 135);
-  margin: 20px auto 10px;
-  width: fit-content;
-  text-align: center;
+h1 {
+  margin: 0 !important;
 }
-
 p{
-  color: darkgray;
+  color: #6b6b6b;
   margin: inherit;
 }
 .mainMenu {
@@ -45,33 +89,127 @@ p{
 }
 
 .mainMenu a{
-  color: lavender;
+  color: rgba(253, 253, 253, 0.66) !important;
+}
+
+.ant-menu-item {
+  background-color: rgba(255, 255, 255, 0) !important;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: rgba(147, 226, 255, 0.85) !important;
+  color: #282222 !important;
+}
+.ant-menu.ant-menu-inline-collapsed {
+  width: 51px !important;
+}
+
+.ant-input {
+  background: transparent !important;
+  border: 1px solid #818181 !important;
+}
+
+.ant-col {
+  transition: 0.1s linear;
+}
+
+.ant-btn:focus, .ant-btn:hover {
+  color: #121212 !important;
+  border-color: #020202 !important;
 }
 
 table{
   text-align: center;
   align-content: center;
 }
-#wrapper{
-  position: absolute;
-  width: 500px;
-  left: 50%;
-  margin-left: -250px;
-  margin-right: 0;
-  top: 40%;
-  margin-top: -75px;
+
+.login {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  color: #626262;
   text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0;
+}
+.wide {
+  overflow: hidden;
+}
+.btn-new {
+  display: block;
+  text-decoration:none;
+  text-align:center;
+  border: 3px solid #fdfdfd;
+  border-radius: 7px;
+  width: 100%;
+  height: 52px;
+  float: right;
+  color: white;
+  background: #0B63F6;
+  font-size: 1.5em;
   align-content: center;
+  transform: scale(1.01);
+  transition: 0.5s;
 }
 
-.pincode {
+.btn-new:hover {
+  transform: scale(1.02);
+  animation: swing 1s ease infinite;
+}
+
+#wrapper{
+  align-content: center;
+  justify-self: center;
+  position: absolute;
+  width: 350px;
+  padding: 20px;
+  left: 50%;
+  margin-left: -175px;
+  margin-right: 0;
+  height: fit-content;
+  text-align: center;
+  top: 20%;
+  border-radius: 10px;
+  scale: 1.1;
+  background: #ffffff;
+  box-shadow: 0 0 20px 2px rgb(195 195 195 / 9%);
+  transition: box-shadow 1s linear;
+  background-size: 200%;
+}
+.line {
+  border-bottom: 2px solid #000000;
+}
+#wrapper:hover {
+  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.47);
+}
+
+.hello h1{
+  padding: 10px;
+  font-size: 3em;
+  margin: 0;
+  line-height: 1em;
+  font-family: 'Open Sans', sans-serif;
+  color: #000000;
+}
+
+.hello h2{
+  padding: 10px;
+  font-size: 2em;
+  margin: 0;
+  line-height: 1em;
+  font-family: 'Open Sans', sans-serif;
+  color: #000000;
+}
+
+  .pincode {
   border: hidden;
   width: 30px;
-  height: 30px;
   font-size: 20px;
   text-align: center;
+  padding: 0;
   margin: 5px;
-  border-radius: 10px;
+  border-radius: 7px;
   outline: none;
   color: darkgray;
 }
@@ -82,17 +220,30 @@ input.pincode:active, input.pincode:focus {
   box-shadow:0 0 10px #b2b2b2;
 }
 
-.rightSide {
-  margin: 50px 10px 50px;
-  padding: 20px;
-  width: 100%;
-  justify-content: space-evenly;
-  transition: width 1s;
+#menuContainter {
+  margin: 20px 10px 0 20px;
 }
 
-.objectPic {
+.right-side {
+  display: block;
+  margin-top: auto;
+  margin-left: auto;
+  padding-right: 50px;
+  padding-top: 20px;
+  width: 100%;
+  justify-content: space-evenly;
+  animation: showAnimation 1s;
+}
+
+.object-pic {
   position: relative;
   overflow: hidden;
+  transition: 0.5s;
+}
+
+.object-pic:hover
+{
+  scale: 1.1;
 }
 
 img.absolute {
@@ -103,7 +254,97 @@ img.absolute {
 
 .picSmaller {
   position: relative;
-  height: 300px;
+  height: 400px;
   left: 50%;
+  border-radius: 50%;
 }
 
+.objectBox {
+  margin: 5px;
+  align-content: center;
+  box-shadow: 0 0 2px rgb(0 0 0 / 29%);
+  border-radius: 1px;
+  padding: -29px 25px 0;
+}
+
+.innerBorder {
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.animateShow {
+  animation: showAnimation 0.5s linear;
+}
+
+.object-component {
+  margin: 20px;
+  padding: 10px;
+  width: 100%;
+}
+.map {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.object-component-up {
+  align-content: center;
+  text-align: left;
+  padding: 20px;
+  display: block;
+  width: 100%;
+  border-radius: 2px;
+  font-size: 1.2em;
+}
+.object-common-info {
+  padding: 10px;
+  border: 1px solid #000000;
+}
+
+@keyframes showAnimation {
+  0%{opacity: 0}
+  50%{opacity: 0.5}
+  100%{opacity: 1}
+}
+
+@keyframes slideAnimation {
+  0%{padding-left: 100%; letter-spacing: 2em; opacity: 0}
+  100%{padding-left: 0; letter-spacing: normal; opacity: 1}
+}
+
+@keyframes bookAnimation {
+  0%{opacity: 0; margin-left: 100%}
+  100%{opacity: 1; margin-left: 0}
+}
+
+@keyframes scaleAnimation {
+  0%{scale: 0.1}
+  100%{scale: 1}
+}
+@keyframes swing
+{
+  15%
+  {
+    transform: translateX(2px);
+  }
+  30%
+  {
+    transform: translateX(-2px);
+  }
+  50%
+  {
+    transform: translateX(2px);
+  }
+  65%
+  {
+    transform: translateX(-1px);
+  }
+  80%
+  {
+    transform: translateX(1px);
+  }
+  100%
+  {
+    transform: translateX(0);
+  }
+}

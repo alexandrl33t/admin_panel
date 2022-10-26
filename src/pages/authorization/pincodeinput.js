@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import {useNavigate} from "react-router-dom";
+import {urls} from "../../routes/urls";
 export default function PinCodeInput(props) {
     const {
         digits,
@@ -28,7 +29,7 @@ export default function PinCodeInput(props) {
                 inputRefs.current[index].style.backgroundColor = '#c6f7ee';
                 // inputRefs.current[index].style.border= 'hidden';
             } else {
-                inputRefs.current[index].style.backgroundColor = '#000';
+                inputRefs.current[index].style.backgroundColor = 'rgb(246 249 248)';
             }
         });
     }, [digits]);
@@ -66,11 +67,13 @@ export default function PinCodeInput(props) {
         } else { // проверка кода и переход на последнюю страницу, если это было последнее поле
 
             //Здесь должна быть проверка кода
-            navigateTo(`/home`)
+            navigateTo(urls.home)
         }
     }
     const divStyle = {
         margin: '10px',
+        textAlign: "center",
+        padding:0,
     };
 
     return (

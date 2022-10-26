@@ -54,21 +54,24 @@ export function TwoFactorsAuthentication() {
         }
     }
     return (
-        <>
-            {name && (
-                <h1>Здравствуйте, {name}!</h1>
-            )
-            }
+        <div className="animateShow">
             <Form>
+                <div className="hello">
+                    {name && (
+                        <h1 className="hello">Здравствуйте, {name}!</h1>
+                    )
+                    }
                 <h2>Аутентификация аккаунта</h2>
                 <p>
                 Пожалуйста, введите код, отправленный Вам на телефон в приложении Telegram на номер {hideNumber(number)}
             </p>
+            </div>
                 <PinCodeInput digits={digits}
                               changeHandler={setDigits}
-                              firstInputRef={firstInputRef}  />
+                              firstInputRef={firstInputRef}
+                />
             </Form>
-        </>
+        </div>
     );
 }
 export default TwoFactorsAuthentication;

@@ -1,13 +1,17 @@
 import React from 'react';
-import {Checkbox, Col, Row, Select} from "antd";
+import { Checkbox, Col, Row, Select} from "antd";
 import Search from "antd/es/input/Search";
 import '../../App.css';
 import {Option} from "antd/es/mentions";
 import ShowObjects from "./showObjects";
+import {PlusOutlined} from "@ant-design/icons";
+import {ButtonStyled} from "../../styledAntd";
+import {useNavigate} from "react-router-dom";
+import {urls} from "../../routes/urls";
 
 const Objects = () => {
 
-
+    const navigateTo = useNavigate();
 
     const townOptions = [
         {
@@ -60,11 +64,13 @@ const Objects = () => {
 
     }
 
+    const createObject = () => {
+        navigateTo(urls.createObject)
+    }
+
     return (
-        <div className="rightSide" style={{
-            width: "100%",
-        }}>
-            <Row gutter={[0, 24]}>
+        <>
+            <Row gutter={[0, 32]}>
                 <Col span={24}>
                     <Search placeholder="Искать" onSearch={onSearch} />
                 </Col>
@@ -95,10 +101,15 @@ const Objects = () => {
 
                     </Select>
                 </Col>
+                <Col xs={4} lg={2}>
+                    <ButtonStyled type="primary" icon={<PlusOutlined />} onClick={createObject}>
+                            Добавить объект
+                    </ButtonStyled>
+                </Col>
             </Row>
 
             <ShowObjects />
-        </div>
+    </>
     );
 }
 

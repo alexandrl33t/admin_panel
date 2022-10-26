@@ -2,13 +2,14 @@ import {
     QuestionCircleOutlined,
     AppstoreOutlined,
     UserOutlined,
-    TableOutlined
+    TableOutlined, MenuUnfoldOutlined, MenuFoldOutlined
 } from '@ant-design/icons';
-import { Button, Menu } from 'antd';
+import { Button} from 'antd';
 import React, { useState} from 'react';
+import {MenuStyled} from "../styledAntd";
 
 const MainMenu = (state) => {
-    const { openedPage, setOpenedPage} = state
+    const { openedPage, setOpenedPage, setSpan, spans} = state
 
     const [collapsed, setCollapsed] = useState(false);
     function getItem(label, key, icon, children, type) {
@@ -23,12 +24,17 @@ const MainMenu = (state) => {
 
     const menuItems = [
         getItem('Объекты', 'objects', <AppstoreOutlined />),
-        getItem('Пользователи', 'users', <UserOutlined />),
+        getItem('Пользователи', 'users', <UserOutlined  />),
         getItem('Каталог', 'catalog', <TableOutlined />),
         getItem('Помощь', 'help', <QuestionCircleOutlined />,)
     ];
 
     const toggleCollapsed = () => {
+        if (!collapsed) {
+            setSpan(spans.collapsed)
+        } else {
+            setSpan(spans.notCollapsed)
+        }
         setCollapsed(!collapsed);
     };
 
@@ -39,16 +45,11 @@ const MainMenu = (state) => {
     return (
         <>
         <div
-        >
-            <Button
-                type="primary"
-                onClick={toggleCollapsed}
-                style={{
-                    marginBottom: 16,
-                }}
-            >
+            id="menuContainter">
+            <Button type="primary" onClick={toggleCollapsed} style={{ marginBottom: 16 }}>
+                {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </Button>
-            <Menu
+            <MenuStyled
                 defaultSelectedKeys={[openedPage]}
                 mode="inline"
                 theme="light"

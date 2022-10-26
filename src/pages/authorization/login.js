@@ -1,6 +1,7 @@
 import 'antd/dist/antd.min.css';
 import '../../App.css';
-import {Button, Checkbox, Col, Form, Input, Row} from "antd";
+import {Checkbox, Col, Form, Row} from "antd";
+import { InputStyled, PasswordStyled} from "../../styledAntd";
 function Login(state) {
   const {setLogin} = state;
   // const someGuy = {
@@ -14,47 +15,61 @@ function Login(state) {
       setLogin(true)
   };
   return (
-      <>
-            <h2>Введите логин и пароль</h2>
+      <div className="animateShow">
+          <div className="login">
+            <h2 >Введите логин и пароль</h2>
+            <div className="line"></div>
                     <Form
                     name="basic"
-                    labelCol={{span: 4}}
-                    wrapperCol= {{span: 16}}
                     initialValues={{ remember: true }}
                     autoComplete="off"
+                    style={{marginTop:20}}
                 >
+                    <Col>
+
+                    </Col>
                     <Form.Item
-                        label="Логин"
                         name="username"
                         rules={[{ required: true, message: 'Введите логин' }]}
                     >
-                        <Input />
+                        <Row gutter={[24,0]}>
+                            <Col span={6} style={{paddingTop:5}}>
+                                Логин
+                            </Col>
+                            <Col span={18} >
+                                <InputStyled />
+                            </Col>
+                        </Row>
+
+
                     </Form.Item>
                     <Form.Item
-                    label="Пароль"
                     name="password"
                     rules={[{ required: true, message: 'Введите пароль' }]}
                 >
-                    <Input.Password />
+                        <Row gutter={[24,0]}>
+                            <Col span={6} style={{paddingTop:5}}>
+                                Пароль
+                            </Col>
+                            <Col span={18} >
+                                    <PasswordStyled />
+                            </Col>
+                        </Row>
+
                 </Form.Item>
-                <Row gutter={5}>
-                    <Col offset={8}>
-                        <Form.Item name="remember" wrapperCol={{ span: 30 }}>
-                            <Checkbox>Запомнить меня</Checkbox>
-                        </Form.Item>
-                    </Col>
-                    <Col>
-                        <Form.Item wrapperCol={{span: 16 }}>
-                        <Button type="primary" htmlType="submit" onClick={handleButtonClick}>
-                            Войти
-                        </Button>
-                    </Form.Item>
-                    </Col>
-
-                </Row>
-
+                <Form.Item>
+                    <div className="wide">
+                    <button className="btn-new" onClick={handleButtonClick}>
+                        Войти
+                    </button>
+                </div>
+                </Form.Item>
+                <Form.Item name="remember" wrapperCol={{ span: 30 }}>
+                    <Checkbox><div className="login">Запомнить меня</div></Checkbox>
+                </Form.Item>
             </Form>
-      </>
+          </div>
+      </div>
   );
 }
 

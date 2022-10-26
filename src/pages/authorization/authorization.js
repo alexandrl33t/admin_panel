@@ -1,14 +1,13 @@
 import 'antd/dist/antd.min.css';
 import '../../App.css';
-import Header from "../../components/header";
-import {useState} from "react";
+import React, {useState} from "react";
 import Login from "./login";
 import TwoFactorsAuthentication from "./twoFactorsAuthentication";
-function Authorization() {
+function Authorization(state) {
+    const {bg} = state
     const [login, setLogin ]= useState(false)
     return (
-        <>
-            <Header />
+        <div className={bg}>
             <div style={{alignContent: "center"}}>
                 <div id="wrapper">
                     {login ?
@@ -17,7 +16,7 @@ function Authorization() {
                     }
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
