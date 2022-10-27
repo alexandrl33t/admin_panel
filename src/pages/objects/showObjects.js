@@ -82,9 +82,11 @@ function ShowObjects() {
                                 {object.fullAdress}
                             </Col>
                             <Col span={2}>
-                                <Tooltip title="Информация об объекте">
-                                    <a href={urls.objectDetails(object.id)}><InfoCircleOutlined height={15} style={{fontSize:"2em"}} /></a>
-                                </Tooltip>
+                                <div className="info">
+                                    <Tooltip title="Информация об объекте">
+                                        <a href={urls.objectDetails(object.id)}><InfoCircleOutlined height={15} style={{fontSize:"2em"}} /></a>
+                                    </Tooltip>
+                                </div>
                             </Col>
 
                         </Row>

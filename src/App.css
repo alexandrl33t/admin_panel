@@ -116,6 +116,8 @@ p{
 .ant-btn:focus, .ant-btn:hover {
   color: #121212 !important;
   border-color: #020202 !important;
+  background: transparent !important;
+  transform: scale(0.99);
 }
 
 table{
@@ -299,6 +301,17 @@ img.absolute {
 .object-common-info {
   padding: 10px;
   border: 1px solid #000000;
+}
+
+.info:hover{
+  transition: 0.5s;
+  transform: scale(0.95);
+}
+
+.container {
+  width: 100px;
+  margin: 40px;
+  display: block;
 }
 
 @keyframes showAnimation {
