@@ -11,7 +11,7 @@ import {urls} from "../routes/urls";
 import ObjectCommonInfo from "../pages/objects/objectDetails/objectCommonInfo";
 import {Col, Image, Menu, Row} from "antd";
 import type { MenuProps } from 'antd';
-import Plan from "../pages/Plan/plan";
+import Plan from "../pages/plan/plan";
 import Notifications from "../pages/objects/objectDetails/notifications";
 const ObjectComponent = (props) => {
     const {bg, newObject} = props

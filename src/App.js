@@ -13,9 +13,12 @@ const App = () => {
                 <Header />
             </Row>
             <Row>
-                <React.StrictMode>
-                    <RouterProvider router={router} />
-                </React.StrictMode>
+                <div style={{marginTop:20}}>
+                    <React.StrictMode>
+                        <RouterProvider router={router} />
+                    </React.StrictMode>
+                </div>
+
             </Row>
         </>
     )

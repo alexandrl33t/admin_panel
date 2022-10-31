@@ -5,7 +5,6 @@ import {InfoCircleOutlined} from "@ant-design/icons";
 import {urls} from "../../routes/urls";
 
 function ShowObjects() {
-
     // const getObjecyts = () => {
     //     /**
     //      * здесь должны с сервера возвращаться объекты со всеми необходимыми полями
@@ -13,7 +12,6 @@ function ShowObjects() {
     //      * **/
     //     return
     // }
-
     //временно
     /**
      * Нужно доработать систему, чтобы подгоняла изображение по фиксированному размеру.
@@ -62,7 +60,7 @@ function ShowObjects() {
 
 
     return (
-        <div style={{marginTop: 20}}>
+        <div style={{marginTop: "20px"}}>
             <Row gutter={[24, 24]}>
                 {objects?.map((object) =>
 
@@ -78,13 +76,13 @@ function ShowObjects() {
                         </Row>
                         </div>
                         <Row style={{margin:"5px 5px 5px 0", color:"black", padding:"10px 10px 2px 5px"}}>
-                            <Col span={22}>
+                            <Col span={22} style={{marginTop:5}}>
                                 {object.fullAdress}
                             </Col>
                             <Col span={2}>
                                 <div className="info">
                                     <Tooltip title="Информация об объекте">
-                                        <a href={urls.objectDetails(object.id)}><InfoCircleOutlined height={15} style={{fontSize:"2em"}} /></a>
+                                        <a href={urls.objectDetails(object.id)}><InfoCircleOutlined height={15} style={{fontSize:"25px"}} /></a>
                                     </Tooltip>
                                 </div>
                             </Col>

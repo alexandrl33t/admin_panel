@@ -10,8 +10,8 @@ import {useNavigate} from "react-router-dom";
 import {urls} from "../../routes/urls";
 
 const Objects = () => {
-
     const navigateTo = useNavigate();
+
 
     const townOptions = [
         {
@@ -107,8 +107,7 @@ const Objects = () => {
                     </ButtonStyled>
                 </Col>
             </Row>
-
-            <ShowObjects />
+                <ShowObjects/>
     </>
     );
 }

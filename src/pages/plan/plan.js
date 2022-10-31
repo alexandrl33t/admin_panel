@@ -5,6 +5,7 @@ import camera from "../../static/img/icons/camera.png"
 import { useCropper} from "./hooks/useCropper";
 import useImage from "use-image"
 import { Portal } from 'react-konva-utils';
+import {Col, Row} from "antd";
 
 /**
  * Возможно нужно переделать с React Drag & Drop:
@@ -60,13 +61,14 @@ const Plan = (props) => {
     });
 
     const deleteObject = () =>{
-        image.src=""
+
     }
 
 
     let devices = [
     {
-        id: <Image
+            id:0,
+            image: <Image
             ref={imageRef}
             image={image}
             x={x}
@@ -78,7 +80,8 @@ const Plan = (props) => {
         />,
     },
     {
-        id:  <Image
+            id:1,
+            image:  <Image
             ref={imageRef}
             image={image}
             x={x}
@@ -92,10 +95,9 @@ const Plan = (props) => {
 ]
 
     const addDevice = () => {
-
     }
 
-    const src = "https://images.edrawmax.com/examples/apartment-floor-plan/example4.png"
+    const src = "https://wpmedia.roomsketcher.com/content/uploads/2022/01/06145940/What-is-a-floor-plan-with-dimensions.png"
     const styleButton = {
         alignContent:"center",
         width:"100%",
@@ -114,18 +116,35 @@ const Plan = (props) => {
                 ) :
                 (
                             <div className="container">
-                                <ButtonStyled>Редактировать план</ButtonStyled>
-                                <Stage width={1000} height={800}>
-                                    <Layer>
-                                        <Portal enabled={true} selector=".top-layer">
-                                            {devices.map((device) =>
-                                                device.id
-                                            )}
-                                        </Portal>
-                                        <PlanImage src={src} />
-                                    </Layer>
-                                        <Layer name="top-layer" />
-                                </Stage>
+                                <Row>
+                                    <Col>
+                                        <div>
+                                            <ButtonStyled>Редактировать план</ButtonStyled>
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <div style={{margin:20}}>
+                                            <Stage width={1000} height={800}>
+                                                <Layer>
+                                                    <Portal enabled={true} selector=".top-layer">
+                                                        {devices.map((device) =>
+                                                            device.image
+                                                        )}
+                                                    </Portal>
+                                                    <PlanImage src={src} />
+                                                </Layer>
+                                                <Layer name="top-layer" />
+                                            </Stage>
+                                        </div>
+                                    </Col>
+                                    <Col>
+
+                                    </Col>
+                                </Row>
+
+
                                 <ButtonStyled onClick={addDevice}>Добавить устройство</ButtonStyled>
                             </div>
                 )
