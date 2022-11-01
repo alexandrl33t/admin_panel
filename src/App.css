@@ -29,7 +29,7 @@ body{
 .bg-white {
   position: absolute;
   width: 100%;
-  height: 100vh;
+  max-height: 100vh;
   justify-content: center;
   background: #fafdff1a;
 }
@@ -275,7 +275,7 @@ img.absolute {
 }
 
 .animateShow {
-  animation: showAnimation 0.5s linear;
+  animation: showAnimation 1s linear;
 }
 
 .object-component {
@@ -312,6 +312,11 @@ img.absolute {
   width: 100px;
   margin: 40px;
   display: block;
+}
+
+#menu {
+  position: absolute;
+  margin: 20px;
 }
 
 @keyframes showAnimation {

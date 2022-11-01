@@ -1,17 +1,50 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ButtonStyled} from "../../styledAntd";
-import {Layer, Stage, Image} from "react-konva";
+import { Image} from "react-konva";
 import camera from "../../static/img/icons/camera.png"
 import { useCropper} from "./hooks/useCropper";
 import useImage from "use-image"
-import { Portal } from 'react-konva-utils';
-import {Col, Row} from "antd";
+import ReactCursorPosition from 'react-cursor-position';
+import Box from "../../components/box";
+import {makeStyles} from "@material-ui/core/styles";
+import { boxSize} from "../../config";
+import { Grid} from '@material-ui/core';
+import ToolBar from "./ToolBar";
 
-/**
- * Возможно нужно переделать с React Drag & Drop:
- * https://tproger.ru/translations/dran-n-drop-with-react/
- * https://habr.com/ru/company/kts/blog/647241/#2
- * */
+const useStyles = makeStyles({
+    container: {
+        position: 'relative',
+        width: `calc(150 * ${boxSize + 1})`
+    },
+});
+
+/* --------------------------------------------
+Returns an empty grid of size (100 x 150)
+----------------------------------------------- */
+const initializeSheet = () => {
+    const rows = [];
+    // Create 100 rows
+    for (let i = 0; i < 40; i++) {
+
+        const curRow = [];
+        for (let j = 0; j < 70; j++) {
+            // Create 100 boxes in each row
+            curRow.push({
+                row: i,
+                col: j,
+                isWall: false
+            })
+        }
+        // add current row to rows array
+        rows.push({
+            index: i,
+            elements: curRow
+        });
+
+    }
+    return rows;
+};
+
 class PlanImage extends React.Component {
     state = {
         image: null
@@ -34,7 +67,6 @@ class PlanImage extends React.Component {
 }
 
 const Plan = (props) => {
-
     const {newObject} = props
     const [image] = useImage(camera, "NONE");
 
@@ -98,6 +130,10 @@ const Plan = (props) => {
     }
 
     const src = "https://wpmedia.roomsketcher.com/content/uploads/2022/01/06145940/What-is-a-floor-plan-with-dimensions.png"
+
+    const classes = useStyles();
+    const [sheet, setSheet] = useState(initializeSheet);
+
     const styleButton = {
         alignContent:"center",
         width:"100%",
@@ -114,39 +150,35 @@ const Plan = (props) => {
                         <ButtonStyled >Создать план</ButtonStyled>
                     </div>
                 ) :
-                (
-                            <div className="container">
-                                <Row>
-                                    <Col>
-                                        <div>
-                                            <ButtonStyled>Редактировать план</ButtonStyled>
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <div style={{margin:20}}>
-                                            <Stage width={1000} height={800}>
-                                                <Layer>
-                                                    <Portal enabled={true} selector=".top-layer">
-                                                        {devices.map((device) =>
-                                                            device.image
-                                                        )}
-                                                    </Portal>
-                                                    <PlanImage src={src} />
-                                                </Layer>
-                                                <Layer name="top-layer" />
-                                            </Stage>
-                                        </div>
-                                    </Col>
-                                    <Col>
+                (<>
+                    <Grid container>
+                        <Grid item>
+                            <ToolBar />
+                        </Grid>
+                        <Grid item xs style={{ height: 'calc(100vh - 64px)', overflow: 'scroll' }}>
+                            <div id="grid-container" className={classes.container}>
+                                {sheet.map((row) =>
+                                    <div key={row.index}
+                                         style={{
+                                             whiteSpace: 'nowrap',
+                                             fontSize: 0
+                                         }}>
 
-                                    </Col>
-                                </Row>
+                                        {row.elements.map((box) =>
+                                            <ReactCursorPosition key={box.col} style={{ display: 'inline-block' }}>
+                                                <Box imageSrc={src} boxProps={box} />
+                                            </ReactCursorPosition>
+                                        )}
 
+                                    </div>
 
-                                <ButtonStyled onClick={addDevice}>Добавить устройство</ButtonStyled>
+                                )}
+
                             </div>
+                        </Grid>
+                    </Grid>
+
+                    </>
                 )
 
             }

@@ -1,33 +1,59 @@
 import '../../App.css';
 import MainMenu from "../../components/mainMenu";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Objects from "../objects/objects";
-import {Col, Row} from "antd";
+import {Col, Drawer, Row} from "antd";
 import UsersPage from "../usersPage/usersPage";
+import Catalog from "../catalog/catalog";
+import {ButtonStyled} from "../../styledAntd";
+import {MenuUnfoldOutlined} from "@ant-design/icons";
 function HomePage(state) {
     const {bg} = state
-    const spans = {
-        notCollapsed: {menu:6, rightSide: 18},
-        collapsed: {menu:1, rightSide: 23},
-    }
-    const [span, setSpan] = useState(spans.notCollapsed)
+
+    const [open, setOpen] = useState(false);
+    // const spans = {
+    //     notCollapsed: {menu:6, rightSide: 18},
+    //     collapsed: {menu:1, rightSide: 23},
+    // }
+    // const [span, setSpan] = useState(spans.notCollapsed)
 
     const pages = {
         'objects' : <Objects />,
         'users' : <UsersPage />,
+        'catalog': <Catalog />,
     };
 
     const [openedPage, setOpenedPage] = useState('objects')
 
+
+    const showDrawer = () => {
+        setOpen(true);
+    };
+
+    const onClose = () => {
+        setOpen(false);
+    };
+
+    useEffect(()=>{
+        setOpen(false);
+    }, [openedPage])
+
     return (
         <div className={bg}>
-                <Row gutter={[24, 24]}>
-                    <Col span={span.menu}>
-                        <div >
-                        <MainMenu setSpan={setSpan} spans={spans} openedPage={openedPage} setOpenedPage={setOpenedPage}/>
-                        </div>
+                <Row>
+                    <Col span={1}>
+                        <ButtonStyled style={{margin:10}}  icon={<MenuUnfoldOutlined />} onClick={showDrawer}>
+                        </ButtonStyled>
+                            <Drawer title="Меню"
+                                    placement='left'
+                                    closable={false}
+                                    onClose={onClose}
+                                    open={open}
+                                    >
+                                <MainMenu openedPage={openedPage} setOpenedPage={setOpenedPage}/>
+                            </Drawer>
                     </Col>
-                    <Col span={span.rightSide}>
+                    <Col span={23}>
                         <div className="right-side" style={{
                         width: "100%",
                     }}>

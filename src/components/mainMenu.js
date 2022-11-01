@@ -43,8 +43,7 @@ const MainMenu = (state) => {
 
     return (
         <>
-        <div
-            id="menuContainter">
+        <>
             {/*<Button type="primary" onClick={toggleCollapsed} style={{ marginBottom: 16 }}>*/}
             {/*    {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}*/}
             {/*</Button>*/}
@@ -55,7 +54,7 @@ const MainMenu = (state) => {
                 items={menuItems}
                 onClick={handleClick}
             />
-        </div>
+        </>
     </>
     );
 };
