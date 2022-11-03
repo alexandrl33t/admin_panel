@@ -12,7 +12,7 @@ const useStyles = makeStyles({
   toolBarContainer: {
     width: 54,
     backgroundColor: '#5d6e7c',
-    height: 'calc(100vh - 64px)',
+    height: 'auto',
     borderTop: '0px solid #000',
   },
   button: {

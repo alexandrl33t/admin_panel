@@ -10,6 +10,8 @@ import {makeStyles} from "@material-ui/core/styles";
 import { boxSize} from "../../config";
 import { Grid} from '@material-ui/core';
 import ToolBar from "./ToolBar";
+import CoordinateToolTip from "../../components/CoordinateToolTip";
+import MouseToolTip from "../../components/MouseToolTip";
 
 const useStyles = makeStyles({
     container: {
@@ -24,10 +26,10 @@ Returns an empty grid of size (100 x 150)
 const initializeSheet = () => {
     const rows = [];
     // Create 100 rows
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 70; i++) {
 
         const curRow = [];
-        for (let j = 0; j < 70; j++) {
+        for (let j = 0; j < 100; j++) {
             // Create 100 boxes in each row
             curRow.push({
                 row: i,
@@ -45,26 +47,26 @@ const initializeSheet = () => {
     return rows;
 };
 
-class PlanImage extends React.Component {
-    state = {
-        image: null
-    };
-    componentDidMount() {
-        const image = new window.Image();
-        image.src = this.props.src;
-        image.onload = () => {
-            // setState will redraw layer
-            // because "image" property is changed
-            this.setState({
-                image: image
-            });
-        };
-    }
-
-    render() {
-        return <Image image={this.state.image} />;
-    }
-}
+// class PlanImage extends React.Component {
+//     state = {
+//         image: null
+//     };
+//     componentDidMount() {
+//         const image = new window.Image();
+//         image.src = this.props.src;
+//         image.onload = () => {
+//             // setState will redraw layer
+//             // because "image" property is changed
+//             this.setState({
+//                 image: image
+//             });
+//         };
+//     }
+//
+//     render() {
+//         return <Image image={this.state.image} />;
+//     }
+// }
 
 const Plan = (props) => {
     const {newObject} = props
@@ -132,7 +134,7 @@ const Plan = (props) => {
     const src = "https://wpmedia.roomsketcher.com/content/uploads/2022/01/06145940/What-is-a-floor-plan-with-dimensions.png"
 
     const classes = useStyles();
-    const [sheet, setSheet] = useState(initializeSheet);
+    const [sheet] = useState(initializeSheet);
 
     const styleButton = {
         alignContent:"center",
@@ -150,22 +152,23 @@ const Plan = (props) => {
                         <ButtonStyled >Создать план</ButtonStyled>
                     </div>
                 ) :
-                (<>
-                    <Grid container>
+                (<div style={{marginTop:50}}>
+                    <Grid container spacing={4}>
                         <Grid item>
                             <ToolBar />
                         </Grid>
-                        <Grid item xs style={{ height: 'calc(100vh - 64px)', overflow: 'scroll' }}>
+                        <Grid item xs style={{ height: 'calc(100vh - 64px)', overflow: 'hidden', backgroundImage:`url(${src})`, backgroundRepeat:"no-repeat" }}>
                             <div id="grid-container" className={classes.container}>
                                 {sheet.map((row) =>
                                     <div key={row.index}
                                          style={{
                                              whiteSpace: 'nowrap',
-                                             fontSize: 0
+                                             fontSize: 0,
+                                             opacity:0.7,
                                          }}>
 
                                         {row.elements.map((box) =>
-                                            <ReactCursorPosition key={box.col} style={{ display: 'inline-block' }}>
+                                            <ReactCursorPosition key={box.col} style={{ display: 'inline-block'}}>
                                                 <Box imageSrc={src} boxProps={box} />
                                             </ReactCursorPosition>
                                         )}
@@ -177,8 +180,9 @@ const Plan = (props) => {
                             </div>
                         </Grid>
                     </Grid>
-
-                    </>
+                        <CoordinateToolTip />
+                        <MouseToolTip />
+                    </div>
                 )
 
             }

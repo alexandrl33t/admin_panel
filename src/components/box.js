@@ -25,7 +25,7 @@ const getArea = (widthIn, heightIn) => {
   return (widthFt * heightFt).toFixed(2);
 }
 
-function Box({ isPositionOutside, boxProps, imageSrc }) {
+function Box({ isPositionOutside, boxProps }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [positionOutside, setPositionOutside] = React.useState(isPositionOutside);
@@ -33,7 +33,6 @@ function Box({ isPositionOutside, boxProps, imageSrc }) {
   const isEdge = useSelector(state => state.sheet.data.edges[boxProps.row][boxProps.col]);
   const isAnchor = useSelector(state => state.sheet.data.anchors[boxProps.row][boxProps.col]);
   const isSelected = useSelector(state => state.sheet.data.selected[boxProps.row][boxProps.col]);
-  const currentTool = useSelector(state => state.tool.current);
   const getMouseDown = () => {
     return getState().cursor.mouseDown;
   }
@@ -51,7 +50,7 @@ function Box({ isPositionOutside, boxProps, imageSrc }) {
   // shape = object containing shape info
   const calcLine = (anchorPosition, cursorPosition) => {
     const edges = [];
-    var shape = null;
+    let shape = null;
     if (anchorPosition.x === cursorPosition.x && anchorPosition.y !== cursorPosition.y) {
       // Vertical line with length > 0
       const len = (Math.max(anchorPosition.y, cursorPosition.y) - Math.min(anchorPosition.y, cursorPosition.y) + 1);
@@ -105,7 +104,7 @@ function Box({ isPositionOutside, boxProps, imageSrc }) {
         type: 'RECTANGLE',
         width: getInches(width),
         height: getInches(height),
-        area: area >= 0 ? area : 0
+        area: area >= 0 ? area : 0,
       }
 
       // Get edges
@@ -238,24 +237,22 @@ function Box({ isPositionOutside, boxProps, imageSrc }) {
     }
 
   }
-  const bgURL = "url(" + imageSrc + ")"
   return (
     <div className={classes.root} style={
       isWall ?
         (isSelected ?
           // SELECTED WALL
           {
-            backgroundColor: '#305272',
+            backgroundColor: '#c91b1b',
             borderRight: '1px solid #305272',
             borderBottom: '1px solid #305272',
           }
           :
           // REGULAR WALL
           {
-            backgroundColor: '#000',
+            backgroundColor:"blue",
             borderRight: '1px solid #000',
             borderBottom: '1px solid #000',
-            backgroundImage: {bgURL},
           })
         :
         isSelected ? {
@@ -265,13 +262,13 @@ function Box({ isPositionOutside, boxProps, imageSrc }) {
         }
           :
           isAnchor && getCurrentTool() !== 'SELECT' ? {
-            backgroundColor: '#a8b7c4',
+            backgroundColor: '#ec0c5c',
             borderRight: '1px solid #a3b9cc',
             borderBottom: '1px solid #a3b9cc',
           }
             :
             isEdge ? {
-              backgroundColor: '#dce4ea',
+              backgroundColor: '#2fc1ff',
               borderRight: '1px solid #becddb',
               borderBottom: '1px solid #becddb',
             }
@@ -283,7 +280,7 @@ function Box({ isPositionOutside, boxProps, imageSrc }) {
               }
                 :
                 {
-                  backgroundColor: '#a8b7c4',
+                  backgroundColor: '#ec0c5c',
                   borderRight: '1px solid #becddb',
                   borderBottom: '1px solid #becddb',
                 }
