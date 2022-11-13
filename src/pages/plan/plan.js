@@ -2,8 +2,8 @@ import React from 'react';
 import {ButtonStyled} from "../../styledAntd";
 import camera from "../../static/img/icons/camera.png"
 import useImage from "use-image"
-import { Grid} from '@material-ui/core';
 import {CanvasBox} from "../../components/CanvasBox";
+import ToolBar from "../../components/ToolBar";
 
 const Plan = (props) => {
     const {newObject} = props
@@ -29,14 +29,9 @@ const Plan = (props) => {
                         <ButtonStyled>Создать план</ButtonStyled>
                     </div>
                 ) :
-                (<div style={{marginTop: 50}}>
-                        <Grid container spacing={4}>
-                            <Grid item xs>s
-                                <div id="grid-container">
-                                    <CanvasBox imageUrl={imageUrl} />
-                                </div>
-                            </Grid>
-                        </Grid>
+                (<div style={{marginTop: 5}}>
+                                    <ToolBar />
+                                    <CanvasBox imageUrl={imageUrl} width={900} height={400} />
                     </div>
                 )
 

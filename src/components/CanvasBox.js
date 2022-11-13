@@ -1,31 +1,29 @@
 import React, {useEffect, useRef} from 'react';
+import {observer} from "mobx-react-lite";
+import canvasState from "../store/canvasState";
 
-export const CanvasBox = (props) => {
 
-    const {imageUrl} = props
+export const CanvasBox = observer((props) => {
 
-    const canvasRef = useRef(null)
+    const {imageUrl, width, height} = props
+    const canvasRef = useRef()
 
     useEffect(()=>{
-        const canvas = canvasRef.current;
-        if (!canvas){
-            return
-        }
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-
-        const context = canvas.getContext('2d');
-        if(!context){
-            return;
-        }
-        context.fillRect(0,0,100,100)
+        canvasState.setCanvas(canvasRef.current)
     }, [])
+
+    const mouseDownHandler = () =>{
+        canvasState.pushToUndo(canvasRef.current.toDataUrl())
+    }
 
     return (
         <>
-            <canvas ref={canvasRef} />
+        <div className="image_inside_canvas">
+           <img src={imageUrl}/>
+        </div>
+        <div className="canvas">
+            <canvas onMouseDown={()=> mouseDownHandler()} ref={canvasRef} width={1000} height={800}/>
+        </div>
         </>
     )
-}
+});
