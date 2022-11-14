@@ -4,7 +4,6 @@ import 'normalize.css';
 import './App.css'
 import reportWebVitals from './reportWebVitals';
 import App from "./App";
-import rootReducer from "./reducers/rootReducer";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

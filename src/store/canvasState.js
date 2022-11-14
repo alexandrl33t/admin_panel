@@ -30,6 +30,7 @@ class CanvasState {
         }
     }
 
+
 }
 
 export default new CanvasState()

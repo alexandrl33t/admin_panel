@@ -1,6 +1,13 @@
 import React from 'react';
 import {Button, Tooltip} from "antd";
-import {EnterOutlined, ExpandOutlined, LineOutlined, MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
+import {
+    EnterOutlined,
+    ExpandOutlined,
+    LineOutlined,
+    MinusSquareOutlined,
+    PlusSquareOutlined,
+    SaveOutlined
+} from "@ant-design/icons";
 import toolState from "../store/toolState";
 import Line from "../tools/Line"
 import Rect from "../tools/Rect"
@@ -8,6 +15,15 @@ import canvasState from "../store/canvasState";
 
 const buttonStyle = {
     marginLeft: 10,
+}
+
+const saveHandle = () => {
+    /**
+     * В будущем в json должны храниться данные канвас и название области
+     */
+    const canvasContents = canvasState.canvas.toDataURL();
+    const json = JSON.stringify(canvasContents);
+    console.log(json)
 }
 
 const ToolBar = () => {
@@ -41,10 +57,12 @@ const ToolBar = () => {
                     >
                 </Button>
             </Tooltip>
-            <Tooltip placement="topLeft" title="Выделить область">
+            <Tooltip placement="topLeft" title="СОхранить область">
                 <Button
-                    icon={<ExpandOutlined />}
-                    style={buttonStyle}>
+                    icon={<SaveOutlined />}
+                    style={buttonStyle}
+                    onClick={saveHandle}
+                >
                 </Button>
             </Tooltip>
         </div>
