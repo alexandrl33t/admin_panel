@@ -10,7 +10,7 @@ const Plan = (props) => {
     const [image] = useImage(camera, "NONE");
 
 
-    const imageUrl = "https://wpmedia.roomsketcher.com/content/uploads/2022/01/06145940/What-is-a-floor-plan-with-dimensions.png";
+    const imageUrl = "https://wpmedia.roomsketcher.com/content/uploads/2022/03/31095248/blue-green-2d-floor-plan.jpg";
 
 
     const styleButton = {
@@ -31,7 +31,7 @@ const Plan = (props) => {
                 ) :
                 (<div style={{marginTop: 5}}>
                                     <ToolBar />
-                                    <CanvasBox imageUrl={imageUrl} width={900} height={400} />
+                                    <CanvasBox imageUrl={imageUrl}/>
                     </div>
                 )
 

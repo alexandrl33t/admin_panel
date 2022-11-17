@@ -339,6 +339,7 @@ canvas {
 .image_inside_canvas {
   position: absolute;
   z-index: -999;
+
 }
 #menu {
   position: absolute;

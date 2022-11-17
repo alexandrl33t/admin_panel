@@ -18,12 +18,9 @@ const buttonStyle = {
 }
 
 const saveHandle = () => {
-    /**
-     * В будущем в json должны храниться данные канвас и название области
-     */
-    const canvasContents = canvasState.canvas.toDataURL();
-    const json = JSON.stringify(canvasContents);
-    console.log(json)
+    const area = toolState.tool.area;
+    // const json = JSON.stringify(canvasContents);
+    console.log(area)
 }
 
 const ToolBar = () => {
@@ -57,7 +54,7 @@ const ToolBar = () => {
                     >
                 </Button>
             </Tooltip>
-            <Tooltip placement="topLeft" title="СОхранить область">
+            <Tooltip placement="topLeft" title="Сохранить область">
                 <Button
                     icon={<SaveOutlined />}
                     style={buttonStyle}
