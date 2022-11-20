@@ -1,4 +1,6 @@
 import Tool from "./Tool";
+import {areaStyle} from "./ToolStyle/AreaStyle";
+import canvasStateForDraw from "../store/canvasStateForDraw";
 
 export default class Rect extends Tool{
 
@@ -10,17 +12,11 @@ export default class Rect extends Tool{
         height:0,
     }
 
-    ctxProps = {
-        strokeStyle : 'blue',
-        fillStyle : "rgba(244,199,199,0.33)",
-        lineWidth : 5,
-    }
-
     constructor(canvas) {
         super(canvas);
-        this.ctx.strokeStyle = this.ctxProps.strokeStyle;
-        this.ctx.fillStyle = "rgba(244,199,199,0.33)";
-        this.ctx.lineWidth = 5;
+        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
+        this.ctx.fillStyle = areaStyle.ctx.fillStyle;
+        this.ctx.lineWidth = areaStyle.ctx.lineWidth;
         this.listen();
     }
 
@@ -34,8 +30,14 @@ export default class Rect extends Tool{
         this.mouseDown = false;
     }
     mouseDownHandler(e){
+        if (!canvasStateForDraw.isActive){
+            return
+        }
         this.mouseDown = true;
         this.ctx.beginPath();
+        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
+        this.ctx.fillStyle = areaStyle.ctx.fillStyle;
+        this.ctx.lineWidth = areaStyle.ctx.lineWidth;
         this.startX = e.pageX - e.target.offsetLeft- 20;
         this.startY = e.pageY - e.target.offsetTop-115;
         this.saved = this.canvas.toDataURL();
@@ -64,15 +66,5 @@ export default class Rect extends Tool{
         this.area.y=y;
         this.area.width=w;
         this.area.height = h;
-    }
-
-    drawFromData(item){
-       const {name, x, y, width, height} = item;
-        this.setArea(x,y,width,height);
-        this.area.name = name;
-        this.ctx.beginPath();
-        this.ctx.rect(x,y,width,height);
-        this.ctx.fillRect(x,y,width,height);
-        this.ctx.stroke();
     }
 }

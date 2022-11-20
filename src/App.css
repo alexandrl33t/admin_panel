@@ -324,12 +324,10 @@ img.absolute {
 }
 
 .canvas {
-  display: flex;
   justify-content: center;
   align-items: center;
   margin: 5px;
   height: 100%;
-  z-index: 999;
 }
 canvas {
   border: 1px solid black;

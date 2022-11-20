@@ -1,7 +1,10 @@
 import {makeAutoObservable} from "mobx";
-
-class CanvasState {
+/**
+ * Канвас для создания новых областей
+ */
+class CanvasStateForDraw {
     canvas = null
+    isActive = false
     undolist =[]
 
     constructor() {
@@ -30,7 +33,11 @@ class CanvasState {
         }
     }
 
+    setActive(value){
+        this.isActive = value
+    }
+
 
 }
 
-export default new CanvasState()
+export default new CanvasStateForDraw()
