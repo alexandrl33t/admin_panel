@@ -155,7 +155,7 @@ export const CanvasBox = observer((props) => {
                     height={imageDimensions.height}
                 />
         </div>
-            <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteArea} />
+            <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteArea} item={canvasStateForLoad.current_item} />
         </>
     )
 });

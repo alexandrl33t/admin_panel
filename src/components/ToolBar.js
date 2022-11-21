@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Tooltip} from "antd";
 import {
     DownloadOutlined, EditOutlined,
-    EnterOutlined,
+    EnterOutlined, ExpandOutlined,
     LineOutlined,
     MinusSquareOutlined,
     PlusSquareOutlined,
@@ -59,6 +59,12 @@ const ToolBar = () => {
         canvasStateForLoad.setActive(false)
     }
 
+    const addFreeArea = () => {
+        toolState.setTool(new Line(canvasStateForDraw.canvas))
+        canvasStateForDraw.setActive(true)
+        canvasStateForLoad.setActive(false)
+    }
+
     const editRectArea = () => {
         canvasStateForLoad.setEdit(true)
         canvasStateForDraw.setActive(false)
@@ -73,9 +79,16 @@ const ToolBar = () => {
                     onClick={addRectArea}>
                 </Button>
             </Tooltip>
+            <Tooltip placement="topLeft" title="Добавить произвольную область">
+                <Button
+                    icon={<EditOutlined/>}
+                    style={buttonStyle}
+                    onClick={addFreeArea}>
+                </Button>
+            </Tooltip>
             <Tooltip placement="topLeft" title="Редактировать область">
                 <Button
-                    icon={<EditOutlined />}
+                    icon={<ExpandOutlined />}
                     style={buttonStyle}
                     onClick={editRectArea}
                 ></Button>
