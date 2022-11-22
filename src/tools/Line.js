@@ -1,5 +1,6 @@
 import Tool from "./Tool";
 import {areaStyle} from "./ToolStyle/AreaStyle";
+import canvasStateForDraw from "../store/canvasStateForDraw";
 
 export default class Line extends Tool{
     last_anchor = null
@@ -11,6 +12,7 @@ export default class Line extends Tool{
 
     constructor(canvas) {
         super(canvas);
+        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         this.listen()
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
         this.ctx.lineWidth = areaStyle.ctx.lineWidth;
@@ -41,7 +43,7 @@ export default class Line extends Tool{
         } else {
             this.close_area = true
             this.fillArea()
-            this.saved = this.canvas.toDataURL()
+            canvasStateForDraw.current_item.points = this.points
         }
 
     }
@@ -84,7 +86,6 @@ export default class Line extends Tool{
                 this.ctx.moveTo(this.points[i].x, this.points[i].y)
                 this.ctx.lineTo(this.points[this.points.length-1-i].x, this.points[this.points.length-1-i].y)
                 this.ctx.lineTo(this.points[i+1].x, this.points[i+1].y)
-
                 this.ctx.closePath();
                 this.ctx.fill();
             }

@@ -4,7 +4,7 @@ import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import DeleteAreaModal from "../pages/plan/DeleteAreaModal";
-
+import cursorState from "../store/CursorState";
 export const CanvasBox = observer((props) => {
     const {imageUrl} = props
     const canvasForLoadRef = useRef()
@@ -13,11 +13,13 @@ export const CanvasBox = observer((props) => {
     const [isDragging, setIsDragging] = useState(false)
     const [cursorDragPoint, setCursorDragPoint] = useState({x: 0, y: 0})
     const [deleteModal, setDeleteModal] = useState(false);
+
     useEffect(()=>{
         loadImage(setImageDimensions, imageUrl);
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
     }, [canvasForLoadRef, imageUrl])
+
 
     const loadImage = (setImageDimensions, imageUrl) => {
         const img = new Image();
@@ -36,15 +38,24 @@ export const CanvasBox = observer((props) => {
     };
 
     const isOnArea = (x, y, item) => {
-        const itemTop = item.y
-        const itemRight = item.x + item.width
-        const itemBottom = item.y + item.height
-        const itemLeft = item.x
-        if (x > itemLeft && x < itemRight && y > itemTop && y < itemBottom){
-            return true
-        } else {
-            return false
+        if (item.points.length > 1){
+            for (let i=0; i<item.points.length-1;i++){
+                const x1 = item.points[i].x
+                const x2 = item.points[item.points.length-1-i].x
+                const x3 = item.points[i+1].x
+                const y1 = item.points[i].y
+                const y2 = item.points[item.points.length-1-i].y
+                const y3 = item.points[i+1].y
+                if (
+                    (x1 - x) * (y2 - y1) - (x2 - x1) * (y1 - y) < 0 &&
+                    (x2 - x) * (y3 - y2) - (x3 - x2) * (y2 - y) < 0 &&
+                    (x3 - x) * (y1 - y3) - (x1 - x3) * (y3 - y) < 0
+                ){
+                    return true
+                }
+            }
         }
+        return false
     }
 
     function getCursorPosition (event) {
@@ -55,15 +66,15 @@ export const CanvasBox = observer((props) => {
     }
 
     function takeObjectInCanvas(canvas, event) {
-        const rect = canvas.getBoundingClientRect()
         const {x, y} = getCursorPosition(event)
-        const areas = canvasStateForLoad.areas
-        areas.forEach((item) => {
+        canvasStateForLoad.areas.every((item) => {
             if (isOnArea(x, y, item)) {
                 setIsDragging(true)
+                cursorState.state = cursorState.states.grab
                 setCursorDragPoint({x:x, y:y})
-                canvasStateForLoad.setCurrentItem(item)
-                return
+                canvasStateForDraw.setCurrentItem(item)
+                canvasStateForLoad.setEditableItem(item)
+                return false
             }
             else {
                 setIsDragging(false)
@@ -74,12 +85,11 @@ export const CanvasBox = observer((props) => {
 
     const deleteArea = () => {
         canvasStateForLoad.unHoverItemDelete()
-        const index = canvasStateForLoad.areas.indexOf(canvasStateForLoad.current_item)
-        canvasStateForLoad.clearArea(index)
+        canvasStateForLoad.clearArea()
     }
 
     const mouseDownHandler = (e) =>{
-        if (canvasStateForLoad.edit){
+        if (canvasStateForLoad.move){
             takeObjectInCanvas(canvasForLoadRef.current, e)
         }
         else if (canvasStateForLoad.delete) {
@@ -94,14 +104,26 @@ export const CanvasBox = observer((props) => {
     const mouseUpHandler = (e) => {
         if (!isDragging){
             return
-        } else {
-            canvasStateForLoad.clearLastPosition()
         }
-        setIsDragging(false)
+        //если мышка отпустила объект во время перетаскивания
+        else if (canvasStateForLoad.move && isDragging) {
+                setIsDragging(false)
+                canvasStateForLoad.reload()
+                canvasStateForDraw.reload()
+            console.log(canvasStateForLoad.areas)
+            }
     }
 
     const mouseMoveHandler = (e) => {
         const {x, y} = getCursorPosition(e)
+        if (!isDragging){
+            canvasStateForLoad.areas.every((item) => {
+                if (isOnArea(x, y, item)) {
+                    return false
+                }
+            })
+        }
+
         if (!canvasStateForDraw.isActive){
             if (!isDragging) {
                 if (canvasStateForLoad.delete) {
@@ -116,10 +138,13 @@ export const CanvasBox = observer((props) => {
                         }
                     })
                 }
-            } else if (canvasStateForLoad.edit) {
+            } else if (canvasStateForLoad.move && isDragging) {
+                if (!canvasStateForLoad.filled_background){
+                    canvasStateForLoad.isDragging()
+                }
                 let dx = x - cursorDragPoint.x;
                 let dy = y - cursorDragPoint.y;
-                canvasStateForLoad.dragRect(dx, dy)
+                canvasStateForDraw.dragArea(dx, dy)
                 cursorDragPoint.x = x
                 cursorDragPoint.y = y
             }

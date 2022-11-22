@@ -1,5 +1,5 @@
-import React from 'react';
-import {Button, Tooltip} from "antd";
+import React, {useState} from 'react';
+import {Button, message, Tooltip} from "antd";
 import {
     DownloadOutlined, EditOutlined,
     EnterOutlined, ExpandOutlined,
@@ -13,44 +13,31 @@ import Line from "../tools/Line"
 import Rect from "../tools/Rect"
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
-import {areaStyle} from "../tools/ToolStyle/AreaStyle";
+import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
 
 const buttonStyle = {
     marginLeft: 10,
 }
-const areas = [{
+let areas = [{
     name:"Bathroom",
-    x: 100,
-    y:8,
-    width:125,
-    height:180,
+    points: [
+        {x:100,y:8},
+        {x:225,y:8},
+        {x:225,y:188},
+        {x:100,y:188},
+    ],
 }]
 const ToolBar = () => {
+    const [confirmModal, setConfirmModal]= useState(false)
 
-    const saveHandle = () => {
-        const area = toolState.tool.area;
-        // const json = JSON.stringify(canvasContents);
-        console.log(area)
+    const saveHandle = (name) => {
+        canvasStateForDraw.current_item.name = name
+        canvasStateForLoad.addArea(canvasStateForDraw.current_item)
+        canvasStateForLoad.reload()
     }
 
     function loadAreas(){
-        const canvas = canvasStateForLoad.canvas
-        const ctx = canvasStateForLoad.canvas.getContext('2d')
-        areas.map((item)=>{
-            ctx.strokeStyle = areaStyle.ctx.strokeStyle;
-            ctx.fillStyle = areaStyle.ctx.fillStyle;
-            ctx.lineWidth = areaStyle.ctx.lineWidth;
-            ctx.beginPath();
-            const {name, x, y, width, height} = item;
-            ctx.rect(x,y,width,height);
-            ctx.fillRect(x,y,width,height);
-            ctx.stroke();
-            ctx.fillStyle = "rgba(0,0,0,0.96)";
-            ctx.font = 'bold 15px sans-serif';
-            ctx.fillText(name, x+15, y+25);
-            ctx.save()
-            canvasStateForLoad.setAreas(item)
-        })
+        canvasStateForLoad.drawObjects(areas)
     }
 
     const addRectArea = () => {
@@ -70,6 +57,14 @@ const ToolBar = () => {
         canvasStateForDraw.setActive(false)
     }
 
+    const tryToSave = () => {
+        if (canvasStateForDraw.current_item.points.length > 2) {
+            setConfirmModal(true)
+        } else {
+            message.error("Ошибка. Область не нарисована.")
+        }
+    }
+
     return (
         <div className="toolbar">
             <Tooltip placement="topLeft" title="Добавить квадратную область">
@@ -86,7 +81,7 @@ const ToolBar = () => {
                     onClick={addFreeArea}>
                 </Button>
             </Tooltip>
-            <Tooltip placement="topLeft" title="Редактировать область">
+            <Tooltip placement="topLeft" title="Переместить область">
                 <Button
                     icon={<ExpandOutlined />}
                     style={buttonStyle}
@@ -113,7 +108,7 @@ const ToolBar = () => {
                 <Button
                     icon={<SaveOutlined />}
                     style={buttonStyle}
-                    onClick={saveHandle}
+                    onClick={tryToSave}
                 >
                 </Button>
             </Tooltip>
@@ -126,6 +121,7 @@ const ToolBar = () => {
                     Загрузить области для данного плана
                 </Button>
             </Tooltip>
+            <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
         </div>
     );
 };
