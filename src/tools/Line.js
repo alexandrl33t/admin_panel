@@ -42,7 +42,6 @@ export default class Line extends Tool{
             this.saved = this.canvas.toDataURL()
         } else {
             this.close_area = true
-            this.fillArea()
             canvasStateForDraw.current_item.points = this.points
         }
 

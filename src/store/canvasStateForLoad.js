@@ -20,7 +20,7 @@ class CanvasStateForLoad {
         name:"",
         points: []
     }
-
+    already_reloaded = false
 
     constructor() {
         makeAutoObservable(this)
@@ -33,41 +33,6 @@ class CanvasStateForLoad {
 
     addArea(area){
         this.areas.push(area)
-    }
-
-    dragRect(dx, dy) {
-        const {name, x, y, width, height} = this.current_item;
-        this.ctx.clearRect(
-            x - areaStyle.ctx.lineWidth,
-            y -areaStyle.ctx.lineWidth,
-            width +areaStyle.ctx.lineWidth + 1 ,
-            height +areaStyle.ctx.lineWidth + 1
-        );
-        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
-        this.ctx.fillStyle = areaStyle.ctx.fillStyle;
-        this.ctx.lineWidth = areaStyle.ctx.lineWidth
-        this.ctx.beginPath();
-        this.ctx.rect(x + dx, y + dy, width, height);
-        this.ctx.fillRect(x + dx,y + dy, width, height);
-        this.ctx.fillStyle = "rgba(0,0,0,0.96)";
-        this.ctx.font = 'bold 15px sans-serif';
-        this.ctx.fillText(name, x + dx +15, y + dy + 25);
-        this.current_item.x += dx
-        this.current_item.y += dy
-    }
-
-    clearLastPosition(){
-        const {name, x, y, width, height} = this.current_item;
-        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
-        this.ctx.fillStyle = areaStyle.ctx.fillStyle;
-        this.ctx.lineWidth = areaStyle.ctx.lineWidth
-        this.ctx.beginPath();
-        this.ctx.rect(x, y, width, height);
-        this.ctx.fillRect(x ,y, width, height);
-        this.ctx.fillStyle = "rgba(0,0,0,0.96)";
-        this.ctx.stroke()
-        this.ctx.font = 'bold 15px sans-serif';
-        this.ctx.fillText(name, x +15, y + 25);
     }
 
     setCurrentItem(item){
@@ -94,65 +59,28 @@ class CanvasStateForLoad {
     }
 
     hoverItemDelete(){
-        const {name, x, y, width, height} = this.current_item;
-        this.ctx.clearRect(
-            x - areaStyle.ctx.lineWidth,
-            y -areaStyle.ctx.lineWidth,
-            width +areaStyle.ctx.lineWidth + 1 ,
-            height +areaStyle.ctx.lineWidth + 1
-        );
-        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
-        this.ctx.fillStyle = "rgba(255,22,22,0.33)";
-        this.ctx.lineWidth = areaStyle.ctx.lineWidth
-        this.ctx.beginPath();
-        this.ctx.rect(x - 2, y - 2, width + 4, height + 4);
-        this.ctx.fillRect(x -2,y -2, width+4, height+4);
-        this.ctx.stroke()
-        this.ctx.fillStyle = "rgba(0,0,0,0.96)";
-        this.ctx.font = 'bold 17px sans-serif';
-        this.ctx.fillText(name, x - 2 +15, y -2 + 25);
+        this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
+        this.ctx.fillStyle = areaStyle.ctx.fillStyle
+        this.drawFreeArea(this.current_item)
+        this.fillArea(this.current_item);
+        this.setText(this.current_item)
     }
 
     unHoverItemDelete(){
-        const {name, x, y, width, height} = this.current_item;
-        this.ctx.clearRect(
-            x -2 - areaStyle.ctx.lineWidth,
-            y -2 -areaStyle.ctx.lineWidth,
-            width + 4 +areaStyle.ctx.lineWidth + 1 ,
-            height +4 +areaStyle.ctx.lineWidth + 1
-        );
-        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
-        this.ctx.fillStyle = areaStyle.ctx.fillStyle;
-        this.ctx.lineWidth = areaStyle.ctx.lineWidth
-        this.ctx.beginPath();
-        this.ctx.rect(x + 2, y + 2, width -4, height-4);
-        this.ctx.fillRect(x+ 2 ,y+ 2, width-4, height-4);
-        this.ctx.stroke()
-        this.ctx.fillStyle = "rgba(0,0,0,0.96)";
-        this.ctx.font = 'bold 15px sans-serif';
-        this.ctx.fillText(name, x + 2 +15, y+ 2 + 25);
+        this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
+        this.drawObjects(this.areas)
     }
 
     clearArea(index){
         this.areas.splice(index, 1)
-        console.log(this.areas)
-        const {name, x, y, width, height} = this.current_item;
-        this.ctx.clearRect(
-            x - areaStyle.ctx.lineWidth,
-            y -areaStyle.ctx.lineWidth,
-            width +areaStyle.ctx.lineWidth + 1 ,
-            height +areaStyle.ctx.lineWidth + 1
-        );
+
         this.clearCurrentItem()
     }
 
     clearCurrentItem(){
         this.current_item = {
             name:"",
-            x: 0,
-            y:0,
-            width:0,
-            height:0,
+            points: [],
         }
     }
 
@@ -164,14 +92,14 @@ class CanvasStateForLoad {
     }
 
     drawObjects(items){
+        this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
+        this.areas = []
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle
         this.ctx.lineWidth = areaStyle.ctx.lineWidth
         items.forEach((item) => {
-            this.areas = []
             this.areas.push(item)
             this.drawFreeArea(item)
-            this.fillArea(item)
             this.setText(item)
         })
     }
@@ -198,7 +126,7 @@ class CanvasStateForLoad {
 
     fillArea(item){
         const {points} = item
-        this.ctx.fillStyle = areaStyle.ctx.fillStyle
+
         if (points.length > 1){
             for (let i=0; i<points.length-1;i++){
                 this.ctx.beginPath()
@@ -225,11 +153,11 @@ class CanvasStateForLoad {
             this.areas.splice(index, 1)
             this.areas.push(canvasStateForDraw.current_item)
         }
+        console.log(this.areas)
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
         this.drawObjects(this.areas)
         this.filled_background = false
         this.editable_item=null
-        this.setEdit(false)
     }
 
 

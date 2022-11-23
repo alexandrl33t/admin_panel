@@ -2,9 +2,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import {observer} from "mobx-react-lite";
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
-import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import DeleteAreaModal from "../pages/plan/DeleteAreaModal";
-import cursorState from "../store/CursorState";
+import toolState from "../store/toolState";
 export const CanvasBox = observer((props) => {
     const {imageUrl} = props
     const canvasForLoadRef = useRef()
@@ -19,7 +18,6 @@ export const CanvasBox = observer((props) => {
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
     }, [canvasForLoadRef, imageUrl])
-
 
     const loadImage = (setImageDimensions, imageUrl) => {
         const img = new Image();
@@ -38,6 +36,7 @@ export const CanvasBox = observer((props) => {
     };
 
     const isOnArea = (x, y, item) => {
+        console.log(item.points)
         if (item.points.length > 1){
             for (let i=0; i<item.points.length-1;i++){
                 const x1 = item.points[i].x
@@ -67,16 +66,17 @@ export const CanvasBox = observer((props) => {
 
     function takeObjectInCanvas(canvas, event) {
         const {x, y} = getCursorPosition(event)
-        canvasStateForLoad.areas.every((item) => {
+        canvasStateForLoad.areas.forEach((item) => {
             if (isOnArea(x, y, item)) {
+                console.log("yes")
                 setIsDragging(true)
-                cursorState.state = cursorState.states.grab
                 setCursorDragPoint({x:x, y:y})
                 canvasStateForDraw.setCurrentItem(item)
                 canvasStateForLoad.setEditableItem(item)
-                return false
+                return
             }
             else {
+                console.log("nope")
                 setIsDragging(false)
             }
         })
@@ -95,7 +95,7 @@ export const CanvasBox = observer((props) => {
         else if (canvasStateForLoad.delete) {
             setDeleteModal(true)
         }
-        else {
+        else if (toolState.tool){
             canvasStateForDraw.pushToUndo(canvasForDrawRef.current?.toDataURL())
         }
 
@@ -107,22 +107,14 @@ export const CanvasBox = observer((props) => {
         }
         //если мышка отпустила объект во время перетаскивания
         else if (canvasStateForLoad.move && isDragging) {
-                setIsDragging(false)
                 canvasStateForLoad.reload()
                 canvasStateForDraw.reload()
-            console.log(canvasStateForLoad.areas)
+                setIsDragging(false)
             }
     }
 
     const mouseMoveHandler = (e) => {
         const {x, y} = getCursorPosition(e)
-        if (!isDragging){
-            canvasStateForLoad.areas.every((item) => {
-                if (isOnArea(x, y, item)) {
-                    return false
-                }
-            })
-        }
 
         if (!canvasStateForDraw.isActive){
             if (!isDragging) {

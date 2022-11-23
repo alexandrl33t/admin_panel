@@ -32,8 +32,8 @@ const ToolBar = () => {
 
     const saveHandle = (name) => {
         canvasStateForDraw.current_item.name = name
-        canvasStateForLoad.addArea(canvasStateForDraw.current_item)
-        canvasStateForLoad.reload()
+        areas.push(canvasStateForDraw.current_item)
+        canvasStateForLoad.drawObjects(areas)
     }
 
     function loadAreas(){
