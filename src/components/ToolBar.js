@@ -18,7 +18,8 @@ import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
 const buttonStyle = {
     marginLeft: 10,
 }
-let areas = [{
+let areas = [
+    {
     name:"Bathroom",
     points: [
         {x:100,y:8},
@@ -26,13 +27,24 @@ let areas = [{
         {x:225,y:188},
         {x:100,y:188},
     ],
-}]
+    },
+    {
+    name:"Guest",
+    points: [
+        {x:100,y:189},
+        {x:800,y:189},
+        {x:800,y:400},
+        {x:100,y:400},
+    ],
+    },
+]
 const ToolBar = () => {
     const [confirmModal, setConfirmModal]= useState(false)
 
     const saveHandle = (name) => {
         canvasStateForDraw.current_item.name = name
         areas.push(canvasStateForDraw.current_item)
+        canvasStateForDraw.reload()
         canvasStateForLoad.drawObjects(areas)
     }
 

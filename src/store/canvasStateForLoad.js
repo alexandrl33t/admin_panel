@@ -148,9 +148,7 @@ class CanvasStateForLoad {
 
 
     reload(){
-        if (this.editable_item){
-            const index = this.areas.indexOf(this.editable_item)
-            this.areas.splice(index, 1)
+        if (this.move){
             this.areas.push(canvasStateForDraw.current_item)
         }
         console.log(this.areas)
@@ -158,6 +156,7 @@ class CanvasStateForLoad {
         this.drawObjects(this.areas)
         this.filled_background = false
         this.editable_item=null
+        this.clearCurrentItem()
     }
 
 

@@ -36,7 +36,6 @@ export const CanvasBox = observer((props) => {
     };
 
     const isOnArea = (x, y, item) => {
-        console.log(item.points)
         if (item.points.length > 1){
             for (let i=0; i<item.points.length-1;i++){
                 const x1 = item.points[i].x
@@ -68,7 +67,6 @@ export const CanvasBox = observer((props) => {
         const {x, y} = getCursorPosition(event)
         canvasStateForLoad.areas.forEach((item) => {
             if (isOnArea(x, y, item)) {
-                console.log("yes")
                 setIsDragging(true)
                 setCursorDragPoint({x:x, y:y})
                 canvasStateForDraw.setCurrentItem(item)
@@ -76,7 +74,6 @@ export const CanvasBox = observer((props) => {
                 return
             }
             else {
-                console.log("nope")
                 setIsDragging(false)
             }
         })
