@@ -14,7 +14,7 @@ const DeleteAreaModal = (props) => {
     }
     return (
         <>
-            {item.name && (
+            {item?.name && (
                 <Modal
                     title="Вы дейтсвительно хотите удалить эту область?"
                     open={deleteModal}

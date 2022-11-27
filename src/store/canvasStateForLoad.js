@@ -20,7 +20,7 @@ class CanvasStateForLoad {
         name:"",
         points: []
     }
-    already_reloaded = false
+    delete_item = null
 
     constructor() {
         makeAutoObservable(this)
@@ -41,7 +41,6 @@ class CanvasStateForLoad {
 
     setEditableItem(item){
         this.editable_item=item
-        this.areas.splice(this.areas.indexOf(item), 1)
     }
 
     setDelete(value){
@@ -125,8 +124,8 @@ class CanvasStateForLoad {
     }
 
     fillArea(item){
+        this.ctx.fillStyle = areaStyle.ctx.fillStyle
         const {points} = item
-
         if (points.length > 1){
             for (let i=0; i<points.length-1;i++){
                 this.ctx.beginPath()
@@ -139,6 +138,8 @@ class CanvasStateForLoad {
         }
     }
 
+    un
+
     isDragging(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         this.ctx.fillStyle = areaStyle.dragging.fillStyle
@@ -146,14 +147,21 @@ class CanvasStateForLoad {
         this.filled_background = true
     }
 
+    deleteArea(){
+        console.log(this.delete_item)
+        if (this.delete_item){
+            const index = this.areas.indexOf(this.delete_item)
+            this.areas.splice(index, 1)
+            this.reload()
+        }
+
+    }
+
+    setDeleteItem(item){
+        this.delete_item = item
+    }
 
     reload(){
-        if (this.editable_item){
-            const index = this.areas.indexOf(this.editable_item)
-            this.areas.splice(index, 1)
-            this.areas.push(canvasStateForDraw.current_item)
-        }
-        console.log(this.areas)
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
         this.drawObjects(this.areas)
         this.filled_background = false

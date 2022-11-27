@@ -36,7 +36,6 @@ export const CanvasBox = observer((props) => {
     };
 
     const isOnArea = (x, y, item) => {
-        console.log(item.points)
         if (item.points.length > 1){
             for (let i=0; i<item.points.length-1;i++){
                 const x1 = item.points[i].x
@@ -45,11 +44,10 @@ export const CanvasBox = observer((props) => {
                 const y1 = item.points[i].y
                 const y2 = item.points[item.points.length-1-i].y
                 const y3 = item.points[i+1].y
-                if (
-                    (x1 - x) * (y2 - y1) - (x2 - x1) * (y1 - y) < 0 &&
-                    (x2 - x) * (y3 - y2) - (x3 - x2) * (y2 - y) < 0 &&
-                    (x3 - x) * (y1 - y3) - (x1 - x3) * (y3 - y) < 0
-                ){
+                const a = (x1 - x) * (y2 - y1) - (x2 - x1) * (y1 - y)
+                const b = (x2 - x) * (y3 - y2) - (x3 - x2) * (y2 - y)
+                const c = (x3 - x) * (y1 - y3) - (x1 - x3) * (y3 - y)
+                if ((a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0)){
                     return true
                 }
             }
@@ -66,26 +64,22 @@ export const CanvasBox = observer((props) => {
 
     function takeObjectInCanvas(canvas, event) {
         const {x, y} = getCursorPosition(event)
-        canvasStateForLoad.areas.forEach((item) => {
-            if (isOnArea(x, y, item)) {
-                console.log("yes")
+        for (let i =0; i < canvasStateForLoad.areas.length; i++) {
+            if (isOnArea(x, y, canvasStateForLoad.areas[i])) {
+                canvasStateForDraw.setCurrentItem(canvasStateForLoad.areas[i])
+                canvasStateForLoad.setEditableItem(canvasStateForLoad.areas[i])
                 setIsDragging(true)
                 setCursorDragPoint({x:x, y:y})
-                canvasStateForDraw.setCurrentItem(item)
-                canvasStateForLoad.setEditableItem(item)
-                return
+                return false
             }
             else {
-                console.log("nope")
                 setIsDragging(false)
             }
-        })
+        }
     }
 
-
-    const deleteArea = () => {
-        canvasStateForLoad.unHoverItemDelete()
-        canvasStateForLoad.clearArea()
+    function deleteObjectInCanvas(){
+        canvasStateForLoad.deleteArea()
     }
 
     const mouseDownHandler = (e) =>{
@@ -120,15 +114,14 @@ export const CanvasBox = observer((props) => {
             if (!isDragging) {
                 if (canvasStateForLoad.delete) {
                     let {x, y} = getCursorPosition(e);
-                    canvasStateForLoad.areas.forEach((item) => {
-                        if (isOnArea(x, y, item)) {
-                            canvasStateForLoad.setCurrentItem(item)
-                            canvasStateForLoad.hoverItemDelete()
+                    for (let i =0; i < canvasStateForLoad.areas.length; i++)  {
+                        if (isOnArea(x, y, canvasStateForLoad.areas[i])) {
+                            canvasStateForLoad.setDeleteItem(canvasStateForLoad.areas[i])
                             return
                         } else {
-                            canvasStateForLoad.unHoverItemDelete()
+                            canvasStateForLoad.setDeleteItem(null)
                         }
-                    })
+                    }
                 }
             } else if (canvasStateForLoad.move && isDragging) {
                 if (!canvasStateForLoad.filled_background){
@@ -172,7 +165,7 @@ export const CanvasBox = observer((props) => {
                     height={imageDimensions.height}
                 />
         </div>
-            <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteArea} item={canvasStateForLoad.current_item} />
+            <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteObjectInCanvas} item={canvasStateForLoad.delete_item} />
         </>
     )
 });
