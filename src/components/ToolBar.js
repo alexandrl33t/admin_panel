@@ -20,32 +20,34 @@ const buttonStyle = {
 }
 let areas = [
     {
-    name:"Bathroom",
-    points: [
-        {x:100,y:8},
-        {x:225,y:8},
-        {x:225,y:188},
-        {x:100,y:188},
-    ],
+        name:"Bathroom",
+        points: [
+            {x:100,y:8},
+            {x:225,y:8},
+            {x:225,y:188},
+            {x:100,y:188},
+        ],
     },
     {
-    name:"Guest",
-    points: [
-        {x:100,y:189},
-        {x:800,y:189},
-        {x:800,y:400},
-        {x:100,y:400},
-    ],
-    },
+        name:"Lndry",
+        points: [
+            {x:225,y:7},
+            {x:225,y:131},
+            {x:333,y:131},
+            {x:333,y:7},
+        ],
+    }
 ]
 const ToolBar = () => {
     const [confirmModal, setConfirmModal]= useState(false)
 
     const saveHandle = (name) => {
         canvasStateForDraw.current_item.name = name
-        areas.push(canvasStateForDraw.current_item)
+        console.log(canvasStateForDraw.current_item)
+        canvasStateForLoad.areas.push(canvasStateForDraw.current_item)
+        canvasStateForLoad.reload()
         canvasStateForDraw.reload()
-        canvasStateForLoad.drawObjects(areas)
+        toolState.tool = null
     }
 
     function loadAreas(){

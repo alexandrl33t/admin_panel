@@ -27,6 +27,13 @@ export default class Rect extends Tool{
     }
 
     mouseUpHandler(e){
+        const points= [
+            {x :this.area.x, y: this.area.y},
+            {x: this.area.x+this.area.width, y: this.area.y},
+            {x: this.area.x+this.area.width, y:this.area.y+this.area.height },
+            {x: this.area.x, y:this.area.y+this.area.height }
+        ]
+        canvasStateForDraw.current_item.points = points
         this.mouseDown = false;
     }
     mouseDownHandler(e){
