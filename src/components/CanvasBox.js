@@ -4,6 +4,7 @@ import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import DeleteAreaModal from "../pages/plan/DeleteAreaModal";
 import toolState from "../store/toolState";
+import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
 export const CanvasBox = observer((props) => {
     const {imageUrl} = props
     const canvasForLoadRef = useRef()
@@ -12,12 +13,19 @@ export const CanvasBox = observer((props) => {
     const [isDragging, setIsDragging] = useState(false)
     const [cursorDragPoint, setCursorDragPoint] = useState({x: 0, y: 0})
     const [deleteModal, setDeleteModal] = useState(false);
+    const [confirmModal, setConfirmModal]= useState(false)
 
     useEffect(()=>{
         loadImage(setImageDimensions, imageUrl);
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
     }, [canvasForLoadRef, imageUrl])
+
+    useEffect(()=>{
+        if (toolState?.tool?.close_area){
+            setConfirmModal(true)
+        }
+    }, [canvasStateForDraw.current_item.points])
 
     const loadImage = (setImageDimensions, imageUrl) => {
         const img = new Image();
@@ -137,6 +145,16 @@ export const CanvasBox = observer((props) => {
 
 
     }
+
+    const saveHandle = (name) => {
+        canvasStateForDraw.current_item.name = name
+        console.log(canvasStateForDraw.current_item)
+        canvasStateForLoad.areas.push(canvasStateForDraw.current_item)
+        canvasStateForLoad.reload()
+        canvasStateForDraw.reload()
+        toolState.tool = null
+    }
+
     return (
         <>
         <div style={{marginTop:10}}>
@@ -166,6 +184,7 @@ export const CanvasBox = observer((props) => {
                 />
         </div>
             <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteObjectInCanvas} item={canvasStateForLoad.delete_item} />
+            <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
         </>
     )
 });

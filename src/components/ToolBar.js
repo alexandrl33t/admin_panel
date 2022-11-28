@@ -39,17 +39,6 @@ let areas = [
     }
 ]
 const ToolBar = () => {
-    const [confirmModal, setConfirmModal]= useState(false)
-
-    const saveHandle = (name) => {
-        canvasStateForDraw.current_item.name = name
-        console.log(canvasStateForDraw.current_item)
-        canvasStateForLoad.areas.push(canvasStateForDraw.current_item)
-        canvasStateForLoad.reload()
-        canvasStateForDraw.reload()
-        toolState.tool = null
-    }
-
     function loadAreas(){
         canvasStateForLoad.drawObjects(areas)
     }
@@ -72,8 +61,8 @@ const ToolBar = () => {
     }
 
     const tryToSave = () => {
-        if (canvasStateForDraw.current_item.points.length > 2) {
-            setConfirmModal(true)
+        if (1) {
+
         } else {
             message.error("Ошибка. Область не нарисована.")
         }
@@ -135,7 +124,6 @@ const ToolBar = () => {
                     Загрузить области для данного плана
                 </Button>
             </Tooltip>
-            <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
         </div>
     );
 };
