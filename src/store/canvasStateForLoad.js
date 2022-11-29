@@ -138,8 +138,6 @@ class CanvasStateForLoad {
         }
     }
 
-    un
-
     isDragging(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         this.ctx.fillStyle = areaStyle.dragging.fillStyle
@@ -167,9 +165,6 @@ class CanvasStateForLoad {
         this.filled_background = false
         this.editable_item=null
     }
-
-
-
 
 }
 

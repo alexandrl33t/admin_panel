@@ -11,6 +11,8 @@ class CanvasStateForDraw {
         name: "",
         points:[],
     }
+    canvas_points = null
+    closed_area = false
 
     constructor() {
         makeAutoObservable(this)
@@ -22,6 +24,7 @@ class CanvasStateForDraw {
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle
         this.ctx.lineWidth = areaStyle.ctx.lineWidth
+        this.canvas_points =[{x:0, y:0},{x:0, y:canvas.height},{x:canvas.width, y:canvas.height},{x:canvas.width, y:0}]
     }
 
     setCurrentItem(item){
@@ -98,9 +101,17 @@ class CanvasStateForDraw {
         this.setText(this.current_item)
     }
 
+    setClosedArea(value){
+        this.closed_area = value
+    }
+
     reload() {
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
-        this.current_item = {}
+        this.current_item = {
+            name: "",
+            points:[],
+        }
+        this.closed_area = false
     }
 }
 

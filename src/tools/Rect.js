@@ -14,6 +14,8 @@ export default class Rect extends Tool{
 
     constructor(canvas) {
         super(canvas);
+        canvasStateForDraw.setClosedArea(false)
+        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
         this.ctx.fillStyle = areaStyle.ctx.fillStyle;
         this.ctx.lineWidth = areaStyle.ctx.lineWidth;
@@ -27,6 +29,9 @@ export default class Rect extends Tool{
     }
 
     mouseUpHandler(e){
+        if (!canvasStateForDraw.isActive || canvasStateForDraw.closed_area){
+            return
+        }
         const points= [
             {x :this.area.x, y: this.area.y},
             {x: this.area.x+this.area.width, y: this.area.y},
@@ -35,9 +40,10 @@ export default class Rect extends Tool{
         ]
         canvasStateForDraw.current_item.points = points
         this.mouseDown = false;
+        canvasStateForDraw.setClosedArea(true)
     }
     mouseDownHandler(e){
-        if (!canvasStateForDraw.isActive){
+        if (!canvasStateForDraw.isActive || canvasStateForDraw.closed_area){
             return
         }
         this.mouseDown = true;
@@ -47,10 +53,9 @@ export default class Rect extends Tool{
         this.ctx.lineWidth = areaStyle.ctx.lineWidth;
         this.startX = e.pageX - e.target.offsetLeft- 20;
         this.startY = e.pageY - e.target.offsetTop-115;
-        this.saved = this.canvas.toDataURL();
     }
     mouseMoveHandler(e){
-        if (this.mouseDown) {
+        if (this.mouseDown && !canvasStateForDraw.closed_area && canvasStateForDraw.isActive ) {
             let currentX = e.pageX - e.target.offsetLeft- 20;
             let currentY = e.pageY - e.target.offsetTop-115 ;
             let width = currentX - this.startX;

@@ -1,17 +1,24 @@
 import React from 'react';
-import {Form, Input, Modal} from "antd";
+import {Form, Input, Modal, message} from "antd";
+import canvasStateForDraw from "../../store/canvasStateForDraw";
 
 const ConfirmAreaModal = (props) => {
     const {confirmModal, setConfirmModal, saveArea} = props
     const [form] = Form.useForm();
     const hideModal = () => {
+        canvasStateForDraw.reload()
         setConfirmModal(false);
     };
 
     const okHandle = () =>{
         const name = form.getFieldValue("name")
-        saveArea(name);
-        hideModal()
+        if (name){
+            saveArea(name);
+            hideModal()
+        } else {
+            message.error("Пожалуйста, введите название области.")
+        }
+
     }
     return (
         <>

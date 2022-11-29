@@ -22,10 +22,10 @@ export const CanvasBox = observer((props) => {
     }, [canvasForLoadRef, imageUrl])
 
     useEffect(()=>{
-        if (toolState?.tool?.close_area){
+        if (canvasStateForDraw.closed_area){
             setConfirmModal(true)
         }
-    }, [canvasStateForDraw.current_item.points])
+    }, [canvasStateForDraw.closed_area])
 
     const loadImage = (setImageDimensions, imageUrl) => {
         const img = new Image();

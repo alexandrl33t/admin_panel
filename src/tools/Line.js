@@ -12,6 +12,7 @@ export default class Line extends Tool{
 
     constructor(canvas) {
         super(canvas);
+        canvasStateForDraw.setClosedArea(false)
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         this.listen()
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
@@ -30,6 +31,9 @@ export default class Line extends Tool{
         }
     }
     mouseDownHandler(e){
+        if (this.close_area) {
+            return
+        }
         if (!this.ended_area){
             this.currentX = e.pageX - e.target.offsetLeft- 20
             this.currentY = e.pageY - e.target.offsetTop-115
@@ -42,8 +46,9 @@ export default class Line extends Tool{
             this.saved = this.canvas.toDataURL()
         } else {
             this.fillArea()
-            this.close_area = true
             canvasStateForDraw.current_item.points = this.points
+            this.close_area = true
+            canvasStateForDraw.setClosedArea(true)
         }
 
     }
@@ -80,8 +85,20 @@ export default class Line extends Tool{
 
     fillArea(){
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
+        let closest_canvas_angle = {x:0, y:0}
+        let min_dist = 9999999999999
         if (this.points.length > 1){
             for (let i=0; i<this.points.length-1;i++){
+                //доделать расстояние до прямой и сравнить с расстоянием до конкретной точки
+                canvasStateForDraw.canvas_points.forEach((point)=>{
+                    const d = Math.sqrt(Math.pow(Math.abs(point.x - this.points[i].x)) + Math.pow(Math.abs(point.y - this.points[i].y)))
+                    if (d < min_dist){
+                        min_dist = d
+                        closest_canvas_angle = {x:point.x, y:point.y }
+                    }
+                })
+
+
                 this.ctx.beginPath()
                 this.ctx.moveTo(this.points[i].x, this.points[i].y)
                 this.ctx.lineTo(this.points[this.points.length-1-i].x, this.points[this.points.length-1-i].y)
