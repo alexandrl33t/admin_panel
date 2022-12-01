@@ -7,7 +7,6 @@ export default class Line extends Tool{
     start_position = null
     ended_area = false
     close_area = false
-
     points = []
 
     constructor(canvas) {
@@ -85,27 +84,16 @@ export default class Line extends Tool{
 
     fillArea(){
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
-        let closest_canvas_angle = {x:0, y:0}
-        let min_dist = 9999999999999
         if (this.points.length > 1){
+            let region = new Path2D();
+            region.moveTo(this.points[0].x, this.points[0].y)
             for (let i=0; i<this.points.length-1;i++){
-                //доделать расстояние до прямой и сравнить с расстоянием до конкретной точки
-                canvasStateForDraw.canvas_points.forEach((point)=>{
-                    const d = Math.sqrt(Math.pow(Math.abs(point.x - this.points[i].x)) + Math.pow(Math.abs(point.y - this.points[i].y)))
-                    if (d < min_dist){
-                        min_dist = d
-                        closest_canvas_angle = {x:point.x, y:point.y }
-                    }
-                })
+                region.lineTo(this.points[i+1].x, this.points[i+1].y)
 
-
-                this.ctx.beginPath()
-                this.ctx.moveTo(this.points[i].x, this.points[i].y)
-                this.ctx.lineTo(this.points[this.points.length-1-i].x, this.points[this.points.length-1-i].y)
-                this.ctx.lineTo(this.points[i+1].x, this.points[i+1].y)
-                this.ctx.closePath();
-                this.ctx.fill();
             }
+            region.lineTo(this.points[0].x, this.points[0].y)
+            region.closePath();
+            this.ctx.fill(region);
         }
     }
 

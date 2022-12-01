@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
-import canvasStateForDraw from "./canvasStateForDraw";
 
 /**
  * Канвас для отрисовки готовых областей
@@ -127,14 +126,15 @@ class CanvasStateForLoad {
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
         const {points} = item
         if (points.length > 1){
+            let region = new Path2D();
+            region.moveTo(points[0].x, points[0].y)
             for (let i=0; i<points.length-1;i++){
-                this.ctx.beginPath()
-                this.ctx.moveTo(points[i].x, points[i].y)
-                this.ctx.lineTo(points[points.length-1-i].x, points[points.length-1-i].y)
-                this.ctx.lineTo(points[i+1].x, points[i+1].y)
-                this.ctx.closePath();
-                this.ctx.fill();
+                region.lineTo(points[i+1].x, points[i+1].y)
+
             }
+            region.lineTo(points[0].x, points[0].y)
+            region.closePath();
+            this.ctx.fill(region);
         }
     }
 

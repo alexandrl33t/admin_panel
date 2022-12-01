@@ -11,7 +11,6 @@ class CanvasStateForDraw {
         name: "",
         points:[],
     }
-    canvas_points = null
     closed_area = false
 
     constructor() {
@@ -24,7 +23,6 @@ class CanvasStateForDraw {
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle
         this.ctx.lineWidth = areaStyle.ctx.lineWidth
-        this.canvas_points =[{x:0, y:0},{x:0, y:canvas.height},{x:canvas.width, y:canvas.height},{x:canvas.width, y:0}]
     }
 
     setCurrentItem(item){
@@ -74,16 +72,18 @@ class CanvasStateForDraw {
     }
 
     fillArea(item){
+        this.ctx.fillStyle = areaStyle.ctx.fillStyle
         const {points} = item
         if (points.length > 1){
+            let region = new Path2D();
+            region.moveTo(points[0].x, points[0].y)
             for (let i=0; i<points.length-1;i++){
-                this.ctx.beginPath()
-                this.ctx.moveTo(points[i].x, points[i].y)
-                this.ctx.lineTo(points[points.length-1-i].x, points[points.length-1-i].y)
-                this.ctx.lineTo(points[i+1].x, points[i+1].y)
-                this.ctx.fill();
-                this.ctx.closePath();
+                region.lineTo(points[i+1].x, points[i+1].y)
+
             }
+            region.lineTo(points[0].x, points[0].y)
+            region.closePath();
+            this.ctx.fill(region);
         }
     }
 
