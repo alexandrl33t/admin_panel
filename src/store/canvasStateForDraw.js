@@ -29,24 +29,6 @@ class CanvasStateForDraw {
         this.current_item = item
     }
 
-    pushToUndo(data){
-        this.undolist.push(data)
-    }
-    undo() {
-        let ctx = this.canvas.getContext('2d')
-        if (this.undolist.length > 0){
-            let dataUrl = this.undolist.pop()
-            let img = new Image()
-            img.src = dataUrl
-            img.onload = () => {
-              ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
-                ctx.drawImage(img, 0,0, this.canvas.width, this.canvas.height)
-            }
-        } else {
-            ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
-        }
-    }
-
     setActive(value){
         this.isActive = value
     }
@@ -66,7 +48,7 @@ class CanvasStateForDraw {
         this.ctx.closePath();
     }
     setText(item){
-        this.ctx.fillStyle = "rgba(0,0,0,0.96)";
+        this.ctx.fillStyle = "rgba(126,10,10,0.96)";
         this.ctx.font = 'bold 15px sans-serif';
         this.ctx.fillText(item.name, item.points[0].x + 15, item.points[0].y+ 15);
     }
@@ -92,7 +74,7 @@ class CanvasStateForDraw {
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle
         this.ctx.lineWidth = areaStyle.ctx.lineWidth
-        this.current_item.points.map((point) => {
+        this.current_item.points.map(point => {
             point.x += dx
             point.y += dy
         })
@@ -100,6 +82,16 @@ class CanvasStateForDraw {
         this.fillArea(this.current_item)
         this.setText(this.current_item)
     }
+
+    drawAreaDelete(item){
+        this.ctx.fillStyle = areaStyle.ctx.fillStyle
+        this.ctx.strokeStyle = this.ctx.strokeStyle = "#ff0000"
+        this.ctx.lineWidth = 0
+        this.drawFreeArea(item)
+        this.fillArea(item)
+        this.setText(item)
+    }
+
 
     setClosedArea(value){
         this.closed_area = value

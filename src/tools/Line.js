@@ -1,6 +1,7 @@
 import Tool from "./Tool";
 import {areaStyle} from "./ToolStyle/AreaStyle";
 import canvasStateForDraw from "../store/canvasStateForDraw";
+import canvasStateForLoad from "../store/canvasStateForLoad";
 
 export default class Line extends Tool{
     last_anchor = null
@@ -14,8 +15,8 @@ export default class Line extends Tool{
         canvasStateForDraw.setClosedArea(false)
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         this.listen()
-        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
-        this.ctx.lineWidth = areaStyle.ctx.lineWidth;
+        this.ctx.strokeStyle = areaStyle.draw.strokeStyle;
+        this.ctx.lineWidth = areaStyle.draw.lineWidth;
     }
 
     listen() {
@@ -30,6 +31,9 @@ export default class Line extends Tool{
         }
     }
     mouseDownHandler(e){
+        if (!canvasStateForDraw.isActive){
+            return;
+        }
         if (this.close_area) {
             return
         }
@@ -48,13 +52,17 @@ export default class Line extends Tool{
             canvasStateForDraw.current_item.points = this.points
             this.close_area = true
             canvasStateForDraw.setClosedArea(true)
+            canvasStateForDraw.setActive(false)
+            canvasStateForLoad.setActive(true)
+            this.last_anchor = null
+            this.points = []
         }
 
     }
     mouseMoveHandler(e){
         let x = e.pageX - e.target.offsetLeft- 20
         let y = e.pageY - e.target.offsetTop-115
-        if (this.close_area){
+        if (this.close_area && canvasStateForDraw.closed_area && !canvasStateForDraw.isActive){
             return
         }
         if (this.last_anchor) {
@@ -83,7 +91,7 @@ export default class Line extends Tool{
     }
 
     fillArea(){
-        this.ctx.fillStyle = areaStyle.ctx.fillStyle
+        this.ctx.fillStyle = areaStyle.draw.fillStyle
         if (this.points.length > 1){
             let region = new Path2D();
             region.moveTo(this.points[0].x, this.points[0].y)

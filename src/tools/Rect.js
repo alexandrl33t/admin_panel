@@ -1,6 +1,7 @@
 import Tool from "./Tool";
 import {areaStyle} from "./ToolStyle/AreaStyle";
 import canvasStateForDraw from "../store/canvasStateForDraw";
+import canvasStateForLoad from "../store/canvasStateForLoad";
 
 export default class Rect extends Tool{
 
@@ -41,6 +42,8 @@ export default class Rect extends Tool{
         canvasStateForDraw.current_item.points = points
         this.mouseDown = false;
         canvasStateForDraw.setClosedArea(true)
+        canvasStateForDraw.setActive(false)
+        canvasStateForLoad.setActive(true)
     }
     mouseDownHandler(e){
         if (!canvasStateForDraw.isActive || canvasStateForDraw.closed_area){
@@ -48,9 +51,9 @@ export default class Rect extends Tool{
         }
         this.mouseDown = true;
         this.ctx.beginPath();
-        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle;
-        this.ctx.fillStyle = areaStyle.ctx.fillStyle;
-        this.ctx.lineWidth = areaStyle.ctx.lineWidth;
+        this.ctx.strokeStyle = areaStyle.draw.strokeStyle;
+        this.ctx.fillStyle = areaStyle.draw.fillStyle;
+        this.ctx.lineWidth = areaStyle.draw.lineWidth;
         this.startX = e.pageX - e.target.offsetLeft- 20;
         this.startY = e.pageY - e.target.offsetTop-115;
     }

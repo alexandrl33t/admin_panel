@@ -1,5 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
+import canvasStateForDraw from "./canvasStateForDraw";
 
 /**
  * Канвас для отрисовки готовых областей
@@ -8,10 +9,6 @@ class CanvasStateForLoad {
     canvas = null
     areas = []
     ctx = null
-    current_item = {
-        name:"",
-        points: []
-    }
     move = false
     delete = false
     filled_background = false
@@ -20,6 +17,7 @@ class CanvasStateForLoad {
         points: []
     }
     delete_item = null
+    undolist = []
 
     constructor() {
         makeAutoObservable(this)
@@ -30,13 +28,6 @@ class CanvasStateForLoad {
         this.ctx = canvas.getContext('2d')
     }
 
-    addArea(area){
-        this.areas.push(area)
-    }
-
-    setCurrentItem(item){
-        this.current_item = item
-    }
 
     setEditableItem(item){
         this.editable_item=item
@@ -53,32 +44,6 @@ class CanvasStateForLoad {
         this.move = value
         if (value) {
             this.delete = false
-        }
-    }
-
-    hoverItemDelete(){
-        this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
-        this.ctx.fillStyle = areaStyle.ctx.fillStyle
-        this.drawFreeArea(this.current_item)
-        this.fillArea(this.current_item);
-        this.setText(this.current_item)
-    }
-
-    unHoverItemDelete(){
-        this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
-        this.drawObjects(this.areas)
-    }
-
-    clearArea(index){
-        this.areas.splice(index, 1)
-
-        this.clearCurrentItem()
-    }
-
-    clearCurrentItem(){
-        this.current_item = {
-            name:"",
-            points: [],
         }
     }
 
@@ -117,7 +82,7 @@ class CanvasStateForLoad {
         this.ctx.stroke()
     }
     setText(item){
-        this.ctx.fillStyle = "rgba(0,0,0,0.96)";
+        this.ctx.fillStyle = "rgba(13,27,128,0.96)";
         this.ctx.font = 'bold 15px sans-serif';
         this.ctx.fillText(item.name, item.points[0].x + 15, item.points[0].y+ 15);
     }
@@ -146,11 +111,11 @@ class CanvasStateForLoad {
     }
 
     deleteArea(){
-        console.log(this.delete_item)
         if (this.delete_item){
             const index = this.areas.indexOf(this.delete_item)
             this.areas.splice(index, 1)
             this.reload()
+            canvasStateForDraw.reload()
         }
 
     }

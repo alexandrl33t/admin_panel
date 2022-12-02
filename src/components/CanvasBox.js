@@ -97,15 +97,13 @@ export const CanvasBox = observer((props) => {
         else if (canvasStateForLoad.delete) {
             setDeleteModal(true)
         }
-        else if (toolState.tool){
-            canvasStateForDraw.pushToUndo(canvasForDrawRef.current?.toDataURL())
-        }
-
     }
 
     const mouseUpHandler = (e) => {
         if (!isDragging){
-            return
+            if (canvasStateForDraw.closed_area){
+                toolState.setTool(null)
+            }
         }
         //если мышка отпустила объект во время перетаскивания
         else if (canvasStateForLoad.move && isDragging) {
@@ -120,17 +118,30 @@ export const CanvasBox = observer((props) => {
 
         if (!canvasStateForDraw.isActive){
             if (!isDragging) {
-                if (canvasStateForLoad.delete) {
                     let {x, y} = getCursorPosition(e);
                     for (let i =0; i < canvasStateForLoad.areas.length; i++)  {
                         if (isOnArea(x, y, canvasStateForLoad.areas[i])) {
-                            canvasStateForLoad.setDeleteItem(canvasStateForLoad.areas[i])
-                            return
+                            if (canvasStateForLoad.delete){
+                                canvasStateForDraw.reload()
+                                canvasStateForLoad.setDeleteItem(canvasStateForLoad.areas[i])
+                                canvasStateForDraw.drawAreaDelete(canvasStateForLoad.areas[i])
+                                if (!canvasStateForLoad.filled_background){
+                                    canvasStateForLoad.isDragging()
+                                }
+                                return
+                            }
+                            else if (canvasStateForLoad.move){
+                                canvasStateForDraw.reload()
+                                canvasStateForDraw.fillArea(canvasStateForLoad.areas[i])
+                                return;
+                            }
                         } else {
                             canvasStateForLoad.setDeleteItem(null)
+                            canvasStateForLoad.reload()
+                            canvasStateForDraw.reload()
                         }
                     }
-                }
+
             } else if (canvasStateForLoad.move && isDragging) {
                 if (!canvasStateForLoad.filled_background){
                     canvasStateForLoad.isDragging()
@@ -148,7 +159,6 @@ export const CanvasBox = observer((props) => {
 
     const saveHandle = (name) => {
         canvasStateForDraw.current_item.name = name
-        console.log(canvasStateForDraw.current_item)
         canvasStateForLoad.areas.push(canvasStateForDraw.current_item)
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()

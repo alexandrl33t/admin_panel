@@ -11,4 +11,10 @@ export const areaStyle = {
         strokeStyle : "rgba(0,142,255,0)",
         fillStyle : "rgba(223,255,126,0.54)",
     },
+
+    draw: {
+        strokeStyle : "rgb(255,0,0)",
+        fillStyle : "rgba(255,58,58,0.25)",
+        lineWidth : 3,
+    },
 }

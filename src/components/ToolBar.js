@@ -55,17 +55,16 @@ const ToolBar = () => {
         canvasStateForLoad.setActive(false)
     }
 
-    const editRectArea = () => {
+    const moveRectArea = () => {
+        toolState.setTool(null)
         canvasStateForLoad.setEdit(true)
         canvasStateForDraw.setActive(false)
     }
 
     const tryToSave = () => {
-        if (1) {
-
-        } else {
-            message.error("Ошибка. Область не нарисована.")
-        }
+        canvasStateForLoad.areas.forEach(item => {
+            console.log(item.name, item.points)
+        })
     }
 
     return (
@@ -88,7 +87,7 @@ const ToolBar = () => {
                 <Button
                     icon={<ExpandOutlined />}
                     style={buttonStyle}
-                    onClick={editRectArea}
+                    onClick={moveRectArea}
                 ></Button>
             </Tooltip>
             <Tooltip placement="topLeft" title="Удалить область">
@@ -99,15 +98,7 @@ const ToolBar = () => {
                 >
                 </Button>
             </Tooltip>
-            <Tooltip placement="topLeft" title="Отменить действие">
-                <Button
-                    icon={<EnterOutlined />}
-                    style={buttonStyle}
-                    onClick={() => canvasStateForDraw.undo()}
-                    >
-                </Button>
-            </Tooltip>
-            <Tooltip placement="topLeft" title="Сохранить область">
+            <Tooltip placement="topLeft" title="Сохранить план">
                 <Button
                     icon={<SaveOutlined />}
                     style={buttonStyle}
