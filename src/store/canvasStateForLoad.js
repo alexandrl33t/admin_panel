@@ -29,6 +29,12 @@ class CanvasStateForLoad {
     }
 
 
+    addUrlForAreas(url){
+        for (let i =0; i < this.areas.length; i++) {
+            this.areas[i].imgURL = url
+        }
+    }
+
     setEditableItem(item){
         this.editable_item=item
     }

@@ -19,6 +19,7 @@ export const CanvasBox = observer((props) => {
         loadImage(setImageDimensions, imageUrl);
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
+        canvasStateForLoad.addUrlForAreas(imageUrl)
     }, [canvasForLoadRef, imageUrl])
 
     useEffect(()=>{
@@ -160,6 +161,7 @@ export const CanvasBox = observer((props) => {
     const saveHandle = (name) => {
         canvasStateForDraw.current_item.name = name
         canvasStateForLoad.areas.push(canvasStateForDraw.current_item)
+        canvasStateForLoad.addUrlForAreas(imageUrl)
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
         toolState.tool = null
