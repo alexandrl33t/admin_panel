@@ -1,24 +1,18 @@
 import React, {useState} from 'react';
-import {Button, Dropdown, Menu, message, Space, Tooltip} from "antd";
+import {Menu, message} from "antd";
 import {
-    AlertOutlined,
-    DownloadOutlined, DownOutlined, EditOutlined,
-    EnterOutlined, ExpandOutlined,
-    LineOutlined,
+    DownloadOutlined, EditOutlined,
+    ExpandOutlined,
     MinusSquareOutlined,
     PlusSquareOutlined,
-    SaveOutlined, UserOutlined
+    SaveOutlined, ToolOutlined,
 } from "@ant-design/icons";
 import toolState from "../store/toolState";
 import Line from "../tools/Line"
 import Rect from "../tools/Rect"
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
-import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
 
-const buttonStyle = {
-    marginLeft: 10,
-}
 let areas = [
     {
         name:"Bathroom",
@@ -42,6 +36,8 @@ let areas = [
     }
 ]
 const ToolBar = () => {
+    const [current, setCurrent] = useState('');
+
     function loadAreas(){
         canvasStateForLoad.drawObjects(areas)
     }
@@ -69,94 +65,83 @@ const ToolBar = () => {
             console.log(item.name, item.points)
         })
     }
-    /**
-     <Tooltip placement="topLeft" title="Добавить квадратную область">
-     <Button
-     icon={<PlusSquareOutlined />}
-     style={buttonStyle}
-     onClick={addRectArea}>
-     </Button>
-     </Tooltip>
-     <Tooltip placement="topLeft" title="Добавить произвольную область">
-     <Button
-     icon={<EditOutlined/>}
-     style={buttonStyle}
-     onClick={addFreeArea}>
-     </Button>
-     </Tooltip>
-     <Tooltip placement="topLeft" title="Переместить область">
-     <Button
-     icon={<ExpandOutlined />}
-     style={buttonStyle}
-     onClick={moveRectArea}
-     ></Button>
-     </Tooltip>
-     <Tooltip placement="topLeft" title="Удалить область">
-     <Button
-     icon={<MinusSquareOutlined />}
-     style={buttonStyle}
-     onClick={() => canvasStateForLoad.setDelete(true)}
-     >
-     </Button>
-     </Tooltip>
-     <Tooltip placement="topLeft" title="Сохранить план">
-     <Button
-     icon={<SaveOutlined />}
-     style={buttonStyle}
-     onClick={tryToSave}
-     >
-     </Button>
-     </Tooltip>
-     <Tooltip placement="topLeft" title="Загрузить области для данного плана">
-     <Button
-     icon={<AlertOutlined />}
-     style={buttonStyle}
-     onClick={() => console.log(1)}
-     >
-     Добавить устройство
-     </Button>
-     </Tooltip>
-     <Tooltip placement="topLeft" title="Загрузить области для данного плана">
-     <Button
-     icon={<DownloadOutlined />}
-     style={buttonStyle}
-     onClick={loadAreas}
-     >
-     Загрузить области для данного плана
-     </Button>
-     </Tooltip>
-     */
+
     const handleMenuClick = (e) => {
-        message.info('Click on menu item.');
-        console.log('click', e);
+        switch(e.key) {
+            case 'load':
+                loadAreas()
+                setCurrent('')
+                break
+            case 'edit':
+                message.info("Выберете инструмент")
+                break
+            case 'addrect':
+                addRectArea()
+                setCurrent(e.key)
+                break
+            case 'addfree':
+                addFreeArea()
+                setCurrent(e.key)
+                break
+            case 'move':
+                moveRectArea()
+                setCurrent(e.key)
+                break
+            case 'delete':
+                canvasStateForLoad.setDelete(true)
+                setCurrent(e.key)
+                break
+            case 'save':
+                tryToSave()
+                setCurrent('')
+                break
+            default:
+                break
+        }
     };
+
     const items = [
-        {
-            label: 'Редактировать план',
-            key: 'edit',
-            icon: <EditOutlined />,
-            children: [
-                {
-                    label: '2nd menu item',
-                    key: '2',
-                    icon: <UserOutlined />,
-                },
-                {
-                    label: '3rd menu item',
-                    key: '3',
-                    icon: <UserOutlined />,
-                },
-            ]
-        },
         {
             label: 'Загрузить области для данного плана',
             key: 'load',
             icon: <DownloadOutlined />,
         },
+        {
+            label: 'Редактировать план',
+            key: 'edit',
+            icon: <ToolOutlined />,
+            children: [
+                {
+                    label: 'Добавить квадратную область',
+                    key: 'addrect',
+                    icon: <PlusSquareOutlined />,
+                },
+                {
+                    label: 'Добавить произвольную область',
+                    key: 'addfree',
+                    icon: <EditOutlined/>,
+                },
+                {
+                    label: 'Переместить область',
+                    key: 'move',
+                    icon: <ExpandOutlined/>,
+                },
+                {
+                    label: 'Удалить область',
+                    key: 'delete',
+                    icon: <MinusSquareOutlined />,
+                },
+            ]
+        },
+        {
+            label: 'Сохранить план',
+            key: 'save',
+            icon: <SaveOutlined />,
+        },
     ];
 
     return (
-            <Menu mode="horizontal" items={items}/>
+            <Menu mode="horizontal" selectedKeys={[current]} items={items} onClick={handleMenuClick}/>
     );
 };
 
