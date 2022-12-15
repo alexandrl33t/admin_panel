@@ -30,7 +30,7 @@ export default class Rect extends Tool{
     }
 
     mouseUpHandler(e){
-        if (!canvasStateForDraw.isActive || canvasStateForDraw.closed_area){
+        if (!canvasStateForDraw.isActive){
             return
         }
         const points= [
@@ -44,6 +44,7 @@ export default class Rect extends Tool{
         canvasStateForDraw.setClosedArea(true)
         canvasStateForDraw.setActive(false)
         canvasStateForLoad.setActive(true)
+        this.destroyEvents()
     }
     mouseDownHandler(e){
         if (!canvasStateForDraw.isActive || canvasStateForDraw.closed_area){
@@ -55,12 +56,12 @@ export default class Rect extends Tool{
         this.ctx.fillStyle = areaStyle.draw.fillStyle;
         this.ctx.lineWidth = areaStyle.draw.lineWidth;
         this.startX = e.pageX - e.target.offsetLeft- 20;
-        this.startY = e.pageY - e.target.offsetTop-115;
+        this.startY = e.pageY - e.target.offsetTop-100;
     }
     mouseMoveHandler(e){
         if (this.mouseDown && !canvasStateForDraw.closed_area && canvasStateForDraw.isActive ) {
             let currentX = e.pageX - e.target.offsetLeft- 20;
-            let currentY = e.pageY - e.target.offsetTop-115 ;
+            let currentY = e.pageY - e.target.offsetTop-100 ;
             let width = currentX - this.startX;
             let height = currentY - this.startY;
             this.draw(this.startX, this.startY, width, height);

@@ -133,7 +133,11 @@ export const CanvasBox = observer((props) => {
                             }
                             else if (canvasStateForLoad.move){
                                 canvasStateForDraw.reload()
-                                canvasStateForDraw.fillArea(canvasStateForLoad.areas[i])
+                                canvasStateForDraw.fillAreaForDrag(canvasStateForLoad.areas[i])
+                                return;
+                            } else {
+                                canvasStateForDraw.reload()
+                                canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
                                 return;
                             }
                         } else {

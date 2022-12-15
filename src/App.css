@@ -93,13 +93,16 @@ p{
 }
 
 .ant-menu-item {
-  background-color: rgba(255, 255, 255, 0) !important;
+  background-color: rgba(235, 255, 252, 0.15) !important;
 }
-
+.ant-menu-item.ant-menu-item-active{
+  background-color: rgba(99, 110, 110, 0.06) !important;
+}
 .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
   background-color: rgba(147, 226, 255, 0.85) !important;
   color: #282222 !important;
 }
+
 .ant-menu.ant-menu-inline-collapsed {
   width: 51px !important;
 }
@@ -337,7 +340,6 @@ canvas {
 .image_inside_canvas {
   position: absolute;
   z-index: -999;
-
 }
 #menu {
   position: absolute;

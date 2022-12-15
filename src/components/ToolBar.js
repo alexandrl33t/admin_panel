@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Menu, message} from "antd";
 import {
     DownloadOutlined, EditOutlined,
     ExpandOutlined,
     MinusSquareOutlined,
-    PlusSquareOutlined,
+    PlusSquareOutlined, RadarChartOutlined,
     SaveOutlined, ToolOutlined,
 } from "@ant-design/icons";
 import toolState from "../store/toolState";
@@ -12,9 +12,11 @@ import Line from "../tools/Line"
 import Rect from "../tools/Rect"
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
+import {observer} from "mobx-react-lite";
 
 let areas = [
     {
+        id: 1,
         name:"Bathroom",
         points: [
             {x:100,y:8},
@@ -25,6 +27,7 @@ let areas = [
         imgURL : "",
     },
     {
+        id: 2,
         name:"Lndry",
         points: [
             {x:225,y:7},
@@ -35,8 +38,60 @@ let areas = [
         imgURL : "",
     }
 ]
-const ToolBar = () => {
+
+let devicesExists = [
+    {
+        id: 1,
+        name:"Sonoff Dual R2",
+        points: [
+            {x:100,y:8},
+            {x:225,y:8},
+            {x:225,y:188},
+            {x:100,y:188},
+        ],
+        imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
+        mark: 'R1',
+        plan_id: 'someID',
+        zone_id: "",
+        self_type: "device",
+    },
+]
+
+let devicesFromServer = [
+    {
+        label: 'Sonoff Dual R2',
+        key: '1',
+        icon: <RadarChartOutlined />,
+        imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
+    },
+    {
+        label: 'Sonoff CHH4',
+        key: '2',
+        icon: <RadarChartOutlined />,
+        imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
+    },
+    {
+        label: 'Tuya SW2',
+        key: '3',
+        icon: <RadarChartOutlined />,
+        imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
+    },
+]
+const ToolBar = observer( () => {
     const [current, setCurrent] = useState('');
+
+    useEffect(()=>{
+        console.log(toolState.tool)
+        if (!toolState.tool){
+            setCurrent('')
+        }
+    }, [toolState?.tool])
+
+    useEffect(() => {
+        if (canvasStateForLoad.canvas){
+            loadAreas()
+        }
+    }, [canvasStateForLoad?.canvas])
 
     function loadAreas(){
         canvasStateForLoad.drawObjects(areas)
@@ -67,6 +122,9 @@ const ToolBar = () => {
     }
 
     const handleMenuClick = (e) => {
+        if (e?.item?.props?.self_type === 'device') {
+
+        }
         switch(e.key) {
             case 'load':
                 loadAreas()
@@ -101,11 +159,11 @@ const ToolBar = () => {
     };
 
     const items = [
-        {
-            label: 'Загрузить области для данного плана',
-            key: 'load',
-            icon: <DownloadOutlined />,
-        },
+        // {
+        //     label: 'Загрузить области для данного плана',
+        //     key: 'load',
+        //     icon: <DownloadOutlined />,
+        // },
         {
             label: 'Редактировать план',
             key: 'edit',
@@ -138,11 +196,50 @@ const ToolBar = () => {
             key: 'save',
             icon: <SaveOutlined />,
         },
+        {
+            label: 'Устройства',
+            key: 'devices',
+            icon: <RadarChartOutlined />,
+            children: [
+                {
+                    label: 'Добавить устройство',
+                    key: 'adddevice',
+                    icon: <PlusSquareOutlined />,
+                    children: [
+                        {
+                            label: 'Sonoff Dual R2',
+                            key: '1',
+                            icon: <RadarChartOutlined />,
+                        },
+                        {
+                            label: 'Sonoff CHH4',
+                            key: '2',
+                            icon: <RadarChartOutlined />,
+                        },
+                        {
+                            label: 'Tuya SW2',
+                            key: '3',
+                            icon: <RadarChartOutlined />,
+                        },
+                    ]
+                },
+                {
+                    label: 'Переместить устройство',
+                    key: 'movedevice',
+                    icon: <ExpandOutlined/>,
+                },
+                {
+                    label: 'Удалить устройство',
+                    key: 'deletedevice',
+                    icon: <MinusSquareOutlined />,
+                },
+            ]
+        }
     ];
 
     return (
             <Menu mode="horizontal" selectedKeys={[current]} items={items} onClick={handleMenuClick}/>
     );
-};
+});
 
 export default ToolBar;

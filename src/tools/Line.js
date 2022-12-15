@@ -27,19 +27,16 @@ export default class Line extends Tool{
 
     mouseUpHandler(e){
         if (this.last_anchor && !this.close_area) {
-            this.draw(e.pageX - e.target.offsetLeft- 20, e.pageY - e.target.offsetTop-115)
+            this.draw(e.pageX - e.target.offsetLeft- 20, e.pageY - e.target.offsetTop-100)
         }
     }
     mouseDownHandler(e){
         if (!canvasStateForDraw.isActive){
             return;
         }
-        if (this.close_area) {
-            return
-        }
         if (!this.ended_area){
             this.currentX = e.pageX - e.target.offsetLeft- 20
-            this.currentY = e.pageY - e.target.offsetTop-115
+            this.currentY = e.pageY - e.target.offsetTop-100
             this.last_anchor = {x: this.currentX, y: this.currentY}
             if (!this.start_position){
                 this.start_position = {x: this.currentX, y: this.currentY}
@@ -56,12 +53,13 @@ export default class Line extends Tool{
             canvasStateForLoad.setActive(true)
             this.last_anchor = null
             this.points = []
+            this.destroyEvents()
         }
 
     }
     mouseMoveHandler(e){
         let x = e.pageX - e.target.offsetLeft- 20
-        let y = e.pageY - e.target.offsetTop-115
+        let y = e.pageY - e.target.offsetTop-100
         if (this.close_area && canvasStateForDraw.closed_area && !canvasStateForDraw.isActive){
             return
         }

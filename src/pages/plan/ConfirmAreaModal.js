@@ -1,16 +1,20 @@
 import React from 'react';
 import {Form, Input, Modal, message} from "antd";
 import canvasStateForDraw from "../../store/canvasStateForDraw";
+import ToolBar from "../../components/ToolBar";
+import toolState from "../../store/toolState";
 
 const ConfirmAreaModal = (props) => {
     const {confirmModal, setConfirmModal, saveArea} = props
     const [form] = Form.useForm();
     const hideModal = () => {
+        toolState.setTool(null)
         canvasStateForDraw.reload()
         setConfirmModal(false);
     };
 
     const okHandle = () =>{
+        toolState.setTool(null)
         const name = form.getFieldValue("name")
         if (name){
             saveArea(name);

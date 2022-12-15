@@ -49,12 +49,30 @@ class CanvasStateForDraw {
     }
     setText(item){
         this.ctx.fillStyle = "rgba(126,10,10,0.96)";
-        this.ctx.font = 'bold 15px sans-serif';
+        this.ctx.font = '15px sans-serif';
         this.ctx.fillText(item.name, item.points[0].x + 15, item.points[0].y+ 15);
     }
 
     fillArea(item){
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
+        const {points} = item
+        if (points.length > 1){
+            let region = new Path2D();
+            region.moveTo(points[0].x, points[0].y)
+            for (let i=0; i<points.length-1;i++){
+                region.lineTo(points[i+1].x, points[i+1].y)
+
+            }
+            region.lineTo(points[0].x, points[0].y)
+            region.closePath();
+            this.ctx.fill(region);
+        }
+    }
+
+    fillAreaForDrag(item){
+        this.drawFreeArea(item)
+        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle
+        this.ctx.fillStyle = "rgba(58,225,255,0.25)"
         const {points} = item
         if (points.length > 1){
             let region = new Path2D();
@@ -92,10 +110,18 @@ class CanvasStateForDraw {
         this.setText(item)
     }
 
+    hoverArea(item){
+        this.ctx.fillStyle = areaStyle.ctx.fillStyle
+        this.ctx.lineWidth = areaStyle.ctx.lineWidth
+        this.ctx.strokeStyle = areaStyle.ctx.strokeStyle
+        this.drawFreeArea(item)
+    }
+
 
     setClosedArea(value){
         this.closed_area = value
     }
+
 
     reload() {
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)

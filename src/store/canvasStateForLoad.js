@@ -17,6 +17,7 @@ class CanvasStateForLoad {
         points: []
     }
     delete_item = null
+    devices = []
     undolist = []
 
     constructor() {
@@ -68,7 +69,6 @@ class CanvasStateForLoad {
         this.ctx.lineWidth = areaStyle.ctx.lineWidth
         items.forEach((item) => {
             this.areas.push(item)
-            this.drawFreeArea(item)
             this.setText(item)
         })
     }
@@ -89,11 +89,12 @@ class CanvasStateForLoad {
     }
     setText(item){
         this.ctx.fillStyle = "rgba(13,27,128,0.96)";
-        this.ctx.font = 'bold 15px sans-serif';
-        this.ctx.fillText(item.name, item.points[0].x + 15, item.points[0].y+ 15);
+        this.ctx.font = '17px sans-serif';
+        this.ctx.fillText(item.name, item.points[0].x + 30, item.points[0].y+ 30);
     }
 
     fillArea(item){
+        this.drawFreeArea(item)
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
         const {points} = item
         if (points.length > 1){
@@ -120,6 +121,7 @@ class CanvasStateForLoad {
         if (this.delete_item){
             const index = this.areas.indexOf(this.delete_item)
             this.areas.splice(index, 1)
+            this.devices = []
             this.reload()
             canvasStateForDraw.reload()
         }

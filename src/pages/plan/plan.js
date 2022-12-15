@@ -4,6 +4,7 @@ import camera from "../../static/img/icons/camera.png"
 import useImage from "use-image"
 import {CanvasBox} from "../../components/CanvasBox";
 import ToolBar from "../../components/ToolBar";
+import {Col, Row} from "antd";
 
 const Plan = (props) => {
     const {newObject} = props
@@ -30,8 +31,13 @@ const Plan = (props) => {
                     </div>
                 ) :
                 (<div style={{marginTop: 5}}>
-                                    <ToolBar />
+                                    <Row gutter={[24, 24]}>
+                                        <Col span={16}>
+                                            <ToolBar />
+                                        </Col>
+                                    </Row>
                                     <CanvasBox imageUrl={imageUrl}/>
+
                     </div>
                 )
 

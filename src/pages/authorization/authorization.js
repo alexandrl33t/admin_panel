@@ -1,4 +1,3 @@
-import 'antd/dist/antd.min.css';
 import '../../App.css';
 import React, {useState} from "react";
 import Login from "./login";

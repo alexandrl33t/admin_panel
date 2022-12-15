@@ -1,4 +1,3 @@
-import 'antd/dist/antd.min.css';
 import '../../App.css';
 import {Checkbox, Col, Form, Row} from "antd";
 import { InputStyled, PasswordStyled} from "../../styledAntd";
