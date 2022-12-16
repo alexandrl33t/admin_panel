@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Menu, message} from "antd";
 import {
-    DownloadOutlined, EditOutlined,
+    EditOutlined,
     ExpandOutlined,
     MinusSquareOutlined,
     PlusSquareOutlined, RadarChartOutlined,
@@ -10,9 +10,11 @@ import {
 import toolState from "../store/toolState";
 import Line from "../tools/Line"
 import Rect from "../tools/Rect"
+import Device from "../tools/Device";
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {observer} from "mobx-react-lite";
+import deviceState from "../store/deviceState";
 
 let areas = [
     {
@@ -24,7 +26,7 @@ let areas = [
             {x:225,y:188},
             {x:100,y:188},
         ],
-        imgURL : "",
+        plan_id: '1',
     },
     {
         id: 2,
@@ -35,46 +37,48 @@ let areas = [
             {x:333,y:131},
             {x:333,y:7},
         ],
-        imgURL : "",
+        plan_id: '1',
     }
 ]
 
-let devicesExists = [
+const devicesExists = [
     {
         id: 1,
         name:"Sonoff Dual R2",
         points: [
-            {x:100,y:8},
-            {x:225,y:8},
-            {x:225,y:188},
-            {x:100,y:188},
+            {x:140,y:30},
         ],
         imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
         mark: 'R1',
-        plan_id: 'someID',
+        plan_id: '1',
         zone_id: "",
-        self_type: "device",
     },
 ]
 
-let devicesFromServer = [
+const devicesFromServer = [
     {
         label: 'Sonoff Dual R2',
         key: '1',
         icon: <RadarChartOutlined />,
         imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
+        self_type: "device",
+        title: 'Sonoff Dual R2',
     },
     {
         label: 'Sonoff CHH4',
         key: '2',
         icon: <RadarChartOutlined />,
         imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
+        self_type: "device",
+        title: 'Sonoff CHH4',
     },
     {
         label: 'Tuya SW2',
         key: '3',
         icon: <RadarChartOutlined />,
         imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
+        self_type: "device",
+        title: 'Tuya SW2',
     },
 ]
 const ToolBar = observer( () => {
@@ -94,7 +98,7 @@ const ToolBar = observer( () => {
     }, [canvasStateForLoad?.canvas])
 
     function loadAreas(){
-        canvasStateForLoad.drawObjects(areas)
+        canvasStateForLoad.drawAreas(areas)
     }
 
     const addRectArea = () => {
@@ -118,12 +122,25 @@ const ToolBar = observer( () => {
     const tryToSave = () => {
         canvasStateForLoad.areas.forEach(item => {
             console.log(item.name, item.points)
+            console.log(item.plan_id)
         })
+    }
+
+    const addDevice = (device)=>{
+        if (!deviceState.device){
+            deviceState.setDevice(new Device(canvasStateForDraw.canvas, device))
+            message.success(`${device.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then()
+        } else
+        {
+            message.error(`Вы не можете добавлять новые устройства, пока не закрепите ${deviceState.device.name} на определенной области.`, 7).then()
+        }
     }
 
     const handleMenuClick = (e) => {
         if (e?.item?.props?.self_type === 'device') {
-
+            console.log(e)
+            const device = {name: e.item.props.title, imgURL: e.item.props.imgURL}
+            addDevice(device)
         }
         switch(e.key) {
             case 'load':
@@ -131,7 +148,7 @@ const ToolBar = observer( () => {
                 setCurrent('')
                 break
             case 'edit':
-                message.info("Выберете инструмент")
+                message.info("Выберете инструмент").then(()=>{})
                 break
             case 'addrect':
                 addRectArea()
@@ -206,21 +223,7 @@ const ToolBar = observer( () => {
                     key: 'adddevice',
                     icon: <PlusSquareOutlined />,
                     children: [
-                        {
-                            label: 'Sonoff Dual R2',
-                            key: '1',
-                            icon: <RadarChartOutlined />,
-                        },
-                        {
-                            label: 'Sonoff CHH4',
-                            key: '2',
-                            icon: <RadarChartOutlined />,
-                        },
-                        {
-                            label: 'Tuya SW2',
-                            key: '3',
-                            icon: <RadarChartOutlined />,
-                        },
+                        ...devicesFromServer
                     ]
                 },
                 {

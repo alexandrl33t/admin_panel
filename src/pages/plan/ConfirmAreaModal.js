@@ -1,7 +1,6 @@
 import React from 'react';
 import {Form, Input, Modal, message} from "antd";
 import canvasStateForDraw from "../../store/canvasStateForDraw";
-import ToolBar from "../../components/ToolBar";
 import toolState from "../../store/toolState";
 
 const ConfirmAreaModal = (props) => {
@@ -20,7 +19,7 @@ const ConfirmAreaModal = (props) => {
             saveArea(name);
             hideModal()
         } else {
-            message.error("Пожалуйста, введите название области.")
+            message.error("Пожалуйста, введите название области.").then(()=>{})
         }
 
     }

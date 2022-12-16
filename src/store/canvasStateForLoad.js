@@ -30,9 +30,9 @@ class CanvasStateForLoad {
     }
 
 
-    addUrlForAreas(url){
+    addPlanIDForAreas(id){
         for (let i =0; i < this.areas.length; i++) {
-            this.areas[i].imgURL = url
+            this.areas[i].plan_id = id
         }
     }
 
@@ -61,7 +61,11 @@ class CanvasStateForLoad {
         }
     }
 
-    drawObjects(items){
+    addDevice(item){
+        this.devices.push(item)
+    }
+
+    drawAreas(items){
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
         this.areas = []
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
@@ -70,6 +74,22 @@ class CanvasStateForLoad {
         items.forEach((item) => {
             this.areas.push(item)
             this.setText(item)
+        })
+    }
+
+    drawDevices(devices){
+        devices.forEach((device) => {
+            this.name = device.name
+            this.imgURL = device.imgURL
+            this.img = new Image();
+            this.img.src = this.imgURL;
+            this.img.addEventListener(
+                "load",
+                () => {
+                    this.ctx.drawImage(this.img, device.points.x, device.points.y, device.size, device.size);
+                },
+                false
+            );
         })
     }
 
@@ -122,8 +142,8 @@ class CanvasStateForLoad {
             const index = this.areas.indexOf(this.delete_item)
             this.areas.splice(index, 1)
             this.devices = []
-            this.reload()
             canvasStateForDraw.reload()
+            this.reload()
         }
 
     }
@@ -134,7 +154,8 @@ class CanvasStateForLoad {
 
     reload(){
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
-        this.drawObjects(this.areas)
+        this.drawAreas(this.areas)
+        this.drawDevices(this.devices)
         this.filled_background = false
         this.editable_item=null
     }

@@ -1,5 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
+import deviceState from "./deviceState";
 /**
  * Канвас для создания новых областей
  */
@@ -49,8 +50,8 @@ class CanvasStateForDraw {
     }
     setText(item){
         this.ctx.fillStyle = "rgba(126,10,10,0.96)";
-        this.ctx.font = '15px sans-serif';
-        this.ctx.fillText(item.name, item.points[0].x + 15, item.points[0].y+ 15);
+        this.ctx.font = '19px sans-serif';
+        this.ctx.fillText(item.name, item.points[0].x + 23, item.points[0].y+ 30);
     }
 
     fillArea(item){
@@ -92,7 +93,7 @@ class CanvasStateForDraw {
         this.ctx.fillStyle = areaStyle.ctx.fillStyle
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle
         this.ctx.lineWidth = areaStyle.ctx.lineWidth
-        this.current_item.points.map(point => {
+        this.current_item.points.forEach(point => {
             point.x += dx
             point.y += dy
         })

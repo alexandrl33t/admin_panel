@@ -5,8 +5,9 @@ import canvasStateForLoad from "../store/canvasStateForLoad";
 import DeleteAreaModal from "../pages/plan/DeleteAreaModal";
 import toolState from "../store/toolState";
 import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
+import deviceState from "../store/deviceState";
 export const CanvasBox = observer((props) => {
-    const {imageUrl} = props
+    const {plan} = props
     const canvasForLoadRef = useRef()
     const canvasForDrawRef = useRef()
     const [imageDimensions, setImageDimensions] = useState({});
@@ -14,13 +15,13 @@ export const CanvasBox = observer((props) => {
     const [cursorDragPoint, setCursorDragPoint] = useState({x: 0, y: 0})
     const [deleteModal, setDeleteModal] = useState(false);
     const [confirmModal, setConfirmModal]= useState(false)
-
+    const [cursorState, setCursorState] = useState('default')
     useEffect(()=>{
-        loadImage(setImageDimensions, imageUrl);
+        loadImage(setImageDimensions, plan.url);
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
-        canvasStateForLoad.addUrlForAreas(imageUrl)
-    }, [canvasForLoadRef, imageUrl])
+        canvasStateForLoad.addPlanIDForAreas(plan.url)
+    }, [canvasForLoadRef, plan.url])
 
     useEffect(()=>{
         if (canvasStateForDraw.closed_area){
@@ -92,6 +93,9 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseDownHandler = (e) =>{
+        if (deviceState.device) {
+            return;
+        }
         if (canvasStateForLoad.move){
             takeObjectInCanvas(canvasForLoadRef.current, e)
         }
@@ -101,6 +105,9 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseUpHandler = (e) => {
+        if (deviceState.device) {
+            return;
+        }
         if (!isDragging){
             if (canvasStateForDraw.closed_area){
                 toolState.setTool(null)
@@ -116,7 +123,9 @@ export const CanvasBox = observer((props) => {
 
     const mouseMoveHandler = (e) => {
         const {x, y} = getCursorPosition(e)
-
+        if (deviceState.device) {
+            return;
+        }
         if (!canvasStateForDraw.isActive){
             if (!isDragging) {
                     let {x, y} = getCursorPosition(e);
@@ -132,22 +141,28 @@ export const CanvasBox = observer((props) => {
                                 return
                             }
                             else if (canvasStateForLoad.move){
+                                setCursorState("grab")
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.fillAreaForDrag(canvasStateForLoad.areas[i])
                                 return;
                             } else {
+                                setCursorState("default")
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
                                 return;
                             }
                         } else {
+                            setCursorState("default")
                             canvasStateForLoad.setDeleteItem(null)
-                            canvasStateForLoad.reload()
+                            if (canvasStateForLoad.filled_background){
+                                canvasStateForLoad.reload()
+                            }
                             canvasStateForDraw.reload()
                         }
                     }
 
             } else if (canvasStateForLoad.move && isDragging) {
+                setCursorState("grabbing")
                 if (!canvasStateForLoad.filled_background){
                     canvasStateForLoad.isDragging()
                 }
@@ -165,7 +180,7 @@ export const CanvasBox = observer((props) => {
     const saveHandle = (name) => {
         canvasStateForDraw.current_item.name = name
         canvasStateForLoad.areas.push(canvasStateForDraw.current_item)
-        canvasStateForLoad.addUrlForAreas(imageUrl)
+        canvasStateForLoad.addPlanIDForAreas(plan.id)
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
         toolState.tool = null
@@ -175,7 +190,7 @@ export const CanvasBox = observer((props) => {
         <>
         <div style={{marginTop:10}}>
         <div className="image_inside_canvas">
-           <img src={imageUrl} alt=""/>
+           <img src={plan.url} alt=""/>
         </div>
                 <canvas
                     className="canvas"
