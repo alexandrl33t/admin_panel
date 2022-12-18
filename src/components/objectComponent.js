@@ -51,7 +51,6 @@ const ObjectComponent = (props) => {
         navigateTo(urls.home)
     }
     const onClick: MenuProps['onClick'] = e => {
-        console.log('click ', e);
         setCurrent(e.key);
     };
     return (

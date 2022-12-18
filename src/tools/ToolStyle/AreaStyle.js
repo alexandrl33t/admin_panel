@@ -13,8 +13,14 @@ export const areaStyle = {
     },
 
     draw: {
+        strokeStyle : "rgba(255,113,113,0.7)",
+        fillStyle : "rgba(255,58,58,0)",
+        lineWidth : 3,
+    },
+
+    device: {
         strokeStyle : "rgb(255,0,0)",
         fillStyle : "rgba(255,58,58,0.25)",
         lineWidth : 3,
-    },
+    }
 }

@@ -19,7 +19,7 @@ const ConfirmAreaModal = (props) => {
             saveArea(name);
             hideModal()
         } else {
-            message.error("Пожалуйста, введите название области.").then(()=>{})
+            message.error("Пожалуйста, введите название области.").then()
         }
 
     }

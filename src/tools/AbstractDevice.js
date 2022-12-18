@@ -5,6 +5,7 @@ export default class AbstractDevice{
     name = null
     plan_id = null
     area_id = null
+    area_name = null
     points = null
     imgURL= null
     size = 40

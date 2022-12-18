@@ -6,6 +6,7 @@ import DeleteAreaModal from "../pages/plan/DeleteAreaModal";
 import toolState from "../store/toolState";
 import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
 import deviceState from "../store/deviceState";
+import ConfirmDeviceModal from "../pages/plan/ConfirmDeviceModal";
 export const CanvasBox = observer((props) => {
     const {plan} = props
     const canvasForLoadRef = useRef()
@@ -16,8 +17,10 @@ export const CanvasBox = observer((props) => {
     const [deleteModal, setDeleteModal] = useState(false);
     const [confirmModal, setConfirmModal]= useState(false)
     const [cursorState, setCursorState] = useState('default')
+    const [confirmDeviceModal, setConfirmDeviceModal] = useState(false)
     useEffect(()=>{
         loadImage(setImageDimensions, plan.url);
+        canvasStateForLoad.setPlanId(plan.id)
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
         canvasStateForLoad.addPlanIDForAreas(plan.url)
@@ -28,6 +31,13 @@ export const CanvasBox = observer((props) => {
             setConfirmModal(true)
         }
     }, [canvasStateForDraw.closed_area])
+
+    useEffect(()=>{
+        if (deviceState.is_on_area){
+            setConfirmDeviceModal(true)
+        }
+    }, [deviceState.is_on_area])
+
 
     const loadImage = (setImageDimensions, imageUrl) => {
         const img = new Image();
@@ -65,6 +75,14 @@ export const CanvasBox = observer((props) => {
         return false
     }
 
+    const isOnDevice = (x, y, item) => {
+        if (item?.points){
+            if (x >= item.points.x && y >= item.points.y && x<= item.points.x + item.size && y <=item.points.y + item.size)
+            return true
+        }
+        return false
+    }
+
     function getCursorPosition (event) {
         const rect = canvasStateForLoad.canvas.getBoundingClientRect()
         const x = event.clientX - rect.left
@@ -93,7 +111,7 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseDownHandler = (e) =>{
-        if (deviceState.device) {
+        if (deviceState.device || toolState.tool) {
             return;
         }
         if (canvasStateForLoad.move){
@@ -105,13 +123,11 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseUpHandler = (e) => {
-        if (deviceState.device) {
+        if (deviceState.device || toolState.tool) {
             return;
         }
         if (!isDragging){
-            if (canvasStateForDraw.closed_area){
-                toolState.setTool(null)
-            }
+
         }
         //если мышка отпустила объект во время перетаскивания
         else if (canvasStateForLoad.move && isDragging) {
@@ -123,7 +139,7 @@ export const CanvasBox = observer((props) => {
 
     const mouseMoveHandler = (e) => {
         const {x, y} = getCursorPosition(e)
-        if (deviceState.device) {
+        if (deviceState.device || toolState.tool) {
             return;
         }
         if (!canvasStateForDraw.isActive){
@@ -149,6 +165,11 @@ export const CanvasBox = observer((props) => {
                                 setCursorState("default")
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
+                                for (let i =0; i < canvasStateForLoad.devices.length; i++){
+                                    if (isOnDevice(x, y, canvasStateForLoad.devices[i])){
+                                        canvasStateForDraw.hoverDevice(canvasStateForLoad.devices[i])
+                                    }
+                                }
                                 return;
                             }
                         } else {
@@ -183,7 +204,14 @@ export const CanvasBox = observer((props) => {
         canvasStateForLoad.addPlanIDForAreas(plan.id)
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
-        toolState.tool = null
+        toolState.setTool(null)
+    }
+
+    const saveDevicesHandle = () => {
+        canvasStateForLoad.addDevice(deviceState.device)
+        deviceState.setDevice(null)
+        canvasStateForLoad.reload()
+        canvasStateForDraw.reload()
     }
 
     return (
@@ -214,8 +242,9 @@ export const CanvasBox = observer((props) => {
                     height={imageDimensions.height}
                 />
         </div>
-            <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteObjectInCanvas} item={canvasStateForLoad.delete_item} />
+            <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteObjectInCanvas}/>
             <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
+            <ConfirmDeviceModal confirmModal={confirmDeviceModal} setConfirmModal={setConfirmDeviceModal} save={saveDevicesHandle}/>
         </>
     )
 });

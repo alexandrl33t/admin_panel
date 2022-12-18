@@ -6,6 +6,7 @@ import canvasStateForDraw from "./canvasStateForDraw";
  * Канвас для отрисовки готовых областей
  */
 class CanvasStateForLoad {
+    plan_id = null
     canvas = null
     areas = []
     ctx = null
@@ -29,6 +30,9 @@ class CanvasStateForLoad {
         this.ctx = canvas.getContext('2d')
     }
 
+    setPlanId(id){
+        this.plan_id = id
+    }
 
     addPlanIDForAreas(id){
         for (let i =0; i < this.areas.length; i++) {
@@ -79,17 +83,10 @@ class CanvasStateForLoad {
 
     drawDevices(devices){
         devices.forEach((device) => {
-            this.name = device.name
             this.imgURL = device.imgURL
             this.img = new Image();
             this.img.src = this.imgURL;
-            this.img.addEventListener(
-                "load",
-                () => {
-                    this.ctx.drawImage(this.img, device.points.x, device.points.y, device.size, device.size);
-                },
-                false
-            );
+            this.ctx.drawImage(this.img, device.points.x, device.points.y, device.size, device.size);
         })
     }
 

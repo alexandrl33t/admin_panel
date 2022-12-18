@@ -118,6 +118,16 @@ class CanvasStateForDraw {
         this.drawFreeArea(item)
     }
 
+    hoverDevice(device){
+        this.ctx.fillStyle = areaStyle.device.fillStyle
+        this.ctx.lineWidth = areaStyle.device.lineWidth
+        this.ctx.strokeStyle = areaStyle.device.strokeStyle
+        this.ctx.beginPath()
+        this.ctx.fillStyle = "rgba(126,10,10,0.96)";
+        this.ctx.font = '15px sans-serif';
+        this.ctx.fillText(device.name, device.points.x + device.size/2, device.points.y+ device.size+15);
+    }
+
 
     setClosedArea(value){
         this.closed_area = value

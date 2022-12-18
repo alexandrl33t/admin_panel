@@ -30,7 +30,7 @@ export default class Rect extends Tool{
     }
 
     mouseUpHandler(e){
-        if (!canvasStateForDraw.isActive){
+        if (!canvasStateForDraw.isActive || canvasStateForDraw.closed_area){
             return
         }
         const points= [

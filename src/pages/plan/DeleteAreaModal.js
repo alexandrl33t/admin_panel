@@ -4,7 +4,7 @@ import canvasStateForLoad from "../../store/canvasStateForLoad";
 import canvasStateForDraw from "../../store/canvasStateForDraw";
 
 const DeleteAreaModal = (props) => {
-    const {deleteModal, setDeleteModal, deleteArea, item} = props
+    const {deleteModal, setDeleteModal, deleteArea} = props
 
     const hideModal = () => {
         canvasStateForLoad.reload()
@@ -18,7 +18,7 @@ const DeleteAreaModal = (props) => {
     }
     return (
         <>
-            {item?.name && (
+            {canvasStateForLoad?.delete_item?.name && (
                 <Modal
                     title="Вы дейтсвительно хотите удалить эту область?"
                     open={deleteModal}
@@ -28,7 +28,7 @@ const DeleteAreaModal = (props) => {
                     cancelText="Отмена"
                 >
                     <h2>
-                        {item.name}
+                        {canvasStateForLoad.delete_item.name}
                     </h2>
                 </Modal>
             )}
