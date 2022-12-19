@@ -1,7 +1,7 @@
 export const areaStyle = {
     ctx: {
         strokeStyle : "rgb(0,142,255)",
-        fillStyle : "rgba(255,58,58,0.25)",
+        fillStyle : "rgba(255,58,58,0.42)",
         lineWidth : 3,
     },
     dragging: {
@@ -13,8 +13,8 @@ export const areaStyle = {
     },
 
     draw: {
-        strokeStyle : "rgba(255,113,113,0.7)",
-        fillStyle : "rgba(255,58,58,0)",
+        strokeStyle : "rgba(255,0,0,0.7)",
+        fillStyle : "rgba(253,111,111,0.47)",
         lineWidth : 3,
     },
 

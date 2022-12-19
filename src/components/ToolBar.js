@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Menu, message} from "antd";
+import {Menu, message, Slider} from "antd";
 import {
+    ArrowsAltOutlined,
     EditOutlined,
     ExpandOutlined,
     MinusSquareOutlined,
@@ -138,9 +139,10 @@ const ToolBar = observer( () => {
 
     const handleMenuClick = (e) => {
         if (e?.item?.props?.self_type === 'device') {
-            console.log(e)
-            const device = {name: e.item.props.title, imgURL: e.item.props.imgURL}
-            addDevice(device)
+            if (e.keyPath.includes('adddevice')){
+                const device = {name: e.item.props.title, imgURL: e.item.props.imgURL}
+                addDevice(device)
+            }
         }
         switch(e.key) {
             case 'load':
@@ -236,9 +238,33 @@ const ToolBar = observer( () => {
                     key: 'deletedevice',
                     icon: <MinusSquareOutlined />,
                 },
+                {
+                    label: 'Размер иконок',
+                    key: 'iconsize',
+                    icon: <ArrowsAltOutlined />,
+                    children: [
+                        {
+                            label: <Slider defaultValue={30} onChange={onChangeSlider} />,
+                            key: 'slider',
+                        },
+                    ]
+                },
             ]
         }
     ];
+
+    function onChangeSlider (value) {
+        if (deviceState.device){
+            deviceState.device.size += value - deviceState.device.size
+            deviceState.device.redraw()
+        }
+        if (canvasStateForLoad.devices.length > 0){
+            canvasStateForLoad.devices.forEach((device) => {
+                device.size += value - device.size
+            })
+            canvasStateForLoad.reload()
+        }
+    }
 
     return (
             <Menu mode="horizontal" selectedKeys={[current]} items={items} onClick={handleMenuClick}/>

@@ -20,6 +20,7 @@ class CanvasStateForLoad {
     delete_item = null
     devices = []
     undolist = []
+    selected_device = null
 
     constructor() {
         makeAutoObservable(this)

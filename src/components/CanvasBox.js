@@ -7,23 +7,28 @@ import toolState from "../store/toolState";
 import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
 import deviceState from "../store/deviceState";
 import ConfirmDeviceModal from "../pages/plan/ConfirmDeviceModal";
+import {Button, Slider} from "antd";
+let imgLoad = {width: 0, height: 0}
 export const CanvasBox = observer((props) => {
-    const {plan} = props
-    const canvasForLoadRef = useRef()
-    const canvasForDrawRef = useRef()
+    const {plan} = props;
+    const canvasForLoadRef = useRef();
+    const canvasForDrawRef = useRef();
     const [imageDimensions, setImageDimensions] = useState({});
-    const [isDragging, setIsDragging] = useState(false)
-    const [cursorDragPoint, setCursorDragPoint] = useState({x: 0, y: 0})
+    const [isDragging, setIsDragging] = useState(false);
+    const [cursorDragPoint, setCursorDragPoint] = useState({x: 0, y: 0});
     const [deleteModal, setDeleteModal] = useState(false);
-    const [confirmModal, setConfirmModal]= useState(false)
-    const [cursorState, setCursorState] = useState('default')
-    const [confirmDeviceModal, setConfirmDeviceModal] = useState(false)
+    const [confirmModal, setConfirmModal]= useState(false);
+    const [cursorState, setCursorState] = useState('default');
+    const [confirmDeviceModal, setConfirmDeviceModal] = useState(false);
+    const [sliderDeviceSize, setSliderDeviceSize] = useState()
+    const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0})
+    const [sliderPosition, setSliderPosition] = useState({x: 0, y: 0})
     useEffect(()=>{
         loadImage(setImageDimensions, plan.url);
+        canvasStateForLoad.addPlanIDForAreas(plan.id)
         canvasStateForLoad.setPlanId(plan.id)
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
-        canvasStateForLoad.addPlanIDForAreas(plan.url)
     }, [canvasForLoadRef, plan.url])
 
     useEffect(()=>{
@@ -38,16 +43,16 @@ export const CanvasBox = observer((props) => {
         }
     }, [deviceState.is_on_area])
 
-
     const loadImage = (setImageDimensions, imageUrl) => {
         const img = new Image();
         img.src = imageUrl;
-
         img.onload = () => {
             setImageDimensions({
+                width: img.width,
                 height: img.height,
-                width: img.width
             });
+            imgLoad.width = img.width
+            imgLoad.height = img.height
         };
         img.onerror = (err) => {
             console.log("img error");
@@ -87,17 +92,16 @@ export const CanvasBox = observer((props) => {
         const rect = canvasStateForLoad.canvas.getBoundingClientRect()
         const x = event.clientX - rect.left
         const y = event.clientY - rect.top
-        return {x: x, y: y}
+        setCursorPosition({x:x, y:y})
     }
 
-    function takeObjectInCanvas(canvas, event) {
-        const {x, y} = getCursorPosition(event)
+    function takeObjectInCanvas() {
         for (let i =0; i < canvasStateForLoad.areas.length; i++) {
-            if (isOnArea(x, y, canvasStateForLoad.areas[i])) {
+            if (isOnArea(cursorPosition.x, cursorPosition.y, canvasStateForLoad.areas[i])) {
                 canvasStateForDraw.setCurrentItem(canvasStateForLoad.areas[i])
                 canvasStateForLoad.setEditableItem(canvasStateForLoad.areas[i])
                 setIsDragging(true)
-                setCursorDragPoint({x:x, y:y})
+                setCursorDragPoint({x:cursorPosition.x, y:cursorPosition.y})
                 return false
             }
             else {
@@ -115,10 +119,22 @@ export const CanvasBox = observer((props) => {
             return;
         }
         if (canvasStateForLoad.move){
-            takeObjectInCanvas(canvasForLoadRef.current, e)
+            takeObjectInCanvas()
         }
         else if (canvasStateForLoad.delete) {
             setDeleteModal(true)
+        }
+        for (let i =0; i < canvasStateForLoad.devices.length; i++){
+            if (isOnDevice(cursorPosition.x, cursorPosition.y, canvasStateForLoad.devices[i])){
+                canvasStateForLoad.selected_device = canvasStateForLoad.devices[i]
+                const rect = canvasStateForLoad.canvas.getBoundingClientRect()
+                setSliderPosition({x: rect.left+rect.width, y: rect.top+rect.height/3})
+                setSliderDeviceSize(true)
+
+            } else {
+                canvasStateForLoad.selected_device = null
+                setSliderDeviceSize(false)
+            }
         }
     }
 
@@ -138,15 +154,14 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseMoveHandler = (e) => {
-        const {x, y} = getCursorPosition(e)
+        getCursorPosition(e)
         if (deviceState.device || toolState.tool) {
             return;
         }
         if (!canvasStateForDraw.isActive){
             if (!isDragging) {
-                    let {x, y} = getCursorPosition(e);
                     for (let i =0; i < canvasStateForLoad.areas.length; i++)  {
-                        if (isOnArea(x, y, canvasStateForLoad.areas[i])) {
+                        if (isOnArea(cursorPosition.x, cursorPosition.y, canvasStateForLoad.areas[i])) {
                             if (canvasStateForLoad.delete){
                                 canvasStateForDraw.reload()
                                 canvasStateForLoad.setDeleteItem(canvasStateForLoad.areas[i])
@@ -166,7 +181,7 @@ export const CanvasBox = observer((props) => {
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
                                 for (let i =0; i < canvasStateForLoad.devices.length; i++){
-                                    if (isOnDevice(x, y, canvasStateForLoad.devices[i])){
+                                    if (isOnDevice(cursorPosition.x, cursorPosition.y, canvasStateForLoad.devices[i])){
                                         canvasStateForDraw.hoverDevice(canvasStateForLoad.devices[i])
                                     }
                                 }
@@ -184,14 +199,15 @@ export const CanvasBox = observer((props) => {
 
             } else if (canvasStateForLoad.move && isDragging) {
                 setCursorState("grabbing")
+                console.log(1)
                 if (!canvasStateForLoad.filled_background){
                     canvasStateForLoad.isDragging()
                 }
-                let dx = x - cursorDragPoint.x;
-                let dy = y - cursorDragPoint.y;
+                let dx = cursorPosition.x- cursorDragPoint.x;
+                let dy = cursorPosition.y - cursorDragPoint.y;
                 canvasStateForDraw.dragArea(dx, dy)
-                cursorDragPoint.x = x
-                cursorDragPoint.y = y
+                cursorDragPoint.x = cursorPosition.x
+                cursorDragPoint.y = cursorPosition.y
             }
         }
 
@@ -214,20 +230,44 @@ export const CanvasBox = observer((props) => {
         canvasStateForDraw.reload()
     }
 
+
+    let sliderStyle = {
+        position:"absolute",
+        left: sliderPosition.x,
+        top: sliderPosition.y,
+    }
+
+    function changePlanSize(value) {
+        setImageDimensions({width: imgLoad.width * value, height: imgLoad.height * value})
+    }
+
+    let imgStyle = {
+        width:imageDimensions.width,
+        height: imageDimensions.height
+    }
+
+    let firstCanvasStyle = {
+        position:"absolute",
+        width:imageDimensions.width,
+        height:imageDimensions.height,
+        border: "hidden",
+    }
+
     return (
         <>
+            <div style={{width: 400}}>
+                <h2 style={{marginTop:15, marginLeft:50, marginBottom: 0}}>
+                    Масштаб плана
+                </h2>
+                <Slider defaultValue={1} max={2} min={0} step={0.01} onChange={changePlanSize}/>
+            </div>
         <div style={{marginTop:10}}>
-        <div className="image_inside_canvas">
-           <img src={plan.url} alt=""/>
+        <div className="image_inside_canvas" style={imgStyle}>
+           <img src={plan.url} style={imgStyle} alt=""/>
         </div>
                 <canvas
                     className="canvas"
-                    style={{
-                        position:"absolute",
-                        width:imageDimensions.width,
-                        height:imageDimensions.height,
-                        border: "hidden",
-                }}
+                    style={firstCanvasStyle}
                     ref={canvasForLoadRef}
                     width={imageDimensions.width}
                     height={imageDimensions.height}/>
@@ -242,6 +282,13 @@ export const CanvasBox = observer((props) => {
                     height={imageDimensions.height}
                 />
         </div>
+            {sliderDeviceSize && (
+                <div style={sliderStyle}>
+                    <h2>{canvasStateForLoad?.selected_device?.name}</h2>
+                    <h3>Размер иконки</h3>
+                <Slider defaultValue={30}/>
+                </div>
+            )}
             <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteObjectInCanvas}/>
             <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
             <ConfirmDeviceModal confirmModal={confirmDeviceModal} setConfirmModal={setConfirmDeviceModal} save={saveDevicesHandle}/>

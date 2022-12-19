@@ -28,6 +28,9 @@ export default class Device extends AbstractDevice{
     }
 
     mouseDownHandler(e){
+        if (!deviceState.device){
+            this.destroyEvents()
+        }
         if (this.is_on_item) {
             this.mouseDown = true
             this.cursor_drag_point = {x:this.currentX, y:this.currentY}
