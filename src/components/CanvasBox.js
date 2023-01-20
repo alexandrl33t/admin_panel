@@ -8,12 +8,34 @@ import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
 import deviceState from "../store/deviceState";
 import ConfirmDeviceModal from "../pages/plan/ConfirmDeviceModal";
 import {Button, Slider} from "antd";
-let imgLoad = {width: 0, height: 0}
+import {autorun, observable} from "mobx";
+
+export const imgDimensions = observable(
+    {
+        width: 600,
+        height: 800,
+        size_k: 1,
+        setDemensions(width, height) {
+            this.width = width
+            this.height = height
+        },
+
+        setSizeK(value){
+            this.size_k = value
+        },
+
+        getWidth(){
+            return this.width
+        },
+        getHeight(){
+            return this.height
+        },
+    }
+    );
 export const CanvasBox = observer((props) => {
     const {plan} = props;
     const canvasForLoadRef = useRef();
     const canvasForDrawRef = useRef();
-    const [imageDimensions, setImageDimensions] = useState({});
     const [isDragging, setIsDragging] = useState(false);
     const [cursorDragPoint, setCursorDragPoint] = useState({x: 0, y: 0});
     const [deleteModal, setDeleteModal] = useState(false);
@@ -24,7 +46,7 @@ export const CanvasBox = observer((props) => {
     const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0})
     const [sliderPosition, setSliderPosition] = useState({x: 0, y: 0})
     useEffect(()=>{
-        loadImage(setImageDimensions, plan.url);
+        loadImage(plan.url);
         canvasStateForLoad.addPlanIDForAreas(plan.id)
         canvasStateForLoad.setPlanId(plan.id)
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
@@ -43,16 +65,18 @@ export const CanvasBox = observer((props) => {
         }
     }, [deviceState.is_on_area])
 
-    const loadImage = (setImageDimensions, imageUrl) => {
+    const loadImage = (imageUrl) => {
         const img = new Image();
         img.src = imageUrl;
         img.onload = () => {
-            setImageDimensions({
-                width: img.width,
-                height: img.height,
-            });
-            imgLoad.width = img.width
-            imgLoad.height = img.height
+            imgDimensions.setDemensions(
+                img.width,
+                img.height,
+            );
+            canvasStateForLoad.original_size.width = img.width
+            canvasStateForLoad.original_size.height = img.height
+            canvasStateForDraw.original_size.width = img.width
+            canvasStateForDraw.original_size.height = img.height
         };
         img.onerror = (err) => {
             console.log("img error");
@@ -63,12 +87,12 @@ export const CanvasBox = observer((props) => {
     const isOnArea = (x, y, item) => {
         if (item.points.length > 1){
             for (let i=0; i<item.points.length-1;i++){
-                const x1 = item.points[i].x
-                const x2 = item.points[item.points.length-1-i].x
-                const x3 = item.points[i+1].x
-                const y1 = item.points[i].y
-                const y2 = item.points[item.points.length-1-i].y
-                const y3 = item.points[i+1].y
+                const x1 = item.points[i].x * imgDimensions.size_k
+                const x2 = item.points[item.points.length-1-i].x* imgDimensions.size_k
+                const x3 = item.points[i+1].x* imgDimensions.size_k
+                const y1 = item.points[i].y* imgDimensions.size_k
+                const y2 = item.points[item.points.length-1-i].y* imgDimensions.size_k
+                const y3 = item.points[i+1].y* imgDimensions.size_k
                 const a = (x1 - x) * (y2 - y1) - (x2 - x1) * (y1 - y)
                 const b = (x2 - x) * (y3 - y2) - (x3 - x2) * (y2 - y)
                 const c = (x3 - x) * (y1 - y3) - (x1 - x3) * (y3 - y)
@@ -125,17 +149,17 @@ export const CanvasBox = observer((props) => {
             setDeleteModal(true)
         }
         for (let i =0; i < canvasStateForLoad.devices.length; i++){
-            if (isOnDevice(cursorPosition.x, cursorPosition.y, canvasStateForLoad.devices[i])){
-                canvasStateForLoad.selected_device = canvasStateForLoad.devices[i]
-                const rect = canvasStateForLoad.canvas.getBoundingClientRect()
-                setSliderPosition({x: rect.left+rect.width, y: rect.top+rect.height/3})
-                setSliderDeviceSize(true)
-
-            } else {
-                canvasStateForLoad.selected_device = null
-                setSliderDeviceSize(false)
-            }
+                if (isOnDevice(cursorPosition.x, cursorPosition.y, canvasStateForLoad.devices[i])){
+                    canvasStateForLoad.selected_device = canvasStateForLoad.devices[i]
+                    const rect = canvasStateForLoad.canvas.getBoundingClientRect()
+                    setSliderPosition({x: rect.left+rect.width, y: rect.top+rect.height/3})
+                    setSliderDeviceSize(true)
+                } else {
+                    canvasStateForLoad.selected_device = null
+                    setSliderDeviceSize(false)
+                }
         }
+
     }
 
     const mouseUpHandler = (e) => {
@@ -156,8 +180,10 @@ export const CanvasBox = observer((props) => {
     const mouseMoveHandler = (e) => {
         getCursorPosition(e)
         if (deviceState.device || toolState.tool) {
+            canvasStateForLoad.setActive(false)
             return;
         }
+
         if (!canvasStateForDraw.isActive){
             if (!isDragging) {
                     for (let i =0; i < canvasStateForLoad.areas.length; i++)  {
@@ -199,7 +225,6 @@ export const CanvasBox = observer((props) => {
 
             } else if (canvasStateForLoad.move && isDragging) {
                 setCursorState("grabbing")
-                console.log(1)
                 if (!canvasStateForLoad.filled_background){
                     canvasStateForLoad.isDragging()
                 }
@@ -237,19 +262,15 @@ export const CanvasBox = observer((props) => {
         top: sliderPosition.y,
     }
 
-    function changePlanSize(value) {
-        setImageDimensions({width: imgLoad.width * value, height: imgLoad.height * value})
-    }
-
     let imgStyle = {
-        width:imageDimensions.width,
-        height: imageDimensions.height
+        width:imgDimensions.getWidth(),
+        height: imgDimensions.getHeight(),
     }
 
     let firstCanvasStyle = {
         position:"absolute",
-        width:imageDimensions.width,
-        height:imageDimensions.height,
+        width:imgDimensions.getWidth(),
+        height:imgDimensions.getHeight(),
         border: "hidden",
     }
 
@@ -257,9 +278,8 @@ export const CanvasBox = observer((props) => {
         <>
             <div style={{width: 400}}>
                 <h2 style={{marginTop:15, marginLeft:50, marginBottom: 0}}>
-                    Масштаб плана
+                    Настройки
                 </h2>
-                <Slider defaultValue={1} max={2} min={0} step={0.01} onChange={changePlanSize}/>
             </div>
         <div style={{marginTop:10}}>
         <div className="image_inside_canvas" style={imgStyle}>
@@ -269,8 +289,9 @@ export const CanvasBox = observer((props) => {
                     className="canvas"
                     style={firstCanvasStyle}
                     ref={canvasForLoadRef}
-                    width={imageDimensions.width}
-                    height={imageDimensions.height}/>
+                    width={imgDimensions.getWidth()}
+                    height={imgDimensions.getHeight()}
+                />
                 <canvas
                     className="canvas"
                     style={{position:"relative"}}
@@ -278,8 +299,8 @@ export const CanvasBox = observer((props) => {
                     onMouseUp={mouseUpHandler}
                     onMouseMove={mouseMoveHandler}
                     ref={canvasForDrawRef}
-                    width={imageDimensions.width}
-                    height={imageDimensions.height}
+                    width={imgDimensions.getWidth()}
+                    height={imgDimensions.getHeight()}
                 />
         </div>
             {sliderDeviceSize && (

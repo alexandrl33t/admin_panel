@@ -16,6 +16,7 @@ import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {observer} from "mobx-react-lite";
 import deviceState from "../store/deviceState";
+import {imgDimensions} from "./CanvasBox";
 
 let areas = [
     {
@@ -86,7 +87,6 @@ const ToolBar = observer( () => {
     const [current, setCurrent] = useState('');
 
     useEffect(()=>{
-        console.log(toolState.tool)
         if (!toolState.tool){
             setCurrent('')
         }
@@ -138,12 +138,14 @@ const ToolBar = observer( () => {
     }
 
     const handleMenuClick = (e) => {
-        if (e?.item?.props?.self_type === 'device') {
-            if (e.keyPath.includes('adddevice')){
-                const device = {name: e.item.props.title, imgURL: e.item.props.imgURL}
-                addDevice(device)
-            }
+
+        if (e.keyPath.includes('adddevice')){
+            const device = {name: e.item.props.title, imgURL: e.item.props.imgURL}
+            addDevice(device)
+        } else if (e.keyPath.includes('movedevice')){
+            canvasStateForLoad.move_device = true
         }
+
         switch(e.key) {
             case 'load':
                 loadAreas()
@@ -208,6 +210,17 @@ const ToolBar = observer( () => {
                     key: 'delete',
                     icon: <MinusSquareOutlined />,
                 },
+                {
+                    label: <>Масштаб плана</>,
+                    key: "changeSize",
+                    icon: <ArrowsAltOutlined />,
+                    children: [
+                        {
+                            label: <Slider defaultValue={1} max={2} min={0.5} step={0.005} onChange={changePlanSize}/>,
+                            key: 'sliderPlanSize',
+                        },
+                    ],
+                }
             ]
         },
         {
@@ -244,7 +257,7 @@ const ToolBar = observer( () => {
                     icon: <ArrowsAltOutlined />,
                     children: [
                         {
-                            label: <Slider defaultValue={30} onChange={onChangeSlider} />,
+                            label: <Slider defaultValue={30} onChange={changeDeviceIconSize} />,
                             key: 'slider',
                         },
                     ]
@@ -253,7 +266,7 @@ const ToolBar = observer( () => {
         }
     ];
 
-    function onChangeSlider (value) {
+    function changeDeviceIconSize (value) {
         if (deviceState.device){
             deviceState.device.size += value - deviceState.device.size
             deviceState.device.redraw()
@@ -264,6 +277,11 @@ const ToolBar = observer( () => {
             })
             canvasStateForLoad.reload()
         }
+    }
+
+    function changePlanSize(value) {
+        imgDimensions.setDemensions(canvasStateForLoad.original_size.width * value, canvasStateForLoad.original_size.height * value)
+        imgDimensions.setSizeK(value)
     }
 
     return (

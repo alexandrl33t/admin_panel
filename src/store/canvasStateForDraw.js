@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import deviceState from "./deviceState";
+import {imgDimensions} from "../components/CanvasBox";
 /**
  * Канвас для создания новых областей
  */
@@ -14,6 +15,10 @@ class CanvasStateForDraw {
     }
     closed_area = false
 
+    original_size = {width: 0, height: 0}
+    //коэффициент масштаба плана
+    size_k = 1
+
     constructor() {
         makeAutoObservable(this)
     }
@@ -25,7 +30,6 @@ class CanvasStateForDraw {
         this.ctx.strokeStyle = areaStyle.ctx.strokeStyle
         this.ctx.lineWidth = areaStyle.ctx.lineWidth
     }
-
     setCurrentItem(item){
         this.current_item = item
     }
@@ -42,8 +46,8 @@ class CanvasStateForDraw {
 
     drawline(point1, point2){
         this.ctx.beginPath()
-        this.ctx.moveTo(point1.x, point1.y )
-        this.ctx.lineTo(point2.x, point2.y)
+        this.ctx.moveTo(point1.x*imgDimensions.size_k, point1.y*imgDimensions.size_k )
+        this.ctx.lineTo(point2.x*imgDimensions.size_k, point2.y*imgDimensions.size_k)
         this.ctx.lineJoin = "round"
         this.ctx.stroke()
         this.ctx.closePath();
@@ -59,12 +63,12 @@ class CanvasStateForDraw {
         const {points} = item
         if (points.length > 1){
             let region = new Path2D();
-            region.moveTo(points[0].x, points[0].y)
+            region.moveTo(points[0].x*imgDimensions.size_k, points[0].y*imgDimensions.size_k)
             for (let i=0; i<points.length-1;i++){
-                region.lineTo(points[i+1].x, points[i+1].y)
+                region.lineTo(points[i+1].x*imgDimensions.size_k, points[i+1].y*imgDimensions.size_k)
 
             }
-            region.lineTo(points[0].x, points[0].y)
+            region.lineTo(points[0].x*imgDimensions.size_k, points[0].y*imgDimensions.size_k)
             region.closePath();
             this.ctx.fill(region);
         }
@@ -77,12 +81,12 @@ class CanvasStateForDraw {
         const {points} = item
         if (points.length > 1){
             let region = new Path2D();
-            region.moveTo(points[0].x, points[0].y)
+            region.moveTo(points[0].x*imgDimensions.size_k, points[0].y*imgDimensions.size_k)
             for (let i=0; i<points.length-1;i++){
-                region.lineTo(points[i+1].x, points[i+1].y)
+                region.lineTo(points[i+1].x*imgDimensions.size_k, points[i+1].y*imgDimensions.size_k)
 
             }
-            region.lineTo(points[0].x, points[0].y)
+            region.lineTo(points[0].x*imgDimensions.size_k, points[0].y*imgDimensions.size_k)
             region.closePath();
             this.ctx.fill(region);
         }
