@@ -7,8 +7,11 @@ import toolState from "../store/toolState";
 import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
 import deviceState from "../store/deviceState";
 import ConfirmDeviceModal from "../pages/plan/ConfirmDeviceModal";
-import {Button, Slider} from "antd";
-import {autorun, observable} from "mobx";
+import {Button, Col, Divider, Form, Input, Row, Slider, Tooltip} from "antd";
+import {observable} from "mobx";
+import dependencesStore from "../store/DependencesStore";
+import devicesStore from "../store/DevicesStore";
+
 
 export const imgDimensions = observable(
     {
@@ -33,6 +36,7 @@ export const imgDimensions = observable(
     }
     );
 export const CanvasBox = observer((props) => {
+    const [form] = Form.useForm();
     const {plan} = props;
     const canvasForLoadRef = useRef();
     const canvasForDrawRef = useRef();
@@ -40,11 +44,10 @@ export const CanvasBox = observer((props) => {
     const [cursorDragPoint, setCursorDragPoint] = useState({x: 0, y: 0});
     const [deleteModal, setDeleteModal] = useState(false);
     const [confirmModal, setConfirmModal]= useState(false);
-    const [cursorState, setCursorState] = useState('default');
     const [confirmDeviceModal, setConfirmDeviceModal] = useState(false);
-    const [sliderDeviceSize, setSliderDeviceSize] = useState()
+    const [deviceEdit, setDeviceEdit] = useState(false)
     const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0})
-    const [sliderPosition, setSliderPosition] = useState({x: 0, y: 0})
+
     useEffect(()=>{
         loadImage(plan.url);
         canvasStateForLoad.addPlanIDForAreas(plan.id)
@@ -64,6 +67,10 @@ export const CanvasBox = observer((props) => {
             setConfirmDeviceModal(true)
         }
     }, [deviceState.is_on_area])
+
+    useEffect(()=>{
+        canvasStateForLoad.reload()
+    }, [imgDimensions.size_k])
 
     const loadImage = (imageUrl) => {
         const img = new Image();
@@ -106,7 +113,10 @@ export const CanvasBox = observer((props) => {
 
     const isOnDevice = (x, y, item) => {
         if (item?.points){
-            if (x >= item.points.x && y >= item.points.y && x<= item.points.x + item.size && y <=item.points.y + item.size)
+            if (x >= item.points.x * imgDimensions.size_k
+                && y >= item.points.y * imgDimensions.size_k
+                && x<= (item.points.x + item.size) * imgDimensions.size_k
+                && y <=(item.points.y + item.size) * imgDimensions.size_k)
             return true
         }
         return false
@@ -138,8 +148,8 @@ export const CanvasBox = observer((props) => {
         canvasStateForLoad.deleteArea()
     }
 
-    const mouseDownHandler = (e) =>{
-        if (deviceState.device || toolState.tool) {
+    const mouseDownHandler = () =>{
+        if (deviceState.new_device || toolState.tool) {
             return;
         }
         if (canvasStateForLoad.move){
@@ -148,29 +158,24 @@ export const CanvasBox = observer((props) => {
         else if (canvasStateForLoad.delete) {
             setDeleteModal(true)
         }
-        for (let i =0; i < canvasStateForLoad.devices.length; i++){
-                if (isOnDevice(cursorPosition.x, cursorPosition.y, canvasStateForLoad.devices[i])){
-                    canvasStateForLoad.selected_device = canvasStateForLoad.devices[i]
-                    const rect = canvasStateForLoad.canvas.getBoundingClientRect()
-                    setSliderPosition({x: rect.left+rect.width, y: rect.top+rect.height/3})
-                    setSliderDeviceSize(true)
-                } else {
-                    canvasStateForLoad.selected_device = null
-                    setSliderDeviceSize(false)
-                }
+        else if (deviceState.selected_device){
+            form.setFieldValue("nameInput", deviceState.selected_device.name)
+            form.setFieldValue("iconSize", deviceState.selected_device.size)
+            setDeviceEdit(!deviceEdit)
         }
 
     }
 
-    const mouseUpHandler = (e) => {
-        if (deviceState.device || toolState.tool) {
+    const mouseUpHandler = () => {
+        if (deviceState.new_device || toolState.tool) {
             return;
         }
         if (!isDragging){
-
+            console.log(canvasStateForLoad.delete)
         }
         //если мышка отпустила объект во время перетаскивания
         else if (canvasStateForLoad.move && isDragging) {
+                canvasStateForLoad.move =false
                 canvasStateForLoad.reload()
                 canvasStateForDraw.reload()
                 setIsDragging(false)
@@ -179,7 +184,7 @@ export const CanvasBox = observer((props) => {
 
     const mouseMoveHandler = (e) => {
         getCursorPosition(e)
-        if (deviceState.device || toolState.tool) {
+        if (deviceState.new_device || toolState.tool) {
             canvasStateForLoad.setActive(false)
             return;
         }
@@ -198,23 +203,35 @@ export const CanvasBox = observer((props) => {
                                 return
                             }
                             else if (canvasStateForLoad.move){
-                                setCursorState("grab")
+
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.fillAreaForDrag(canvasStateForLoad.areas[i])
                                 return;
                             } else {
-                                setCursorState("default")
+
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
-                                for (let i =0; i < canvasStateForLoad.devices.length; i++){
-                                    if (isOnDevice(cursorPosition.x, cursorPosition.y, canvasStateForLoad.devices[i])){
-                                        canvasStateForDraw.hoverDevice(canvasStateForLoad.devices[i])
+                                for (let i =0; i < devicesStore.devices.length; i++){
+                                    if (isOnDevice(cursorPosition.x, cursorPosition.y, devicesStore.devices[i])){
+                                        canvasStateForDraw.hoverDevice(devicesStore.devices[i])
+                                        deviceState.setSelectedDevice(devicesStore.devices[i])
+                                    } else {
+                                        deviceState.setSelectedDevice(null)
                                     }
+                                for (let i =0; i < dependencesStore.dependences.length; i++){
+                                    if (isOnDevice(cursorPosition.x, cursorPosition.y, dependencesStore.dependences[i])){
+                                        canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
+                                        deviceState.setSelectedDevice(dependencesStore.dependences[i])
+                                    }
+                                    else {
+                                        deviceState.setSelectedDevice(null)
+                                    }
+                                }
                                 }
                                 return;
                             }
                         } else {
-                            setCursorState("default")
+
                             canvasStateForLoad.setDeleteItem(null)
                             if (canvasStateForLoad.filled_background){
                                 canvasStateForLoad.reload()
@@ -224,13 +241,13 @@ export const CanvasBox = observer((props) => {
                     }
 
             } else if (canvasStateForLoad.move && isDragging) {
-                setCursorState("grabbing")
+
                 if (!canvasStateForLoad.filled_background){
                     canvasStateForLoad.isDragging()
                 }
                 let dx = cursorPosition.x- cursorDragPoint.x;
                 let dy = cursorPosition.y - cursorDragPoint.y;
-                canvasStateForDraw.dragArea(dx, dy)
+                canvasStateForDraw.dragArea(dx / imgDimensions.size_k, dy / imgDimensions.size_k)
                 cursorDragPoint.x = cursorPosition.x
                 cursorDragPoint.y = cursorPosition.y
             }
@@ -249,17 +266,37 @@ export const CanvasBox = observer((props) => {
     }
 
     const saveDevicesHandle = () => {
-        canvasStateForLoad.addDevice(deviceState.device)
+        if (deviceState.new_device.type === "device"){
+            devicesStore.addDevice(deviceState.new_device)
+        } else if (deviceState.new_device.type === "dependence") {
+            dependencesStore.addDependence(deviceState.new_device)
+        }
         deviceState.setDevice(null)
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
     }
 
+    const changeIconSize = (value) => {
+        if (deviceState.selected_device){
+            deviceState.selected_device.size += value - deviceState.selected_device.size
+            canvasStateForLoad.reload()
+            canvasStateForDraw.reload()
+        }
+    }
+
+    const changeDeviceName = () =>{
+        let name = form.getFieldValue("nameInput")
+        if (deviceState.selected_device && name.length > 1){
+            deviceState.selected_device.name = name
+        }
+    }
+
+    const saveDeviceParams = () => {
+        setDeviceEdit(false)
+    }
 
     let sliderStyle = {
-        position:"absolute",
-        left: sliderPosition.x,
-        top: sliderPosition.y,
+
     }
 
     let imgStyle = {
@@ -276,11 +313,34 @@ export const CanvasBox = observer((props) => {
 
     return (
         <>
-            <div style={{width: 400}}>
-                <h2 style={{marginTop:15, marginLeft:50, marginBottom: 0}}>
-                    Настройки
-                </h2>
-            </div>
+            {deviceEdit && (
+                <Form
+                    form={form}
+                >
+                <div style={sliderStyle}>
+                    <Divider orientation="left">
+                            <Tooltip title="Изменить название">
+                                <Form.Item name="nameInput">
+                                    <Input placeholder="Введите название" onChange={changeDeviceName} />
+                                </Form.Item>
+                            </Tooltip>
+                    </Divider>
+                    <Row gutter={24}>
+                        <Col span={4}>
+                            Размер иконки
+                            <Form.Item name="iconSize">
+                                <Slider onChange={changeIconSize}/>
+                            </Form.Item>
+                        </Col>
+                        <Col span={4} >
+                            <Button type="primary" onClick={saveDeviceParams}>
+                                Сохранить
+                            </Button>
+                        </Col>
+                    </Row>
+                </div>
+                </Form>
+            )}
         <div style={{marginTop:10}}>
         <div className="image_inside_canvas" style={imgStyle}>
            <img src={plan.url} style={imgStyle} alt=""/>
@@ -303,13 +363,6 @@ export const CanvasBox = observer((props) => {
                     height={imgDimensions.getHeight()}
                 />
         </div>
-            {sliderDeviceSize && (
-                <div style={sliderStyle}>
-                    <h2>{canvasStateForLoad?.selected_device?.name}</h2>
-                    <h3>Размер иконки</h3>
-                <Slider defaultValue={30}/>
-                </div>
-            )}
             <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteObjectInCanvas}/>
             <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
             <ConfirmDeviceModal confirmModal={confirmDeviceModal} setConfirmModal={setConfirmDeviceModal} save={saveDevicesHandle}/>

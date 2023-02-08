@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
-import deviceState from "./deviceState";
 import {imgDimensions} from "../components/CanvasBox";
 /**
  * Канвас для создания новых областей
@@ -46,16 +45,16 @@ class CanvasStateForDraw {
 
     drawline(point1, point2){
         this.ctx.beginPath()
-        this.ctx.moveTo(point1.x*imgDimensions.size_k, point1.y*imgDimensions.size_k )
-        this.ctx.lineTo(point2.x*imgDimensions.size_k, point2.y*imgDimensions.size_k)
+        this.ctx.moveTo(point1.x * imgDimensions.size_k, point1.y * imgDimensions.size_k)
+        this.ctx.lineTo(point2.x * imgDimensions.size_k, point2.y* imgDimensions.size_k)
         this.ctx.lineJoin = "round"
         this.ctx.stroke()
         this.ctx.closePath();
     }
     setText(item){
-        this.ctx.fillStyle = "rgba(126,10,10,0.96)";
-        this.ctx.font = '19px sans-serif';
-        this.ctx.fillText(item.name, item.points[0].x + 23, item.points[0].y+ 30);
+        this.ctx.fillStyle = "rgba(224,27,27,0.96)";
+        this.ctx.font = `${20*imgDimensions.size_k}px impact`;
+        this.ctx.fillText(item.name, item.points[0].x *imgDimensions.size_k + 30, item.points[0].y*imgDimensions.size_k + 30);
     }
 
     fillArea(item){
@@ -128,8 +127,8 @@ class CanvasStateForDraw {
         this.ctx.strokeStyle = areaStyle.device.strokeStyle
         this.ctx.beginPath()
         this.ctx.fillStyle = "rgba(126,10,10,0.96)";
-        this.ctx.font = '15px sans-serif';
-        this.ctx.fillText(device.name, device.points.x + device.size/2, device.points.y+ device.size+15);
+        this.ctx.font = `${15*imgDimensions.size_k}px impact`;
+        this.ctx.fillText(device.name, (device.points.x + device.size/2) * imgDimensions.size_k, (device.points.y+ device.size+15) * imgDimensions.size_k);
     }
 
 

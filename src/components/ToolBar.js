@@ -3,7 +3,7 @@ import {Menu, message, Slider} from "antd";
 import {
     ArrowsAltOutlined,
     EditOutlined,
-    ExpandOutlined,
+    ExpandOutlined, HeatMapOutlined,
     MinusSquareOutlined,
     PlusSquareOutlined, RadarChartOutlined,
     SaveOutlined, ToolOutlined,
@@ -17,6 +17,8 @@ import canvasStateForLoad from "../store/canvasStateForLoad";
 import {observer} from "mobx-react-lite";
 import deviceState from "../store/deviceState";
 import {imgDimensions} from "./CanvasBox";
+import Dependence from "../tools/Dependence";
+import devicesStore from "../store/DevicesStore";
 
 let areas = [
     {
@@ -50,7 +52,7 @@ const devicesExists = [
         points: [
             {x:140,y:30},
         ],
-        imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
+        imgURL : "https://www.svgrepo.com/show/15416/antenna.svg",
         mark: 'R1',
         plan_id: '1',
         zone_id: "",
@@ -60,27 +62,48 @@ const devicesExists = [
 const devicesFromServer = [
     {
         label: 'Sonoff Dual R2',
-        key: '1',
+        key: 'device1',
         icon: <RadarChartOutlined />,
-        imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
-        self_type: "device",
+        imgURL : "https://www.svgrepo.com/show/15416/antenna.svg",
         title: 'Sonoff Dual R2',
     },
     {
         label: 'Sonoff CHH4',
-        key: '2',
+        key: 'device2',
         icon: <RadarChartOutlined />,
-        imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
-        self_type: "device",
+        imgURL : "https://www.svgrepo.com/show/15416/antenna.svg",
         title: 'Sonoff CHH4',
     },
     {
         label: 'Tuya SW2',
-        key: '3',
+        key: 'device3',
         icon: <RadarChartOutlined />,
-        imgURL : "https://www.svgrepo.com/show/430077/security-secure-protection-25.svg",
-        self_type: "device",
+        imgURL : "https://www.svgrepo.com/show/15416/antenna.svg",
         title: 'Tuya SW2',
+    },
+]
+
+const dependencesFromServer = [
+    {
+        label: 'Зависимость 1',
+        key: 'dependence1',
+        icon: <HeatMapOutlined />,
+        imgURL : "https://www.svgrepo.com/show/6947/webcam.svg",
+        title: 'Зависимость 1',
+    },
+    {
+        label: 'Зависимость 2',
+        key: 'dependence2',
+        icon: <HeatMapOutlined />,
+        imgURL : "https://www.svgrepo.com/show/6947/webcam.svg",
+        title: 'Зависимость 2',
+    },
+    {
+        label: 'Зависимость 3',
+        key: 'dependence3',
+        icon: <HeatMapOutlined />,
+        imgURL : "https://www.svgrepo.com/show/6947/webcam.svg",
+        title: 'Зависимость 3',
     },
 ]
 const ToolBar = observer( () => {
@@ -114,12 +137,6 @@ const ToolBar = observer( () => {
         canvasStateForLoad.setActive(false)
     }
 
-    const moveRectArea = () => {
-        toolState.setTool(null)
-        canvasStateForLoad.setEdit(true)
-        canvasStateForDraw.setActive(false)
-    }
-
     const tryToSave = () => {
         canvasStateForLoad.areas.forEach(item => {
             console.log(item.name, item.points)
@@ -128,22 +145,44 @@ const ToolBar = observer( () => {
     }
 
     const addDevice = (device)=>{
-        if (!deviceState.device){
+        if (!deviceState.new_device){
             deviceState.setDevice(new Device(canvasStateForDraw.canvas, device))
             message.success(`${device.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then()
         } else
         {
-            message.error(`Вы не можете добавлять новые устройства, пока не закрепите ${deviceState.device.name} на определенной области.`, 7).then()
+            message.error(`Вы не можете добавлять новые устройства, пока не закрепите ${deviceState.new_device.name} на определенной области.`, 7).then()
         }
     }
+
+    const addDependence = (dependence) => {
+        if (!deviceState.new_device){
+            deviceState.setDevice(new Dependence(canvasStateForDraw.canvas, dependence))
+            message.success(`${dependence.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then()
+        } else
+        {
+            message.error(`Вы не можете добавлять новые устройства, пока не закрепите ${deviceState.new_device.name} на определенной области.`, 7).then()
+        }
+    }
+
 
     const handleMenuClick = (e) => {
 
         if (e.keyPath.includes('adddevice')){
             const device = {name: e.item.props.title, imgURL: e.item.props.imgURL}
             addDevice(device)
+            setCurrent(e.key)
         } else if (e.keyPath.includes('movedevice')){
-            canvasStateForLoad.move_device = true
+            setCurrent(e.key)
+        }
+        else if (e.keyPath.includes('adddependence')){
+            if (devicesStore.devices.length === 0) {
+                message.error(`Вы не можете добавлять новые устройства, пока на определенной области.`, 7).then()
+            } else {
+                const dependence = {name: e.item.props.title, imgURL: e.item.props.imgURL}
+                addDependence(dependence)
+                setCurrent(e.key)
+            }
+
         }
 
         switch(e.key) {
@@ -160,10 +199,6 @@ const ToolBar = observer( () => {
                 break
             case 'addfree':
                 addFreeArea()
-                setCurrent(e.key)
-                break
-            case 'move':
-                moveRectArea()
                 setCurrent(e.key)
                 break
             case 'delete':
@@ -200,11 +235,11 @@ const ToolBar = observer( () => {
                     key: 'addfree',
                     icon: <EditOutlined/>,
                 },
-                {
-                    label: 'Переместить область',
-                    key: 'move',
-                    icon: <ExpandOutlined/>,
-                },
+                // {
+                //     label: 'Переместить область',
+                //     key: 'move',
+                //     icon: <ExpandOutlined/>,
+                // },
                 {
                     label: 'Удалить область',
                     key: 'delete',
@@ -263,14 +298,46 @@ const ToolBar = observer( () => {
                     ]
                 },
             ]
+        },
+        {
+            label: 'Зависимости',
+            key: 'dependences',
+            icon: <HeatMapOutlined />,
+            children: [
+                {
+                    label: 'Добавить зависимость',
+                    key: 'adddependence',
+                    icon: <PlusSquareOutlined />,
+                    children: [
+                        ...dependencesFromServer
+                    ]
+                },
+                {
+                    label: 'Переместить зависимость',
+                    key: 'movedependence',
+                    icon: <ExpandOutlined/>,
+                },
+                {
+                    label: 'Удалить зависимость',
+                    key: 'deletedependence',
+                    icon: <MinusSquareOutlined />,
+                },
+                {
+                    label: 'Размер иконок',
+                    key: 'iconsize',
+                    icon: <ArrowsAltOutlined />,
+                    children: [
+                        {
+                            label: <Slider defaultValue={30} onChange={changeDeviceIconSize} />,
+                            key: 'slider',
+                        },
+                    ]
+                },
+            ]
         }
     ];
 
     function changeDeviceIconSize (value) {
-        if (deviceState.device){
-            deviceState.device.size += value - deviceState.device.size
-            deviceState.device.redraw()
-        }
         if (canvasStateForLoad.devices.length > 0){
             canvasStateForLoad.devices.forEach((device) => {
                 device.size += value - device.size
@@ -285,7 +352,10 @@ const ToolBar = observer( () => {
     }
 
     return (
+        <>
             <Menu mode="horizontal" selectedKeys={[current]} items={items} onClick={handleMenuClick}/>
+        </>
+
     );
 });
 

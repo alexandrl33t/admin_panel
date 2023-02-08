@@ -1,7 +1,6 @@
 import React from 'react';
 import {Form, Modal} from "antd";
 import deviceState from "../../store/deviceState";
-import canvasStateForLoad from "../../store/canvasStateForLoad";
 
 const ConfirmDeviceModal = (props) => {
 
@@ -13,7 +12,7 @@ const ConfirmDeviceModal = (props) => {
 
     const okHandle = () =>{
         setConfirmModal(false);
-        if (deviceState?.device){
+        if (deviceState?.new_device){
             save()
         }
     }
@@ -31,8 +30,8 @@ const ConfirmDeviceModal = (props) => {
                 <Form form={form} layout="vertical">
                     <Form.Item name="device">
                         <p>
-                            Вы действительно хотите добавить устройство <h2>{deviceState?.device?.name}</h2>
-                            в область <h2>{deviceState?.device?.area_name}</h2>
+                            Вы действительно хотите добавить устройство <h2>{deviceState?.new_device?.name}</h2>
+                            в область <h2>{deviceState?.new_device?.area_name}</h2>
                         </p>
                     </Form.Item>
                 </Form>

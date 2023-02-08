@@ -32,7 +32,7 @@ const Plan = (props) => {
                 ) :
                 (<div style={{marginTop: 5}}>
                                     <Row gutter={[24, 24]}>
-                                        <Col span={16}>
+                                        <Col span={24}>
                                             <ToolBar />
                                         </Col>
                                     </Row>

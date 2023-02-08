@@ -1,20 +1,30 @@
 import {makeAutoObservable} from "mobx";
-import canvasStateForLoad from "./canvasStateForLoad";
 
 class DeviceState {
-    device = null
+    new_device = null
+    selected_device = null
     is_on_area = false
+    moveDevice = false
+    changing_params = false
 
     constructor() {
         makeAutoObservable(this)
     }
 
     setDevice(device) {
-        this.device = device
+        this.new_device = device
     }
 
     setIsOnArea(value){
         this.is_on_area = value
+    }
+
+    setMoveDevice(value) {
+        this.moveDevice = value
+    }
+
+    setSelectedDevice(device){
+        this.selected_device = device
     }
 }
 

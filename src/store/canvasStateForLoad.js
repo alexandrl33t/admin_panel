@@ -2,6 +2,8 @@ import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import canvasStateForDraw from "./canvasStateForDraw";
 import {imgDimensions} from "../components/CanvasBox";
+import dependencesStore from "./DependencesStore";
+import devicesStore from "./DevicesStore";
 
 /**
  * Канвас для отрисовки готовых областей
@@ -19,8 +21,6 @@ class CanvasStateForLoad {
         points: []
     }
     delete_item = null
-    devices = []
-    undolist = []
     selected_device = null
     move_device = false
 
@@ -76,10 +76,6 @@ class CanvasStateForLoad {
         }
     }
 
-    addDevice(item){
-        this.devices.push(item)
-    }
-
     drawAreas(items){
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height )
         this.areas = []
@@ -94,6 +90,14 @@ class CanvasStateForLoad {
 
     drawDevices(devices){
         devices.forEach((device) => {
+            this.imgURL = device.imgURL
+            this.img = new Image();
+            this.img.src = this.imgURL;
+            this.ctx.drawImage(this.img, device.points.x * imgDimensions.size_k, device.points.y* imgDimensions.size_k, device.size* imgDimensions.size_k, device.size* imgDimensions.size_k);
+        })
+    }
+    drawDependences() {
+        dependencesStore.dependences.forEach((device) => {
             this.imgURL = device.imgURL
             this.img = new Image();
             this.img.src = this.imgURL;
@@ -162,11 +166,11 @@ class CanvasStateForLoad {
 
     reload(){
         this.drawAreas(this.areas)
-        this.drawDevices(this.devices)
+        this.drawDevices(devicesStore.devices)
+        this.drawDependences(dependencesStore.dependences)
         this.filled_background = false
         this.editable_item=null
     }
-
 }
 
 export default new CanvasStateForLoad()
