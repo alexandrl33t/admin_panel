@@ -5,7 +5,6 @@ export default class Dependence extends AbstractDevice{
 
     is_on_item = false
     cursor_drag_point = null
-    type = ""
 
     constructor(canvas, device) {
         super(canvas);

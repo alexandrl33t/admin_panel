@@ -11,6 +11,7 @@ import {Button, Col, Divider, Form, Input, Row, Slider, Tooltip} from "antd";
 import {observable} from "mobx";
 import dependencesStore from "../store/DependencesStore";
 import devicesStore from "../store/DevicesStore";
+import ConfirmDependenceModal from "../pages/plan/ConfirmDependenceModal";
 
 
 export const imgDimensions = observable(
@@ -45,6 +46,7 @@ export const CanvasBox = observer((props) => {
     const [deleteModal, setDeleteModal] = useState(false);
     const [confirmModal, setConfirmModal]= useState(false);
     const [confirmDeviceModal, setConfirmDeviceModal] = useState(false);
+    const [confirmDependenceModal, setConfirmDependenceModal] = useState(false)
     const [deviceEdit, setDeviceEdit] = useState(false)
     const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0})
 
@@ -64,7 +66,12 @@ export const CanvasBox = observer((props) => {
 
     useEffect(()=>{
         if (deviceState.is_on_area){
-            setConfirmDeviceModal(true)
+            if (deviceState.new_device.type === "device"){
+                setConfirmDeviceModal(true)
+            } else if (deviceState.new_device.type === "dependence"){
+                setConfirmDependenceModal(true)
+            }
+
         }
     }, [deviceState.is_on_area])
 
@@ -171,7 +178,7 @@ export const CanvasBox = observer((props) => {
             return;
         }
         if (!isDragging){
-            console.log(canvasStateForLoad.delete)
+
         }
         //если мышка отпустила объект во время перетаскивания
         else if (canvasStateForLoad.move && isDragging) {
@@ -215,18 +222,21 @@ export const CanvasBox = observer((props) => {
                                     if (isOnDevice(cursorPosition.x, cursorPosition.y, devicesStore.devices[i])){
                                         canvasStateForDraw.hoverDevice(devicesStore.devices[i])
                                         deviceState.setSelectedDevice(devicesStore.devices[i])
+                                        return;
                                     } else {
-                                        deviceState.setSelectedDevice(null)
+                                        for (let i =0; i < dependencesStore.dependences.length; i++){
+                                            if (isOnDevice(cursorPosition.x, cursorPosition.y, dependencesStore.dependences[i])){
+                                                canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
+                                                deviceState.setSelectedDevice(dependencesStore.dependences[i])
+                                                return;
+                                            }
+                                            else {
+                                                deviceState.setSelectedDevice(null)
+                                                return;
+                                            }
+                                        }
                                     }
-                                for (let i =0; i < dependencesStore.dependences.length; i++){
-                                    if (isOnDevice(cursorPosition.x, cursorPosition.y, dependencesStore.dependences[i])){
-                                        canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
-                                        deviceState.setSelectedDevice(dependencesStore.dependences[i])
-                                    }
-                                    else {
-                                        deviceState.setSelectedDevice(null)
-                                    }
-                                }
+
                                 }
                                 return;
                             }
@@ -366,6 +376,7 @@ export const CanvasBox = observer((props) => {
             <DeleteAreaModal deleteModal={deleteModal} setDeleteModal={setDeleteModal} deleteArea={deleteObjectInCanvas}/>
             <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
             <ConfirmDeviceModal confirmModal={confirmDeviceModal} setConfirmModal={setConfirmDeviceModal} save={saveDevicesHandle}/>
+            <ConfirmDependenceModal confirmModal={confirmDependenceModal} setConfirmModal={setConfirmDependenceModal} save={saveDevicesHandle}/>
         </>
     )
 });

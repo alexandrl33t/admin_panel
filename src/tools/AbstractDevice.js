@@ -12,6 +12,7 @@ export default class AbstractDevice{
     points = null
     imgURL= null
     size = 40
+    type = null
 
 
     constructor(canvas) {
