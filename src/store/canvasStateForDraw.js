@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import {imgDimensions} from "../components/CanvasBox";
+import deviceState from "./deviceState";
 /**
  * Канвас для создания новых областей
  */
@@ -55,6 +56,13 @@ class CanvasStateForDraw {
         this.ctx.fillStyle = "rgba(224,27,27,0.96)";
         this.ctx.font = `${20*imgDimensions.size_k}px impact`;
         this.ctx.fillText(item.name, item.points[0].x *imgDimensions.size_k + 30, item.points[0].y*imgDimensions.size_k + 30);
+    }
+
+
+    redrawToGraph(item){
+        this.ctx.fillStyle = "rgba(229,75,75,0.96)";
+        this.ctx.font = `${20*imgDimensions.size_k}px impact`;
+        this.ctx.fillText(`Объединить ${deviceState.new_device?.name} с ${deviceState.root_device?.name}?`, item.points.x *imgDimensions.size_k + 30, item.points.y*imgDimensions.size_k + 30);
     }
 
     fillArea(item){

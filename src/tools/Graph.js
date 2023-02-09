@@ -1,10 +1,11 @@
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {imgDimensions} from "../components/CanvasBox";
 import deviceState from "../store/deviceState";
-import canvasStateForDraw from "../store/canvasStateForDraw";
-import devicesStore from "../store/DevicesStore";
 
-export default class AbstractDevice{
+/**
+ * Создается, когда устройства накладываются друг на друга.
+ */
+export default class Graph{
 
     name = null
     plan_id = null
@@ -14,11 +15,16 @@ export default class AbstractDevice{
     imgURL= null
     size = 40
     type = null
-    is_on_other_device = false
+    includes = []
 
-    constructor(canvas) {
+    constructor(canvas, root_device) {
         this.canvas = canvas
         this.ctx = canvas.getContext('2d')
+        if (root_device.points){
+            this.points = root_device.points
+        }
+        this.imgURL = "https://www.svgrepo.com/show/500066/bulletin-board.svg"
+        this.draw()
     }
 
     destroyEvents() {
@@ -27,7 +33,7 @@ export default class AbstractDevice{
         this.canvas.onmousemove = null
     }
 
-    addDevice(device){
+    draw(){
         /**
          * подсчет размера иконки изображения относительно плана. Примерное соотношение 1/4 (изображение/ср.знач.сторон областей)
          * после добавление самого изображения
@@ -52,10 +58,6 @@ export default class AbstractDevice{
             side_count++;
         })
 
-
-        this.name = device.name
-        this.imgURL = device.imgURL
-        this.points = {x:15, y:15}
         if (sum !==0 || side_count > 0){
             this.size = sum/side_count/4
         } else this.size = 40
@@ -111,31 +113,7 @@ export default class AbstractDevice{
             this.points.y+=dy
             this.cursor_drag_point.x = this.currentX
             this.cursor_drag_point.y = this.currentY
-            for (let i =0; i < canvasStateForLoad.areas.length; i++) {
-                if (this.isOnArea(this.currentX, this.currentY, canvasStateForLoad.areas[i])) {
-                    this.area_id = canvasStateForLoad.areas[i].id
-                    this.area_name = canvasStateForLoad.areas[i].name
-                    if (this.type === "device") {
-                        devicesStore.devices.forEach((device) => {
-                            if (this.isOnOtherDevice(this.currentX, this.currentY, device)){
-                                deviceState.set_root_device(device)
-                            } else {
-                                deviceState.set_root_device(null)
-                            }
-                        })
-                    }
-                    canvasStateForDraw.reload()
-                    this.redraw()
-                    canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
-                    break
-                } else {
-                    this.area_id = null
-                    this.area_name = null
-                    deviceState.setIsOnArea(false)
-                    canvasStateForDraw.reload()
-                    this.redraw()
-                }
-            }
+
         }
 
     }
@@ -145,28 +123,8 @@ export default class AbstractDevice{
         this.ctx.drawImage(this.img,  this.points.x, this.points.y, this.size  * imgDimensions.size_k, this.size * imgDimensions.size_k);
     }
 
-    isOnArea(x, y, item) {
-        if (item.points.length > 1){
-            for (let i=0; i<item.points.length-1;i++){
-                const x1 = item.points[i].x * imgDimensions.size_k
-                const x2 = item.points[item.points.length-1-i].x * imgDimensions.size_k
-                const x3 = item.points[i+1].x * imgDimensions.size_k
-                const y1 = item.points[i].y * imgDimensions.size_k
-                const y2 = item.points[item.points.length-1-i].y * imgDimensions.size_k
-                const y3 = item.points[i+1].y * imgDimensions.size_k
-                const a = (x1 - x) * (y2 - y1) - (x2 - x1) * (y1 - y)
-                const b = (x2 - x) * (y3 - y2) - (x3 - x2) * (y2 - y)
-                const c = (x3 - x) * (y1 - y3) - (x1 - x3) * (y3 - y)
-                if ((a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0)){
-                    return true
-                }
-            }
-        }
-        return false
+    pushDevice(device){
+        this.includes.push(device)
     }
 
-    isOnOtherDevice(x, y, item){
-        return  x >= item.points.x * imgDimensions.size_k && x <= (item.points.x + item.size) * imgDimensions.size_k &&
-            y >= item.points.y * imgDimensions.size_k && y <= (item.points.y + item.size) * imgDimensions.size_k;
-    }
 }

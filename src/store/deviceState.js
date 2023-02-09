@@ -7,6 +7,9 @@ class DeviceState {
     moveDevice = false
     changing_params = false
 
+    //параметры для графа
+    root_device = null
+
     constructor() {
         makeAutoObservable(this)
     }
@@ -26,6 +29,11 @@ class DeviceState {
     setSelectedDevice(device){
         this.selected_device = device
     }
+
+    set_root_device(device){
+        this.root_device = device
+    }
+
 }
 
 export default new DeviceState()

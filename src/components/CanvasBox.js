@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {observer} from "mobx-react-lite";
+import {reaction} from "mobx";
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import DeleteAreaModal from "../pages/plan/DeleteAreaModal";
@@ -50,34 +51,57 @@ export const CanvasBox = observer((props) => {
     const [deviceEdit, setDeviceEdit] = useState(false)
     const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0})
 
+    /**
+     *reaction реагирует на изменение стейта и обрабатывает его
+     */
+    reaction(
+        () => deviceState.root_device,
+        change => {
+            if (change) {
+                canvasStateForDraw.redrawToGraph(deviceState.root_device)
+            } else {
+
+            }
+        },
+        {name: "graphDraw", fireImmediately:true}
+    )
+    reaction(
+        () => imgDimensions.size_k,
+        () => {
+            canvasStateForLoad.reload()
+        },
+    )
+
+    reaction(() => canvasStateForDraw.closed_area,
+            change => {
+                if (canvasStateForDraw.closed_area){
+                    setConfirmModal(true)
+                }
+            }
+        )
+
+
+    reaction(
+        () => deviceState.is_on_area,
+        change => {
+            if (deviceState.is_on_area){
+                if (deviceState.new_device.type === "device"){
+                    setConfirmDeviceModal(true)
+                } else if (deviceState.new_device.type === "dependence"){
+                    setConfirmDependenceModal(true)
+                }
+            }
+        }
+    )
+
     useEffect(()=>{
         loadImage(plan.url);
         canvasStateForLoad.addPlanIDForAreas(plan.id)
         canvasStateForLoad.setPlanId(plan.id)
         canvasStateForLoad.setCanvas(canvasForLoadRef.current)
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
-    }, [canvasForLoadRef, plan.url])
+    }, [canvasForLoadRef, plan.url, plan.id])
 
-    useEffect(()=>{
-        if (canvasStateForDraw.closed_area){
-            setConfirmModal(true)
-        }
-    }, [canvasStateForDraw.closed_area])
-
-    useEffect(()=>{
-        if (deviceState.is_on_area){
-            if (deviceState.new_device.type === "device"){
-                setConfirmDeviceModal(true)
-            } else if (deviceState.new_device.type === "dependence"){
-                setConfirmDependenceModal(true)
-            }
-
-        }
-    }, [deviceState.is_on_area])
-
-    useEffect(()=>{
-        canvasStateForLoad.reload()
-    }, [imgDimensions.size_k])
 
     const loadImage = (imageUrl) => {
         const img = new Image();
@@ -156,7 +180,7 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseDownHandler = () =>{
-        if (deviceState.new_device || toolState.tool) {
+        if (deviceState.new_device || toolState.tool || deviceState.root_device) {
             return;
         }
         if (canvasStateForLoad.move){
@@ -174,7 +198,7 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseUpHandler = () => {
-        if (deviceState.new_device || toolState.tool) {
+        if (deviceState.new_device || toolState.tool || deviceState.root_device) {
             return;
         }
         if (!isDragging){
@@ -191,7 +215,7 @@ export const CanvasBox = observer((props) => {
 
     const mouseMoveHandler = (e) => {
         getCursorPosition(e)
-        if (deviceState.new_device || toolState.tool) {
+        if (deviceState.new_device || toolState.tool || deviceState.root_device) {
             canvasStateForLoad.setActive(false)
             return;
         }
