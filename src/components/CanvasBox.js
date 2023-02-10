@@ -13,6 +13,9 @@ import {observable} from "mobx";
 import dependencesStore from "../store/DependencesStore";
 import devicesStore from "../store/DevicesStore";
 import ConfirmDependenceModal from "../pages/plan/ConfirmDependenceModal";
+import ConfirmGraphModal from "../pages/plan/ConfirmGraphModal";
+import graphStore from "../store/GraphStore";
+import Graph from "../tools/Graph";
 
 
 export const imgDimensions = observable(
@@ -50,7 +53,7 @@ export const CanvasBox = observer((props) => {
     const [confirmDependenceModal, setConfirmDependenceModal] = useState(false)
     const [deviceEdit, setDeviceEdit] = useState(false)
     const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0})
-
+    const [confirmGraphModal, setConfirmGraphModal] = useState(false)
     /**
      *reaction реагирует на изменение стейта и обрабатывает его
      */
@@ -58,22 +61,24 @@ export const CanvasBox = observer((props) => {
         () => deviceState.root_device,
         change => {
             if (change) {
-                canvasStateForDraw.redrawToGraph(deviceState.root_device)
+                canvasStateForDraw.toolBeforeGraphCreated(deviceState.root_device)
             } else {
 
             }
         },
         {name: "graphDraw", fireImmediately:true}
     )
+
     reaction(
         () => imgDimensions.size_k,
-        () => {
+            () => {
             canvasStateForLoad.reload()
-        },
+            },
+        {name: "changePlanSize", fireImmediately:true}
     )
 
     reaction(() => canvasStateForDraw.closed_area,
-            change => {
+        () => {
                 if (canvasStateForDraw.closed_area){
                     setConfirmModal(true)
                 }
@@ -83,9 +88,9 @@ export const CanvasBox = observer((props) => {
 
     reaction(
         () => deviceState.is_on_area,
-        change => {
-            if (deviceState.is_on_area){
-                if (deviceState.new_device.type === "device"){
+        () => {
+            if (deviceState.is_on_area && !deviceState.root_device){
+                if (deviceState.new_device.type === "device" ){
                     setConfirmDeviceModal(true)
                 } else if (deviceState.new_device.type === "dependence"){
                     setConfirmDependenceModal(true)
@@ -93,6 +98,7 @@ export const CanvasBox = observer((props) => {
             }
         }
     )
+
 
     useEffect(()=>{
         loadImage(plan.url);
@@ -198,13 +204,17 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseUpHandler = () => {
-        if (deviceState.new_device || toolState.tool || deviceState.root_device) {
+        if (deviceState.root_device){
+            setConfirmGraphModal(true)
+        }
+        if (deviceState.new_device || toolState.tool) {
             return;
         }
+
         if (!isDragging){
 
         }
-        //если мышка отпустила объект во время перетаскивания
+        //если мышка отпустила область во время перетаскивания
         else if (canvasStateForLoad.move && isDragging) {
                 canvasStateForLoad.move =false
                 canvasStateForLoad.reload()
@@ -242,28 +252,27 @@ export const CanvasBox = observer((props) => {
 
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
-                                for (let i =0; i < devicesStore.devices.length; i++){
-                                    if (isOnDevice(cursorPosition.x, cursorPosition.y, devicesStore.devices[i])){
-                                        canvasStateForDraw.hoverDevice(devicesStore.devices[i])
-                                        deviceState.setSelectedDevice(devicesStore.devices[i])
-                                        return;
+                                devicesStore.devices.filter(item => !item.belongs_to_graph).forEach(device => {
+                                    if (isOnDevice(cursorPosition.x, cursorPosition.y, device)){
+                                        canvasStateForDraw.hoverDevice(device)
+                                        deviceState.setSelectedDevice(device)
                                     } else {
                                         for (let i =0; i < dependencesStore.dependences.length; i++){
                                             if (isOnDevice(cursorPosition.x, cursorPosition.y, dependencesStore.dependences[i])){
                                                 canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
                                                 deviceState.setSelectedDevice(dependencesStore.dependences[i])
-                                                return;
                                             }
                                             else {
                                                 deviceState.setSelectedDevice(null)
-                                                return;
                                             }
                                         }
                                     }
+                                   
+                                })
 
                                 }
                                 return;
-                            }
+
                         } else {
 
                             canvasStateForLoad.setDeleteItem(null)
@@ -327,6 +336,18 @@ export const CanvasBox = observer((props) => {
 
     const saveDeviceParams = () => {
         setDeviceEdit(false)
+    }
+
+    const createGraph = () => {
+        canvasStateForDraw.reload()
+        let graph = new Graph(canvasStateForDraw.canvas)
+        graphStore.addGraph(graph)
+        deviceState.new_device.belongs_to_graph = graph
+        deviceState.root_device.belongs_to_graph = graph
+        devicesStore.addDevice(deviceState.new_device)
+        deviceState.reload()
+        canvasStateForLoad.reload()
+        setConfirmGraphModal(false)
     }
 
     let sliderStyle = {
@@ -401,6 +422,7 @@ export const CanvasBox = observer((props) => {
             <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
             <ConfirmDeviceModal confirmModal={confirmDeviceModal} setConfirmModal={setConfirmDeviceModal} save={saveDevicesHandle}/>
             <ConfirmDependenceModal confirmModal={confirmDependenceModal} setConfirmModal={setConfirmDependenceModal} save={saveDevicesHandle}/>
+            <ConfirmGraphModal confirmModal={confirmGraphModal} setConfirmModal={setConfirmGraphModal} createGraph={createGraph} />
         </>
     )
 });

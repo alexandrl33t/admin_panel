@@ -21,6 +21,7 @@ class DevicesStore {
         }
         this.devices.push(item)
     }
+
 }
 
 export default new DevicesStore()

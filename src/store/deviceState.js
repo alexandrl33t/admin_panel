@@ -34,6 +34,15 @@ class DeviceState {
         this.root_device = device
     }
 
+
+    reload(){
+        this.new_device = null
+        this.selected_device = null
+        this.is_on_area = false
+        this.moveDevice = false
+        this.changing_params = false
+        this.root_device = null
+    }
 }
 
 export default new DeviceState()

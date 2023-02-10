@@ -87,8 +87,8 @@ class CanvasStateForLoad {
         })
     }
 
-    drawDevices(devices) {
-        devices.forEach((device) => {
+    drawDevices() {
+        devicesStore.devices.filter(item => !item.belongs_to_graph).forEach((device) => {
             this.imgURL = device.imgURL
             this.img = new Image();
             this.img.src = this.imgURL;
@@ -121,9 +121,12 @@ class CanvasStateForLoad {
     }
 
     setText(item) {
-        this.ctx.fillStyle = "rgba(88,167,245,0.96)";
-        this.ctx.font = `${20 * imgDimensions.size_k}px impact`;
-        this.ctx.fillText(item.name, item.points[0].x * imgDimensions.size_k + 30, item.points[0].y * imgDimensions.size_k + 30);
+        this.ctx.strokeStyle = "rgba(12,59,61,0.56)";
+        this.ctx.lineWidth = 1;
+        this.ctx.fillStyle = "rgb(46,224,231)";
+        this.ctx.font = `${20*imgDimensions.size_k}px Sans-serif`;
+        this.ctx.fillText(item.name, (item.points[0].x + 25)*imgDimensions.size_k,  (item.points[0].y + 30)*imgDimensions.size_k);
+        this.ctx.strokeText(item.name, (item.points[0].x + 25) *imgDimensions.size_k, (item.points[0].y + 30)*imgDimensions.size_k)
     }
 
     fillArea(item) {

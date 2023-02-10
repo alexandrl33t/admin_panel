@@ -17,13 +17,16 @@ export default class Graph{
     type = null
     includes = []
 
-    constructor(canvas, root_device) {
+    constructor(canvas) {
         this.canvas = canvas
         this.ctx = canvas.getContext('2d')
-        if (root_device.points){
-            this.points = root_device.points
-        }
+        this.points = deviceState.root_device.points
         this.imgURL = "https://www.svgrepo.com/show/500066/bulletin-board.svg"
+        this.plan_id = deviceState.root_device.plan_id
+        this.points = deviceState.root_device.points
+        this.area_id = deviceState.root_device.area_id
+        this.pushDevice(deviceState.root_device)
+        this.pushDevice(deviceState.new_device)
         this.draw()
     }
 

@@ -15,6 +15,7 @@ export default class AbstractDevice{
     size = 40
     type = null
     is_on_other_device = false
+    belongs_to_graph = null
 
     constructor(canvas) {
         this.canvas = canvas

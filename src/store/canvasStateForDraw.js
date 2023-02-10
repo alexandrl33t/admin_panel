@@ -53,15 +53,21 @@ class CanvasStateForDraw {
         this.ctx.closePath();
     }
     setText(item){
-        this.ctx.fillStyle = "rgba(224,27,27,0.96)";
-        this.ctx.font = `${20*imgDimensions.size_k}px impact`;
+        this.ctx.strokeStyle = "rgba(12,59,61,0.56)";
+        this.ctx.lineWidth = 1;
+        this.ctx.fillStyle = "rgb(46,224,231)";
+        this.ctx.font = `${20*imgDimensions.size_k}px Sans-serif`;
         this.ctx.fillText(item.name, item.points[0].x *imgDimensions.size_k + 30, item.points[0].y*imgDimensions.size_k + 30);
+        this.ctx.strokeText(item.name, item.points[0].x *imgDimensions.size_k + 30, item.points[0].y*imgDimensions.size_k + 30)
     }
 
 
-    redrawToGraph(item){
-        this.ctx.fillStyle = "rgba(229,75,75,0.96)";
+    toolBeforeGraphCreated(item){
+        this.ctx.strokeStyle = "rgba(12,59,61,0.56)";
+        this.ctx.lineWidth = 1;
+        this.ctx.fillStyle = "rgb(46,224,231)";
         this.ctx.font = `${20*imgDimensions.size_k}px impact`;
+        this.ctx.strokeText(`Объединить ${deviceState.new_device?.name} с ${deviceState.root_device?.name}?`, item.points.x *imgDimensions.size_k + 30, item.points.y*imgDimensions.size_k + 30);
         this.ctx.fillText(`Объединить ${deviceState.new_device?.name} с ${deviceState.root_device?.name}?`, item.points.x *imgDimensions.size_k + 30, item.points.y*imgDimensions.size_k + 30);
     }
 
