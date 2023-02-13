@@ -5,7 +5,7 @@ export const areaStyle = {
         lineWidth : 3,
     },
     dragging: {
-        fillStyle : "rgba(159,159,159,0.59)",
+        fillStyle : "rgba(159,159,159,0.4)",
     },
     invisible: {
         strokeStyle : "rgba(0,142,255,0)",

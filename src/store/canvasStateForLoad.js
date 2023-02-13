@@ -4,6 +4,7 @@ import canvasStateForDraw from "./canvasStateForDraw";
 import {imgDimensions} from "../components/CanvasBox";
 import dependencesStore from "./DependencesStore";
 import devicesStore from "./DevicesStore";
+import graphStore from "./GraphStore";
 /**
  * Канвас для отрисовки готовых областей
  */
@@ -73,6 +74,15 @@ class CanvasStateForLoad {
             this.move = false
             this.delete = false
         }
+    }
+
+    drawGraphs(){
+        graphStore.graphs.forEach((graph) => {
+            this.imgURL = graph.imgURL
+            this.img = new Image();
+            this.img.src = this.imgURL;
+            this.ctx.drawImage(this.img, graph.points.x * imgDimensions.size_k, graph.points.y * imgDimensions.size_k, graph.size * imgDimensions.size_k, graph.size * imgDimensions.size_k);
+        })
     }
 
     drawAreas(items) {
@@ -170,9 +180,9 @@ class CanvasStateForLoad {
 
     reload() {
         this.drawAreas(this.areas)
+        this.drawGraphs()
         this.drawDevices(devicesStore.devices)
         this.drawDependences(dependencesStore.dependences)
-        this.filled_background = false
         this.editable_item = null
     }
 }

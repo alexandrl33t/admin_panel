@@ -6,7 +6,7 @@ class DeviceState {
     is_on_area = false
     moveDevice = false
     changing_params = false
-
+    graph_selected = false
     //параметры для графа
     root_device = null
 

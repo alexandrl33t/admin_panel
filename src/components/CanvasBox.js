@@ -148,7 +148,7 @@ export const CanvasBox = observer((props) => {
         return false
     }
 
-    const isOnDevice = (x, y, item) => {
+    const isOnItem = (x, y, item) => {
         if (item?.points){
             if (x >= item.points.x * imgDimensions.size_k
                 && y >= item.points.y * imgDimensions.size_k
@@ -225,7 +225,7 @@ export const CanvasBox = observer((props) => {
 
     const mouseMoveHandler = (e) => {
         getCursorPosition(e)
-        if (deviceState.new_device || toolState.tool || deviceState.root_device) {
+        if (deviceState.new_device || toolState.tool || deviceState.root_device || deviceState.graph_selected) {
             canvasStateForLoad.setActive(false)
             return;
         }
@@ -249,32 +249,31 @@ export const CanvasBox = observer((props) => {
                                 canvasStateForDraw.fillAreaForDrag(canvasStateForLoad.areas[i])
                                 return;
                             } else {
-
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
                                 devicesStore.devices.filter(item => !item.belongs_to_graph).forEach(device => {
-                                    if (isOnDevice(cursorPosition.x, cursorPosition.y, device)){
+                                    if (isOnItem(cursorPosition.x, cursorPosition.y, device)){
                                         canvasStateForDraw.hoverDevice(device)
                                         deviceState.setSelectedDevice(device)
-                                    } else {
-                                        for (let i =0; i < dependencesStore.dependences.length; i++){
-                                            if (isOnDevice(cursorPosition.x, cursorPosition.y, dependencesStore.dependences[i])){
-                                                canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
-                                                deviceState.setSelectedDevice(dependencesStore.dependences[i])
-                                            }
-                                            else {
-                                                deviceState.setSelectedDevice(null)
-                                            }
-                                        }
+                                    } })
+                                for (let i =0; i < dependencesStore.dependences.length; i++){
+                                    if (isOnItem(cursorPosition.x, cursorPosition.y, dependencesStore.dependences[i])){
+                                        canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
+                                        deviceState.setSelectedDevice(dependencesStore.dependences[i])
                                     }
-                                   
-                                })
+                                }
+
+                                for (let i =0; i < graphStore.graphs.length; i++){
+                                    if (isOnItem(cursorPosition.x, cursorPosition.y, graphStore.graphs[i])){
+                                        canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
+                                        deviceState.setSelectedDevice(dependencesStore.dependences[i])
+                                        return;
+                                    }
+                                }
 
                                 }
                                 return;
-
                         } else {
-
                             canvasStateForLoad.setDeleteItem(null)
                             if (canvasStateForLoad.filled_background){
                                 canvasStateForLoad.reload()
@@ -282,9 +281,7 @@ export const CanvasBox = observer((props) => {
                             canvasStateForDraw.reload()
                         }
                     }
-
             } else if (canvasStateForLoad.move && isDragging) {
-
                 if (!canvasStateForLoad.filled_background){
                     canvasStateForLoad.isDragging()
                 }
@@ -295,6 +292,7 @@ export const CanvasBox = observer((props) => {
                 cursorDragPoint.y = cursorPosition.y
             }
         }
+
 
 
     }
