@@ -13,6 +13,7 @@ class GraphStore {
     }
 
     addGraph(item) {
+        console.log(item)
         item.type = "graph"
         if (imgDimensions.size_k !== 1){
             item.points.x /= imgDimensions.size_k

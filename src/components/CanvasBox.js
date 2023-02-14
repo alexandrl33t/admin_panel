@@ -265,9 +265,11 @@ export const CanvasBox = observer((props) => {
 
                                 for (let i =0; i < graphStore.graphs.length; i++){
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, graphStore.graphs[i])){
-                                        canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
-                                        deviceState.setSelectedDevice(dependencesStore.dependences[i])
+                                        canvasStateForDraw.hoverGraph(graphStore.graphs[i])
+                                        deviceState.setSelectedDevice(graphStore.graphs[i])
                                         return;
+                                    } else {
+                                        canvasStateForLoad.filled_background = false
                                     }
                                 }
 
@@ -276,7 +278,7 @@ export const CanvasBox = observer((props) => {
                         } else {
                             canvasStateForLoad.setDeleteItem(null)
                             if (canvasStateForLoad.filled_background){
-                                canvasStateForLoad.reload()
+                                // canvasStateForLoad.reload()
                             }
                             canvasStateForDraw.reload()
                         }
@@ -339,13 +341,15 @@ export const CanvasBox = observer((props) => {
     const createGraph = () => {
         canvasStateForDraw.reload()
         let graph = new Graph(canvasStateForDraw.canvas)
+        graph.name = form.getFieldValue("graphName")
         graphStore.addGraph(graph)
         deviceState.new_device.belongs_to_graph = graph
         deviceState.root_device.belongs_to_graph = graph
         devicesStore.addDevice(deviceState.new_device)
         deviceState.reload()
         canvasStateForLoad.reload()
-        setConfirmGraphModal(false)
+
+
     }
 
     let sliderStyle = {
@@ -366,10 +370,10 @@ export const CanvasBox = observer((props) => {
 
     return (
         <>
+            <Form
+            form={form}
+            >
             {deviceEdit && (
-                <Form
-                    form={form}
-                >
                 <div style={sliderStyle}>
                     <Divider orientation="left">
                             <Tooltip title="Изменить название">
@@ -392,7 +396,8 @@ export const CanvasBox = observer((props) => {
                         </Col>
                     </Row>
                 </div>
-                </Form>
+
+
             )}
         <div style={{marginTop:10}}>
         <div className="image_inside_canvas" style={imgStyle}>
@@ -420,7 +425,8 @@ export const CanvasBox = observer((props) => {
             <ConfirmAreaModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} saveArea={saveHandle}/>
             <ConfirmDeviceModal confirmModal={confirmDeviceModal} setConfirmModal={setConfirmDeviceModal} save={saveDevicesHandle}/>
             <ConfirmDependenceModal confirmModal={confirmDependenceModal} setConfirmModal={setConfirmDependenceModal} save={saveDevicesHandle}/>
-            <ConfirmGraphModal confirmModal={confirmGraphModal} setConfirmModal={setConfirmGraphModal} createGraph={createGraph} />
+            <ConfirmGraphModal confirmModal={confirmGraphModal} setConfirmModal={setConfirmGraphModal} createGraph={createGraph} form={form} />
+            </Form>
         </>
     )
 });

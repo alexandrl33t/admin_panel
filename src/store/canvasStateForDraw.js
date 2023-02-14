@@ -2,13 +2,13 @@ import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import {imgDimensions} from "../components/CanvasBox";
 import deviceState from "./deviceState";
+import canvasStateForLoad from "./canvasStateForLoad";
 /**
  * Канвас для создания новых областей
  */
 class CanvasStateForDraw {
     canvas = null
     isActive = false
-    undolist =[]
     current_item = {
         name: "",
         points:[],
@@ -16,8 +16,9 @@ class CanvasStateForDraw {
     closed_area = false
 
     original_size = {width: 0, height: 0}
-    //коэффициент масштаба плана
-    size_k = 1
+
+    current_devices = []
+
 
     constructor() {
         makeAutoObservable(this)
@@ -143,6 +144,49 @@ class CanvasStateForDraw {
         this.ctx.fillStyle = "rgba(126,10,10,0.96)";
         this.ctx.font = `${15*imgDimensions.size_k}px impact`;
         this.ctx.fillText(device.name, (device.points.x + device.size/2) * imgDimensions.size_k, (device.points.y+ device.size+15) * imgDimensions.size_k);
+    }
+
+    hoverGraph(graph){
+        this.reload()
+        canvasStateForLoad.isDragging()
+        let angle = 360 / graph.includes.length
+        let start_point = {x: graph.points.x + graph.size/2, y: graph.points.y + graph.size/2}
+        let second_point = {x: start_point.x, y: start_point.y + graph.size}
+        this.ctx.beginPath()
+        this.ctx.lineCap = "round"
+
+        for (let i = 0; i < graph.includes.length; i++){
+            this.ctx.moveTo(start_point.x*imgDimensions.size_k, start_point.y*imgDimensions.size_k)
+            const rad = Math.PI / 180 * angle * (i + 1)
+            const x = start_point.x + (second_point.x - start_point.x) * Math.cos(rad) - (second_point.y - start_point.y) * Math.sin(rad)
+            const y = start_point.y + (second_point.x - start_point.x) * Math.sin(rad) + (second_point.y - start_point.y) * Math.cos(rad)
+            this.ctx.lineTo(x*imgDimensions.size_k, y*imgDimensions.size_k)
+            this.ctx.stroke()
+            if (0 <= angle && angle * (i + 1) < 90 ){
+                graph.includes[i].points.x = x - graph.includes[i].size/2
+                graph.includes[i].points.y = y - graph.includes[i].size/2
+            } else if (90 <=angle && angle * (i + 1) < 180 ){
+                graph.includes[i].points.x = x + graph.includes[i].size/2
+                graph.includes[i].points.y = y + graph.includes[i].size/2
+            }else if (180 <= angle && angle * (i + 1) < 270 ){
+                graph.includes[i].points.x = x + graph.includes[i].size/2
+                graph.includes[i].points.y = y + graph.includes[i].size/2
+            }else {
+                graph.includes[i].points.x = x - graph.includes[i].size/2
+                graph.includes[i].points.y = y - graph.includes[i].size/2
+            }
+
+            graph.includes[i].size = graph.size * 0.8
+            this.drawImg(graph.includes[i])
+        }
+
+        this.drawImg(graph)
+    }
+
+    drawImg(item){
+        this.imgItem = new Image();
+        this.imgItem.src = item.imgURL
+        this.ctx.drawImage(this.imgItem, item.points.x * imgDimensions.size_k, item.points.y * imgDimensions.size_k, item.size * imgDimensions.size_k, item.size * imgDimensions.size_k);
     }
 
 
