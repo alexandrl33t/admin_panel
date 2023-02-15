@@ -72,7 +72,7 @@ export const CanvasBox = observer((props) => {
     reaction(
         () => imgDimensions.size_k,
             () => {
-            canvasStateForLoad.reload()
+                canvasStateForLoad.reload();
             },
         {name: "changePlanSize", fireImmediately:true}
     )
@@ -186,7 +186,7 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseDownHandler = () =>{
-        if (deviceState.new_device || toolState.tool || deviceState.root_device) {
+        if (deviceState.new_device || toolState.tool || deviceState.root_device || deviceEdit) {
             return;
         }
         if (canvasStateForLoad.move){
@@ -198,6 +198,10 @@ export const CanvasBox = observer((props) => {
         else if (deviceState.selected_device){
             form.setFieldValue("nameInput", deviceState.selected_device.name)
             form.setFieldValue("iconSize", deviceState.selected_device.size)
+            if (deviceState.selected_device.type === "graph"){
+                    canvasStateForDraw.hoverGraph(deviceState.selected_device)
+                    deviceState.setSelectedDevice(deviceState.selected_device)
+            }
             setDeviceEdit(!deviceEdit)
         }
 
@@ -207,7 +211,7 @@ export const CanvasBox = observer((props) => {
         if (deviceState.root_device){
             setConfirmGraphModal(true)
         }
-        if (deviceState.new_device || toolState.tool) {
+        if (deviceState.new_device || toolState.tool || deviceEdit) {
             return;
         }
 
@@ -225,7 +229,7 @@ export const CanvasBox = observer((props) => {
 
     const mouseMoveHandler = (e) => {
         getCursorPosition(e)
-        if (deviceState.new_device || toolState.tool || deviceState.root_device || deviceState.graph_selected) {
+        if (deviceState.new_device || toolState.tool || deviceState.root_device || deviceState.graph_selected || deviceEdit) {
             canvasStateForLoad.setActive(false)
             return;
         }
@@ -255,7 +259,8 @@ export const CanvasBox = observer((props) => {
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, device)){
                                         canvasStateForDraw.hoverDevice(device)
                                         deviceState.setSelectedDevice(device)
-                                    } })
+                                    }
+                                })
                                 for (let i =0; i < dependencesStore.dependences.length; i++){
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, dependencesStore.dependences[i])){
                                         canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
@@ -265,11 +270,11 @@ export const CanvasBox = observer((props) => {
 
                                 for (let i =0; i < graphStore.graphs.length; i++){
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, graphStore.graphs[i])){
-                                        canvasStateForDraw.hoverGraph(graphStore.graphs[i])
+                                        canvasStateForDraw.hoverDevice(graphStore.graphs[i])
                                         deviceState.setSelectedDevice(graphStore.graphs[i])
                                         return;
                                     } else {
-                                        canvasStateForLoad.filled_background = false
+                                        deviceState.setSelectedDevice(null)
                                     }
                                 }
 
@@ -277,8 +282,8 @@ export const CanvasBox = observer((props) => {
                                 return;
                         } else {
                             canvasStateForLoad.setDeleteItem(null)
-                            if (canvasStateForLoad.filled_background){
-                                // canvasStateForLoad.reload()
+                            if (!canvasStateForLoad.filled_background){
+                                canvasStateForLoad.reload()
                             }
                             canvasStateForDraw.reload()
                         }

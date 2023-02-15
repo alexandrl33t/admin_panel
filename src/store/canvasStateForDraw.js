@@ -147,8 +147,10 @@ class CanvasStateForDraw {
     }
 
     hoverGraph(graph){
-        this.reload()
-        canvasStateForLoad.isDragging()
+        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
+        if (!canvasStateForLoad.filled_background){
+            canvasStateForLoad.isDragging()
+        }
         let angle = 360 / graph.includes.length
         let start_point = {x: graph.points.x + graph.size/2, y: graph.points.y + graph.size/2}
         let second_point = {x: start_point.x, y: start_point.y + graph.size}
@@ -161,7 +163,6 @@ class CanvasStateForDraw {
             const x = start_point.x + (second_point.x - start_point.x) * Math.cos(rad) - (second_point.y - start_point.y) * Math.sin(rad)
             const y = start_point.y + (second_point.x - start_point.x) * Math.sin(rad) + (second_point.y - start_point.y) * Math.cos(rad)
             this.ctx.lineTo(x*imgDimensions.size_k, y*imgDimensions.size_k)
-            this.ctx.stroke()
             if (0 <= angle && angle * (i + 1) < 90 ){
                 graph.includes[i].points.x = x - graph.includes[i].size/2
                 graph.includes[i].points.y = y - graph.includes[i].size/2
@@ -169,14 +170,14 @@ class CanvasStateForDraw {
                 graph.includes[i].points.x = x + graph.includes[i].size/2
                 graph.includes[i].points.y = y + graph.includes[i].size/2
             }else if (180 <= angle && angle * (i + 1) < 270 ){
-                graph.includes[i].points.x = x + graph.includes[i].size/2
-                graph.includes[i].points.y = y + graph.includes[i].size/2
+                graph.includes[i].points.x = x - graph.includes[i].size/2
+                graph.includes[i].points.y = y - graph.includes[i].size/2
             }else {
                 graph.includes[i].points.x = x - graph.includes[i].size/2
                 graph.includes[i].points.y = y - graph.includes[i].size/2
             }
-
             graph.includes[i].size = graph.size * 0.8
+            this.ctx.stroke()
             this.drawImg(graph.includes[i])
         }
 
@@ -196,12 +197,18 @@ class CanvasStateForDraw {
 
 
     reload() {
-        this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
-        this.current_item = {
-            name: "",
-            points:[],
+        if (deviceState.selected_device?.type === "graph") {
+            this.hoverGraph(deviceState.selected_device)
+        } else {
+            this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
+            this.current_item = {
+                name: "",
+                points:[],
+            }
+            this.closed_area = false
         }
-        this.closed_area = false
+
+
     }
 }
 

@@ -179,14 +179,12 @@ class CanvasStateForLoad {
     }
 
     reload() {
-        if (!this.filled_background){
-            this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
-            this.drawAreas(this.areas)
-            this.drawGraphs()
-            this.drawDevices(devicesStore.devices)
-            this.drawDependences(dependencesStore.dependences)
-            this.editable_item = null
-        }
+        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
+        this.drawAreas(this.areas)
+        this.drawGraphs()
+        this.drawDevices(devicesStore.devices)
+        this.drawDependences(dependencesStore.dependences)
+        this.editable_item = null
     }
 }
 
