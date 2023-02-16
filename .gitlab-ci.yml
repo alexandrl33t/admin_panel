@@ -28,10 +28,11 @@ deploy:
     only:
         - test
     # для этой ступени другие команды инициализации
-    before_script:     
-        - docker stop "$CI_REGISTRY_IMAGE"
+    #before_script:     
+        #- docker stop "$CI_REGISTRY_IMAGE"
     script:
         - echo 'Deploy'
+        - echo '$CI_REGISTRY_IMAGE'
         - docker build -t "$CI_REGISTRY_IMAGE" .
         - docker run "$CI_REGISTRY_IMAGE"
        
