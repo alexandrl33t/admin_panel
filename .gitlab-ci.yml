@@ -1,21 +1,67 @@
+# Сообщаем Gitlab CI, что мы будем использовать Docker при сборке.
+image: docker:latest
+services:
+    - docker:dind
+
+# Описываем, из каких ступеней будет состоять наша непрерывная интеграция:
+#  - сборка Docker-образа,
+#  - выкат на боевой сервер.
 stages:
-  - docker-build
-  - deploy
+    - build
+#    - test
+    - deploy
 
-docker-build:
-  stage: docker-build
-  image: docker:latest
-  services:
-    - docker:bind
-  before_script:
-    - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    - docker push "$CI_REGISTRY_IMAGE"
+# Описываем инициализационные команды, которые необходимо запускать
+#  перед запуском каждой ступени.
+# Изменения, внесённые на каждой ступени, не переносятся на другие, так как запуск
+#  ступеней осуществляется в чистом Docker-контейнере, который пересоздаётся каждый раз.
+before_script:
+    # установка pip
+    - apt install -q python3-pip -y
+    # установка docker-compose
+    - pip install docker-compose
+    # логин в Gitlab Docker registry
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
 
+# Сборка Docker-образа
+build:
+    tags:
+        - admin-panel
+    stage: build
+    script:
+        # собственно сборка
+        - docker build
+        # отправка собранного в registry
+        - docker push
+
+# Прогон тестов
+#test:
+#    stage: test
+#    script:
+#        # вместо повторной сборки, забираем собранный на предыдущей ступени
+#        #  готовый образ из registry
+#        - docker-compose pull test
+#        # запускаем тесты
+#        - docker-compose run test
+
+# Выкат на сервер
 deploy:
-  stage: deploy
-  image: node
-  script:
-    - echo "Testing App"
-    - echo "Test successfully!"
+    tags:
+        - admin-panel
+    stage: deploy
+    # выкатываем только ветку master
+    only:
+        - test
+    # для этой ступени другие команды инициализации
+    before_script:     
+        # добавляем приватный ключ для выката
+        - eval $(ssh-agent -s)
+        - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add - > /dev/null
+        - mkdir -p ~/.ssh
+        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        - docker stop admin_panel
+    script:
+        - echo 'Deploy'
+        - docker build -t admin_panel .
+        - docker run admin_panel
+       
