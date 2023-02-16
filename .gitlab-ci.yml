@@ -32,7 +32,7 @@ deploy:
         #- docker stop "$CI_REGISTRY_IMAGE"
     script:
         - echo 'Deploy'
-        - echo '$CI_REGISTRY_IMAGE'
+        - echo "$CI_REGISTRY_IMAGE"
         - docker build -t "$CI_REGISTRY_IMAGE" .
-        - docker run "$CI_REGISTRY_IMAGE"
+        - docker run "$CI_REGISTRY_IMAGE" -d
        
