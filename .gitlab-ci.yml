@@ -29,9 +29,9 @@ deploy:
         - test
     # для этой ступени другие команды инициализации
     before_script:     
-        - docker stop admin_panel
+        - docker stop "$CI_REGISTRY_IMAGE"
     script:
         - echo 'Deploy'
-        - docker build -t admin_panel .
-        - docker run admin_panel
+        - docker build -t "$CI_REGISTRY_IMAGE" .
+        - docker run "$CI_REGISTRY_IMAGE"
        
