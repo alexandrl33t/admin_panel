@@ -34,5 +34,5 @@ deploy:
         - echo 'Deploy'
         - echo "$CI_REGISTRY_IMAGE"
         - docker build -t "$CI_REGISTRY_IMAGE" .
-        - docker run "$CI_REGISTRY_IMAGE" -d
+        - docker run -d "$CI_REGISTRY_IMAGE"
        
