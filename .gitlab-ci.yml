@@ -1,50 +1,25 @@
-# Сообщаем Gitlab CI, что мы будем использовать Docker при сборке.
-image: docker:latest
-services:
-    - docker:dind
-
-# Описываем, из каких ступеней будет состоять наша непрерывная интеграция:
-#  - сборка Docker-образа,
-#  - выкат на боевой сервер.
 stages:
-    - build
-#    - test
+    - docker-build
     - deploy
 
-# Описываем инициализационные команды, которые необходимо запускать
-#  перед запуском каждой ступени.
-# Изменения, внесённые на каждой ступени, не переносятся на другие, так как запуск
-#  ступеней осуществляется в чистом Docker-контейнере, который пересоздаётся каждый раз.
-before_script:
-    # установка pip
-    - apt install -q python3-pip -y
-    # установка docker-compose
-    - pip install docker-compose
-    # логин в Gitlab Docker registry
-    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+docker-build:
+    image: docker:latest
+    services:
+        - docker:bind
 
-# Сборка Docker-образа
-build:
+    before_script:
+        # логин в Gitlab Docker registry
+       #- docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+        - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     tags:
         - admin-panel
-    stage: build
+    stage: docker-build
     script:
         # собственно сборка
-        - docker build
+        - docker build --pull -t "$CI_REGISTRY_IMAGE" .
         # отправка собранного в registry
-        - docker push
+        - docker push "$CI_REGISTRY_IMAGE"
 
-# Прогон тестов
-#test:
-#    stage: test
-#    script:
-#        # вместо повторной сборки, забираем собранный на предыдущей ступени
-#        #  готовый образ из registry
-#        - docker-compose pull test
-#        # запускаем тесты
-#        - docker-compose run test
-
-# Выкат на сервер
 deploy:
     tags:
         - admin-panel
