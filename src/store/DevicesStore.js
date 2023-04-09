@@ -1,5 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {imgDimensions} from "../components/CanvasBox";
+import canvasStateForDraw from "./canvasStateForDraw";
+import canvasStateForLoad from "./canvasStateForLoad";
 
 /**
  * Хранилище устройств
@@ -20,6 +22,13 @@ class DevicesStore {
             item.points.y /= imgDimensions.size_k
         }
         this.devices.push(item)
+    }
+
+    deleteDevice(item) {
+        const index = this.devices.indexOf(item)
+        this.devices.splice(index, 1)
+        canvasStateForDraw.reload()
+        canvasStateForLoad.reload()
     }
 
 }

@@ -9,7 +9,7 @@ class DeviceState {
     graph_selected = false
     //параметры для графа
     root_device = null
-
+    connecting_dependence = false
     constructor() {
         makeAutoObservable(this)
     }
@@ -42,6 +42,7 @@ class DeviceState {
         this.moveDevice = false
         this.changing_params = false
         this.root_device = null
+        this.connecting_dependence = false
     }
 }
 

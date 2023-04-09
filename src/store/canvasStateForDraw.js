@@ -16,7 +16,7 @@ class CanvasStateForDraw {
     closed_area = false
 
     original_size = {width: 0, height: 0}
-
+    connecting_to_device = false
     current_devices = []
 
 

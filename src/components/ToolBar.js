@@ -3,7 +3,7 @@ import {Menu, message, Slider} from "antd";
 import {
     ArrowsAltOutlined,
     EditOutlined,
-    ExpandOutlined, HeatMapOutlined,
+    HeatMapOutlined,
     MinusSquareOutlined,
     PlusSquareOutlined, RadarChartOutlined,
     SaveOutlined, ToolOutlined,
@@ -157,7 +157,9 @@ const ToolBar = observer( () => {
     const addDependence = (dependence) => {
         if (!deviceState.new_device){
             deviceState.setDevice(new Dependence(canvasStateForDraw.canvas, dependence))
-            message.success(`${dependence.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then()
+            message.success(`${dependence.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then(
+                message.info('Наведитесь на устройство, к которму вы хотите подключить зависимость.', 5)
+            )
         } else
         {
             message.error(`Вы не можете добавлять новые устройства, пока не закрепите ${deviceState.new_device.name} на определенной области.`, 7).then()
@@ -276,27 +278,6 @@ const ToolBar = observer( () => {
                         ...devicesFromServer
                     ]
                 },
-                {
-                    label: 'Переместить устройство',
-                    key: 'movedevice',
-                    icon: <ExpandOutlined/>,
-                },
-                {
-                    label: 'Удалить устройство',
-                    key: 'deletedevice',
-                    icon: <MinusSquareOutlined />,
-                },
-                {
-                    label: 'Размер иконок',
-                    key: 'iconsize',
-                    icon: <ArrowsAltOutlined />,
-                    children: [
-                        {
-                            label: <Slider defaultValue={30} onChange={changeDeviceIconSize} />,
-                            key: 'slider',
-                        },
-                    ]
-                },
             ]
         },
         {
@@ -312,38 +293,31 @@ const ToolBar = observer( () => {
                         ...dependencesFromServer
                     ]
                 },
-                {
-                    label: 'Переместить зависимость',
-                    key: 'movedependence',
-                    icon: <ExpandOutlined/>,
-                },
-                {
-                    label: 'Удалить зависимость',
-                    key: 'deletedependence',
-                    icon: <MinusSquareOutlined />,
-                },
-                {
-                    label: 'Размер иконок',
-                    key: 'iconsize',
-                    icon: <ArrowsAltOutlined />,
-                    children: [
-                        {
-                            label: <Slider defaultValue={30} onChange={changeDeviceIconSize} />,
-                            key: 'slider',
-                        },
-                    ]
-                },
             ]
-        }
+        },
+        // {
+        //     label: 'Размер иконок',
+        //     key: 'iconsize',
+        //     icon: <ArrowsAltOutlined />,
+        //     children: [
+        //         {
+        //             label: <Slider defaultValue={30} onChange={changeDeviceIconSize} />,
+        //             key: 'slider',
+        //         },
+        //     ]
+        // },
     ];
 
     function changeDeviceIconSize (value) {
-        if (canvasStateForLoad.devices.length > 0){
-            canvasStateForLoad.devices.forEach((device) => {
-                device.size += value - device.size
-            })
-            canvasStateForLoad.reload()
+        if (canvasStateForLoad.devices) {
+            if (canvasStateForLoad.devices.length > 0){
+                canvasStateForLoad.devices.forEach((device) => {
+                    device.size += value - device.size
+                })
+                canvasStateForLoad.reload()
+            }
         }
+
     }
 
     function changePlanSize(value) {

@@ -1,5 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {imgDimensions} from "../components/CanvasBox";
+import canvasStateForDraw from "./canvasStateForDraw";
+import canvasStateForLoad from "./canvasStateForLoad";
 
 /**
  * Хранилище зависимостей
@@ -19,6 +21,13 @@ class DependencesStore {
             item.points.y /= imgDimensions.size_k
         }
         this.dependences.push(item)
+    }
+
+    deleteDependece(item) {
+        const index = this.dependences.indexOf(item)
+        this.dependences.splice(index, 1)
+        canvasStateForDraw.reload()
+        canvasStateForLoad.reload()
     }
 }
 

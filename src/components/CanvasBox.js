@@ -16,6 +16,8 @@ import ConfirmDependenceModal from "../pages/plan/ConfirmDependenceModal";
 import ConfirmGraphModal from "../pages/plan/ConfirmGraphModal";
 import graphStore from "../store/GraphStore";
 import Graph from "../tools/Graph";
+import ConfirmDependenceConnectModal from "../pages/plan/ConfirmDependenceConnectModal";
+import DeleteDeviceModal from "../pages/plan/DeleteDeviceModal";
 
 
 export const imgDimensions = observable(
@@ -54,6 +56,8 @@ export const CanvasBox = observer((props) => {
     const [deviceEdit, setDeviceEdit] = useState(false)
     const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0})
     const [confirmGraphModal, setConfirmGraphModal] = useState(false)
+    const [confirmDependenceConnect ,setConfirmDependenceConnect] = useState(false)
+    const [deleteDeviceModal, setDeleteDeviceModal] = useState(false)
     /**
      *reaction реагирует на изменение стейта и обрабатывает его
      */
@@ -186,6 +190,10 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseDownHandler = () =>{
+        if (deviceState.connecting_dependence){
+            setConfirmDependenceConnect(true)
+            return;
+        }
         if (deviceState.new_device || toolState.tool || deviceState.root_device || deviceEdit) {
             return;
         }
@@ -196,6 +204,7 @@ export const CanvasBox = observer((props) => {
             setDeleteModal(true)
         }
         else if (deviceState.selected_device){
+
             form.setFieldValue("nameInput", deviceState.selected_device.name)
             form.setFieldValue("iconSize", deviceState.selected_device.size)
             if (deviceState.selected_device.type === "graph"){
@@ -229,7 +238,7 @@ export const CanvasBox = observer((props) => {
 
     const mouseMoveHandler = (e) => {
         getCursorPosition(e)
-        if (deviceState.new_device || toolState.tool || deviceState.root_device || deviceState.graph_selected || deviceEdit) {
+        if (deviceState.new_device || toolState.tool || deviceState.root_device || deviceState.graph_selected || deviceEdit || deviceState.connecting_dependence) {
             canvasStateForLoad.setActive(false)
             return;
         }
@@ -270,7 +279,7 @@ export const CanvasBox = observer((props) => {
 
                                 for (let i =0; i < graphStore.graphs.length; i++){
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, graphStore.graphs[i])){
-                                        canvasStateForDraw.hoverDevice(graphStore.graphs[i])
+
                                         deviceState.setSelectedDevice(graphStore.graphs[i])
                                         return;
                                     } else {
@@ -316,10 +325,18 @@ export const CanvasBox = observer((props) => {
     const saveDevicesHandle = () => {
         if (deviceState.new_device.type === "device"){
             devicesStore.addDevice(deviceState.new_device)
+            deviceState.setDevice(null)
+
         } else if (deviceState.new_device.type === "dependence") {
             dependencesStore.addDependence(deviceState.new_device)
         }
-        deviceState.setDevice(null)
+        canvasStateForLoad.reload()
+        canvasStateForDraw.reload()
+    }
+
+    const connectDependence = () => {
+        deviceState.reload()
+        console.log(dependencesStore.dependences)
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
     }
@@ -341,6 +358,16 @@ export const CanvasBox = observer((props) => {
 
     const saveDeviceParams = () => {
         setDeviceEdit(false)
+    }
+    const deleteDependence = () => {
+        setDeviceEdit(false)
+        dependencesStore.deleteDependece(deviceState.selected_device)
+        deviceState.reload()
+    }
+    const deleteDevice = () => {
+        setDeviceEdit(false)
+        devicesStore.deleteDevice(deviceState.selected_device)
+        deviceState.reload()
     }
 
     const createGraph = () => {
@@ -388,17 +415,34 @@ export const CanvasBox = observer((props) => {
                             </Tooltip>
                     </Divider>
                     <Row gutter={24}>
-                        <Col span={4}>
+                        <Col span={4} >
                             Размер иконки
-                            <Form.Item name="iconSize">
-                                <Slider onChange={changeIconSize}/>
+                            <Form.Item name="iconSize" >
+                                <Slider onChange={changeIconSize} style={{marginTop: 0}}/>
                             </Form.Item>
                         </Col>
-                        <Col span={4} >
+                        <Col span={3} >
                             <Button type="primary" onClick={saveDeviceParams}>
                                 Сохранить
                             </Button>
                         </Col>
+                        <Col span={4} offset={1}>
+                            <Button danger onClick={()=>{setDeleteDeviceModal(true)}}>
+                                <span style={{color: "red"}}>
+                                     Удалить
+                                </span>
+                            </Button>
+                        </Col>
+                        {deviceState?.selected_device?.type === 'dependence' &&
+                            (
+                                <Col span={12} >
+                                    <h3 style={{marginTop: 5}}>
+                                        Подключено к устройству {deviceState.selected_device.belongs_to.name}
+                                    </h3>
+                                </Col>
+                            )
+                        }
+
                     </Row>
                 </div>
 
@@ -431,6 +475,8 @@ export const CanvasBox = observer((props) => {
             <ConfirmDeviceModal confirmModal={confirmDeviceModal} setConfirmModal={setConfirmDeviceModal} save={saveDevicesHandle}/>
             <ConfirmDependenceModal confirmModal={confirmDependenceModal} setConfirmModal={setConfirmDependenceModal} save={saveDevicesHandle}/>
             <ConfirmGraphModal confirmModal={confirmGraphModal} setConfirmModal={setConfirmGraphModal} createGraph={createGraph} form={form} />
+                <ConfirmDependenceConnectModal confirmModal={confirmDependenceConnect} setConfirmModal={setConfirmDependenceConnect} connectFunc={connectDependence}/>
+                <DeleteDeviceModal deleteModal={deleteDeviceModal} setDeleteModal={setDeleteDeviceModal} deleteDevice={deleteDevice} deleteDependence={deleteDependence}/>
             </Form>
         </>
     )
