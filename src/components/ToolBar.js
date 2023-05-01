@@ -15,10 +15,10 @@ import Device from "../tools/Device";
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {observer} from "mobx-react-lite";
-import deviceState from "../store/deviceState";
+import ReleState from "../store/ReleState";
 import {imgDimensions} from "./CanvasBox";
 import Dependence from "../tools/Dependence";
-import devicesStore from "../store/DevicesStore";
+import ReleStore from "../store/ReleStore";
 
 let areas = [
     {
@@ -145,24 +145,24 @@ const ToolBar = observer( () => {
     }
 
     const addDevice = (device)=>{
-        if (!deviceState.new_device){
-            deviceState.setDevice(new Device(canvasStateForDraw.canvas, device))
+        if (!ReleState.new_device){
+            ReleState.setDevice(new Device(canvasStateForDraw.canvas, device))
             message.success(`${device.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then()
         } else
         {
-            message.error(`Вы не можете добавлять новые устройства, пока не закрепите ${deviceState.new_device.name} на определенной области.`, 7).then()
+            message.error(`Вы не можете добавлять новые реле, пока не закрепите ${ReleState.new_device.name} на определенной области.`, 7).then()
         }
     }
 
     const addDependence = (dependence) => {
-        if (!deviceState.new_device){
-            deviceState.setDevice(new Dependence(canvasStateForDraw.canvas, dependence))
+        if (!ReleState.new_device){
+            ReleState.setDevice(new Dependence(canvasStateForDraw.canvas, dependence))
             message.success(`${dependence.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then(
-                message.info('Наведитесь на устройство, к которму вы хотите подключить зависимость.', 5)
+                message.info('Наведитесь на реле, к которму вы хотите подключить зависимость.', 5)
             )
         } else
         {
-            message.error(`Вы не можете добавлять новые устройства, пока не закрепите ${deviceState.new_device.name} на определенной области.`, 7).then()
+            message.error(`Вы не можете добавлять новые реле, пока не закрепите ${ReleState.new_device.name} на определенной области.`, 7).then()
         }
     }
 
@@ -177,8 +177,8 @@ const ToolBar = observer( () => {
             setCurrent(e.key)
         }
         else if (e.keyPath.includes('adddependence')){
-            if (devicesStore.devices.length === 0) {
-                message.error(`Вы не можете добавлять новые устройства, пока на определенной области.`, 7).then()
+            if (ReleStore.devices.length === 0) {
+                message.error(`Вы не можете добавлять новые реле, пока на определенной области.`, 7).then()
             } else {
                 const dependence = {name: e.item.props.title, imgURL: e.item.props.imgURL}
                 addDependence(dependence)
@@ -266,12 +266,12 @@ const ToolBar = observer( () => {
             icon: <SaveOutlined />,
         },
         {
-            label: 'Устройства',
+            label: 'Реле',
             key: 'devices',
             icon: <RadarChartOutlined />,
             children: [
                 {
-                    label: 'Добавить устройство',
+                    label: 'Добавить реле',
                     key: 'adddevice',
                     icon: <PlusSquareOutlined />,
                     children: [

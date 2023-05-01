@@ -1,6 +1,6 @@
 import React from 'react';
 import {Form, Modal} from "antd";
-import deviceState from "../../store/deviceState";
+import ReleState from "../../store/ReleState";
 
 const ConfirmDependenceConnectModal = (props) => {
     const {confirmModal, setConfirmModal, connectFunc} = props
@@ -27,8 +27,8 @@ const ConfirmDependenceConnectModal = (props) => {
             <Form form={form} layout="vertical">
                 <Form.Item name="device">
                     <p>
-                        Вы действительно хотите подключить зависимость <h2>{deviceState?.new_device?.name}</h2>
-                        к устройству <h2>{deviceState?.selected_device?.name}</h2>
+                        Вы действительно хотите подключить зависимость <h2>{ReleState?.new_device?.name}</h2>
+                        к реле <h2>{ReleState?.selected_device?.name}</h2>
                     </p>
                 </Form.Item>
             </Form>

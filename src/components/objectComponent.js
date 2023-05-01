@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import '../App.css';
 import {ButtonStyled} from "../styledAntd";
 import {
@@ -13,11 +13,13 @@ import {Col, Image, Menu, Row} from "antd";
 import type { MenuProps } from 'antd';
 import Plan from "../pages/plan/plan";
 import Notifications from "../pages/objects/objectDetails/notifications";
+import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
+import YMapComponent from "./YMapComponent";
+import CamerasPage from "../pages/cameras/CamerasPage";
 const ObjectComponent = (props) => {
     const {bg, newObject} = props
     const [current, setCurrent] = useState('plan');
     const navigateTo = useNavigate()
-
 
     const items: MenuProps['items'] = [
         {
@@ -27,7 +29,7 @@ const ObjectComponent = (props) => {
         },
         {
             label: 'Камеры',
-            key: 'cams',
+            key: 'camera',
             icon: <VideoCameraOutlined />,
         },
         {
@@ -43,7 +45,8 @@ const ObjectComponent = (props) => {
     ]
 
     const subComponents = {
-        'plan': <Plan newObject={newObject} />
+        'plan': <Plan newObject={newObject} />,
+        'camera': <CamerasPage/>,
     }
 
     const map = "https://evg-crystal.ru/800/600/https/turistigid.com/wp-content/uploads/2018/03/kapitoliy-na-karte-vashingtona.png"
@@ -53,6 +56,8 @@ const ObjectComponent = (props) => {
     const onClick: MenuProps['onClick'] = e => {
         setCurrent(e.key);
     };
+
+
     return (
         <div className={bg} style={{marginTop:10, marginLeft:"20px", marginRight:"20px"}}>
             <ButtonStyled onClick={goHome} type="default" icon={<CaretLeftOutlined/>}>HOME</ButtonStyled>
@@ -82,9 +87,7 @@ const ObjectComponent = (props) => {
                         </div>
                     </Col>
                     <Col span={12}>
-                        <div className="object-component-up">
-                            <div className="map"><Image src={map} /></div>
-                        </div>
+                        <YMapComponent />
                     </Col>
                 </Row>
 

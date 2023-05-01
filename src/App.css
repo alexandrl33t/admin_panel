@@ -303,7 +303,6 @@ img.absolute {
 }
 .object-common-info {
   padding: 10px;
-  border: 1px solid #000000;
 }
 
 .info:hover{
@@ -346,6 +345,15 @@ canvas {
   margin: 20px;
 }
 
+.content-under-menu {
+  margin-top: 25px;
+}
+
+
+.camera{
+  margin: 20px;
+  display: inline-table;
+}
 @keyframes showAnimation {
   0%{opacity: 0}
   50%{opacity: 0.5}

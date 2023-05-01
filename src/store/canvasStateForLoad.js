@@ -3,7 +3,7 @@ import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import canvasStateForDraw from "./canvasStateForDraw";
 import {imgDimensions} from "../components/CanvasBox";
 import dependencesStore from "./DependencesStore";
-import devicesStore from "./DevicesStore";
+import ReleStore from "./ReleStore";
 import graphStore from "./GraphStore";
 /**
  * Канвас для отрисовки готовых областей
@@ -98,7 +98,7 @@ class CanvasStateForLoad {
     }
 
     drawDevices() {
-        devicesStore.devices.filter(item => !item.belongs_to_graph).forEach((device) => {
+        ReleStore.devices.filter(item => !item.belongs_to_graph).forEach((device) => {
             this.imgURL = device.imgURL
             this.img = new Image();
             this.img.src = this.imgURL;
@@ -182,7 +182,7 @@ class CanvasStateForLoad {
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         this.drawAreas(this.areas)
         this.drawGraphs()
-        this.drawDevices(devicesStore.devices)
+        this.drawDevices(ReleStore.devices)
         this.drawDependences(dependencesStore.dependences)
         this.editable_item = null
     }

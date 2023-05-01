@@ -1,9 +1,9 @@
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {imgDimensions} from "../components/CanvasBox";
-import deviceState from "../store/deviceState";
+import ReleState from "../store/ReleState";
 
 /**
- * Создается, когда устройства накладываются друг на друга.
+ * Создается, когда реле накладываются друг на друга.
  */
 export default class Graph{
 
@@ -21,11 +21,11 @@ export default class Graph{
         this.canvas = canvas
         this.ctx = canvas.getContext('2d')
         this.imgURL = "https://www.svgrepo.com/show/500066/bulletin-board.svg"
-        this.plan_id = deviceState.root_device.plan_id
-        this.points = Object.assign({}, deviceState.root_device.points);
-        this.area_id = deviceState.root_device.area_id
-        this.pushDevice(deviceState.root_device)
-        this.pushDevice(deviceState.new_device)
+        this.plan_id = ReleState.root_device.plan_id
+        this.points = Object.assign({}, ReleState.root_device.points);
+        this.area_id = ReleState.root_device.area_id
+        this.pushDevice(ReleState.root_device)
+        this.pushDevice(ReleState.new_device)
         this.draw()
     }
 
@@ -88,11 +88,11 @@ export default class Graph{
 
     mouseUpHandler(){
         this.mouseDown = false
-        deviceState.setIsOnArea(!!this.area_id)
+        ReleState.setIsOnArea(!!this.area_id)
     }
 
     mouseDownHandler(){
-        if (!deviceState.new_device){
+        if (!ReleState.new_device){
             this.destroyEvents()
         }
         if (this.is_on_item) {

@@ -1,8 +1,8 @@
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {imgDimensions} from "../components/CanvasBox";
-import deviceState from "../store/deviceState";
+import ReleState from "../store/ReleState";
 import canvasStateForDraw from "../store/canvasStateForDraw";
-import devicesStore from "../store/DevicesStore";
+import ReleStore from "../store/ReleStore";
 
 export default class AbstractDevice{
 
@@ -85,11 +85,11 @@ export default class AbstractDevice{
 
     mouseUpHandler(){
         this.mouseDown = false
-        deviceState.setIsOnArea(!!this.area_id)
+        ReleState.setIsOnArea(!!this.area_id)
     }
 
     mouseDownHandler(){
-        if (!deviceState.new_device){
+        if (!ReleState.new_device){
             this.destroyEvents()
         }
         if (this.is_on_item) {
@@ -117,11 +117,11 @@ export default class AbstractDevice{
                     this.area_id = canvasStateForLoad.areas[i].id
                     this.area_name = canvasStateForLoad.areas[i].name
                     if (this.type === "device") {
-                        devicesStore.devices.forEach((device) => {
+                        ReleStore.devices.forEach((device) => {
                             if (this.isOnOtherDevice(this.currentX, this.currentY, device)){
-                                deviceState.set_root_device(device)
+                                ReleState.set_root_device(device)
                             } else {
-                                deviceState.set_root_device(null)
+                                ReleState.set_root_device(null)
                             }
                         })
                     }
@@ -132,7 +132,7 @@ export default class AbstractDevice{
                 } else {
                     this.area_id = null
                     this.area_name = null
-                    deviceState.setIsOnArea(false)
+                    ReleState.setIsOnArea(false)
                     canvasStateForDraw.reload()
                     this.redraw()
                 }

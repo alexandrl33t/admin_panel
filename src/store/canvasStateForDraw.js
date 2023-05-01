@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import {imgDimensions} from "../components/CanvasBox";
-import deviceState from "./deviceState";
+import ReleState from "./ReleState";
 import canvasStateForLoad from "./canvasStateForLoad";
 /**
  * Канвас для создания новых областей
@@ -68,8 +68,8 @@ class CanvasStateForDraw {
         this.ctx.lineWidth = 1;
         this.ctx.fillStyle = "rgb(46,224,231)";
         this.ctx.font = `${20*imgDimensions.size_k}px impact`;
-        this.ctx.strokeText(`Объединить ${deviceState.new_device?.name} с ${deviceState.root_device?.name}?`, item.points.x *imgDimensions.size_k + 30, item.points.y*imgDimensions.size_k + 30);
-        this.ctx.fillText(`Объединить ${deviceState.new_device?.name} с ${deviceState.root_device?.name}?`, item.points.x *imgDimensions.size_k + 30, item.points.y*imgDimensions.size_k + 30);
+        this.ctx.strokeText(`Объединить ${ReleState.new_device?.name} с ${ReleState.root_device?.name}?`, item.points.x *imgDimensions.size_k + 30, item.points.y*imgDimensions.size_k + 30);
+        this.ctx.fillText(`Объединить ${ReleState.new_device?.name} с ${ReleState.root_device?.name}?`, item.points.x *imgDimensions.size_k + 30, item.points.y*imgDimensions.size_k + 30);
     }
 
     fillArea(item){
@@ -197,8 +197,8 @@ class CanvasStateForDraw {
 
 
     reload() {
-        if (deviceState.selected_device?.type === "graph") {
-            this.hoverGraph(deviceState.selected_device)
+        if (ReleState.selected_device?.type === "graph") {
+            this.hoverGraph(ReleState.selected_device)
         } else {
             this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
             this.current_item = {

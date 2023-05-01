@@ -33,7 +33,7 @@ const ConfirmGraphModal = (props) => {
                 cancelText="Отмена"
             >
                         <p>
-                            Вы хотите объединить устройства на плане?
+                            Вы хотите объединить реле на плане?
                         </p>
             </Modal>
             <Modal

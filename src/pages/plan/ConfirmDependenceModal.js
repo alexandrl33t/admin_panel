@@ -1,6 +1,6 @@
 import React from 'react';
 import {Form, Modal} from "antd";
-import deviceState from "../../store/deviceState";
+import ReleState from "../../store/ReleState";
 
 const ConfirmDependenceModal = (props) => {
     const {confirmModal, setConfirmModal, save} = props
@@ -11,7 +11,7 @@ const ConfirmDependenceModal = (props) => {
 
     const okHandle = () =>{
         setConfirmModal(false);
-        if (deviceState?.new_device){
+        if (ReleState?.new_device){
             save()
         }
     }
@@ -28,8 +28,8 @@ const ConfirmDependenceModal = (props) => {
                 <Form form={form} layout="vertical">
                     <Form.Item name="device">
                         <p>
-                            Вы действительно хотите добавить зависимость <h2>{deviceState?.new_device?.name}</h2>
-                            в область <h2>{deviceState?.new_device?.area_name}</h2>
+                            Вы действительно хотите добавить зависимость <h2>{ReleState?.new_device?.name}</h2>
+                            в область <h2>{ReleState?.new_device?.area_name}</h2>
                         </p>
                     </Form.Item>
                 </Form>

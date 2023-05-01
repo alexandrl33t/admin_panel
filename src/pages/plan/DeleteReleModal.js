@@ -1,9 +1,9 @@
 import React from 'react';
 import canvasStateForLoad from "../../store/canvasStateForLoad";
 import {Modal} from "antd";
-import deviceState from "../../store/deviceState";
+import ReleState from "../../store/ReleState";
 
-const DeleteDeviceModal = (props) => {
+const DeleteReleModal = (props) => {
     const {deleteModal, setDeleteModal, deleteDevice, deleteDependence} = props
 
     const hideModal = () => {
@@ -11,8 +11,8 @@ const DeleteDeviceModal = (props) => {
     };
 
     const onDelete = () =>{
-        if (deviceState.selected_device) {
-            if (deviceState.selected_device.type === 'device') {
+        if (ReleState.selected_device) {
+            if (ReleState.selected_device.type === 'device') {
                 deleteDevice()
 
             } else {
@@ -31,10 +31,10 @@ const DeleteDeviceModal = (props) => {
             cancelText="Отмена"
         >
             <h2>
-                Вы действительно хотите удалить {deviceState?.selected_device?.name}
+                Вы действительно хотите удалить {ReleState?.selected_device?.name}
             </h2>
         </Modal>
     );
 };
 
-export default DeleteDeviceModal;
+export default DeleteReleModal;

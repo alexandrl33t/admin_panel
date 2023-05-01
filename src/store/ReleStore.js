@@ -4,9 +4,9 @@ import canvasStateForDraw from "./canvasStateForDraw";
 import canvasStateForLoad from "./canvasStateForLoad";
 
 /**
- * Хранилище устройств
+ * Хранилище реле
  */
-class DevicesStore {
+class ReleStore {
 
     devices = []
 
@@ -33,4 +33,4 @@ class DevicesStore {
 
 }
 
-export default new DevicesStore()
+export default new ReleStore()
