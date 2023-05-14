@@ -136,11 +136,11 @@ const dataRele: DataTypeRele [] = [
 const DeviceType = () => {
 
     const [stepsVisible, setStepsVisible] = useState('')
-
+    const [columns, setColumns] = useState(columnsSensor)
 
     const steps = {
-        'device': <DeviceSteps columns={columnsSensor} isSensor={true} />,
-        'rele': <DeviceSteps columns={columnsRele} />,
+        'device': <DeviceSteps columns={columns} isSensor={true} />,
+        'rele': <DeviceSteps columns={columns} />,
     }
 
 
@@ -149,10 +149,12 @@ const DeviceType = () => {
     }
 
     function addDevice() {
+        setColumns(columnsSensor)
         setStepsVisible('device')
     }
 
     function addRele() {
+        setColumns(columnsRele)
         setStepsVisible('rele')
     }
 
