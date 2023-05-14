@@ -112,7 +112,6 @@ export const CanvasBox = observer((props) => {
         canvasStateForDraw.setCanvas(canvasForDrawRef.current)
     }, [canvasForLoadRef, plan.url, plan.id])
 
-
     const loadImage = (imageUrl) => {
         const img = new Image();
         img.src = imageUrl;

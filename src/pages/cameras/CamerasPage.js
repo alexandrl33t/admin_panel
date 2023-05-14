@@ -9,7 +9,7 @@ const CamerasPage = () => {
         <div className="content-under-menu">
          <div className="camera">
              <ReactPlayer
-                 url="<https://www.youtube.com/watch?v=dQw4w9WgXcQ>"
+                 url="http://96890a116fb0.sn.mynetname.net:9555"
                  controls
                  width={size.width}
                  height={size.height}
