@@ -13,8 +13,7 @@ import {Col, Image, Menu, Row} from "antd";
 import type { MenuProps } from 'antd';
 import Plan from "../pages/plan/plan";
 import Notifications from "../pages/objects/objectDetails/notifications";
-import {Map, Placemark, YMaps, ZoomControl} from "@pbe/react-yandex-maps";
-import YMapComponent from "./YMapComponent";
+import MapComponent from "./Map/MapComponent";
 import CamerasPage from "../pages/cameras/CamerasPage";
 const ObjectComponent = (props) => {
     const {bg, newObject} = props
@@ -49,7 +48,6 @@ const ObjectComponent = (props) => {
         'camera': <CamerasPage/>,
     }
 
-    const map = "https://evg-crystal.ru/800/600/https/turistigid.com/wp-content/uploads/2018/03/kapitoliy-na-karte-vashingtona.png"
     const goHome = () => {
         navigateTo(urls.home)
     }
@@ -87,7 +85,7 @@ const ObjectComponent = (props) => {
                         </div>
                     </Col>
                     <Col span={12}>
-                        <YMapComponent />
+                        <MapComponent />
                     </Col>
                 </Row>
 
