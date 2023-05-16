@@ -14,7 +14,7 @@ export default function MyMap({ coords }) {
                      zoom: 14
                  }}
                    style={{width: "600px", height: "400px"}}
-                   mapStyle="https://api.maptiler.com/maps/streets/style.json?key=gEzEVg0cbrHwyqDHzbit"
+                   mapStyle="https://api.maptiler.com/maps/fa3455ef-48d0-4b05-a0ba-d8f516811220/style.json?key=gEzEVg0cbrHwyqDHzbit"
             >
                 <NavigationControl position="top-left" />
                 <Marker longitude={longitude} latitude={latitude}/>
