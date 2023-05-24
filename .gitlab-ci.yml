@@ -21,7 +21,7 @@ docker-build:
         # собственно сборка
         - docker build --pull -t "$CI_REGISTRY_IMAGE" .
         # отправка собранного в registry
-        - docker push "$CI_REGISTRY_IMAGE"
+        #- docker push "$CI_REGISTRY_IMAGE"
 
 deploy:
     tags:
