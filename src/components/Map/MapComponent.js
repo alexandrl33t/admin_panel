@@ -35,9 +35,8 @@ const MapComponent = () => {
 
     return (
         <div>
-            <h2>Введите ваш адрес</h2>
-            <section>
-                <h2>Поиск адреса</h2>
+            <h2>Поиск адреса</h2>
+            <section style={{marginBottom: 5}}>
                 <Select
                     showSearch
                     placeholder="Select a person"

@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.0.7",
     "axios": "^1.4.0",
+    "mapbox-gl": "^2.14.1",
     "maplibre-gl": "^2.4.0",
     "mobx": "^6.6.2",
     "mobx-react-lite": "^3.4.0",

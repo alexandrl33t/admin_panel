@@ -203,7 +203,6 @@ export const CanvasBox = observer((props) => {
             setDeleteModal(true)
         }
         else if (ReleState.selected_device){
-
             form.setFieldValue("nameInput", ReleState.selected_device.name)
             form.setFieldValue("iconSize", ReleState.selected_device.size)
             if (ReleState.selected_device.type === "graph"){
@@ -384,8 +383,6 @@ export const CanvasBox = observer((props) => {
         ReleStore.addDevice(ReleState.new_device)
         ReleState.reload()
         canvasStateForLoad.reload()
-
-
     }
 
     let sliderStyle = {

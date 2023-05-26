@@ -11,7 +11,7 @@ import {urls} from "../routes/urls";
 import ObjectCommonInfo from "../pages/objects/objectDetails/objectCommonInfo";
 import {Col, Image, Menu, Row} from "antd";
 import type { MenuProps } from 'antd';
-import Plan from "../pages/plan/plan";
+import Plan from "../pages/plan/Plan";
 import Notifications from "../pages/objects/objectDetails/notifications";
 import MapComponent from "./Map/MapComponent";
 import CamerasPage from "../pages/cameras/CamerasPage";
