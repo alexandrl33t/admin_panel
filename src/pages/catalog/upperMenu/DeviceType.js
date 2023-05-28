@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Checkbox, Col, Row, Table} from "antd";
 import {ColumnsType} from "antd/es/table";
 import {Component} from "react";
 import {EditOutlined, PlusSquareOutlined} from "@ant-design/icons";
 import DeviceSteps from "../steps/deviceSteps";
+import devicesStore from "../../../store/DevicesStore";
+import {observer} from "mobx-react-lite";
 
 
 interface DataTypeSensor {
@@ -133,7 +135,7 @@ const dataRele: DataTypeRele [] = [
     },
 ];
 
-const DeviceType = () => {
+export const DeviceType = observer(() => {
 
     const [stepsVisible, setStepsVisible] = useState('')
     const [columns, setColumns] = useState(columnsSensor)
@@ -143,6 +145,9 @@ const DeviceType = () => {
         'rele': <DeviceSteps columns={columns} />,
     }
 
+    useEffect(()=>{
+        devicesStore.callForDevices().then()
+    }, [])
 
     function onChange() {
 
@@ -170,7 +175,7 @@ const DeviceType = () => {
         <>
             <Row style={{marginLeft:15, marginTop:15}}>
                 <Col span={6}>
-                    <h2>Сенсоры</h2>
+                    <h2>Устройства</h2>
                 </Col>
                 <Col span={14}>
                 </Col>
@@ -216,6 +221,4 @@ const DeviceType = () => {
             </Row>
         </>
     );
-}
-
-export default DeviceType
+});

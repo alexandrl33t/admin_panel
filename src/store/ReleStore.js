@@ -8,16 +8,13 @@ import canvasStateForLoad from "./canvasStateForLoad";
  */
 class ReleStore {
 
-    devices = []
+    reles = []
 
     constructor() {
         makeAutoObservable(this)
     }
 
-    // 1) Для каждого устройства в зависимости от коэффициента масштаба плана считаем вектор.
-    // 2) Если вектор меньше какого-то значения (нужно понять какое значение), то добавляем в результирующий массив два устройства
-    // 3)
-    addDevice(item){
+    addRele(item){
         item.type = "device"
         if (imgDimensions.size_k !== 1){
             item.points.x /= imgDimensions.size_k
@@ -40,12 +37,12 @@ class ReleStore {
         //     }
         // }
 
-        this.devices.push(item)
+        this.reles.push(item)
     }
 
-    deleteDevice(item) {
-        const index = this.devices.indexOf(item)
-        this.devices.splice(index, 1)
+    deleteRele(item) {
+        const index = this.reles.indexOf(item)
+        this.reles.splice(index, 1)
         canvasStateForDraw.reload()
         canvasStateForLoad.reload()
     }

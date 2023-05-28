@@ -40,7 +40,7 @@ export default class Dependence extends AbstractDevice{
             let current_x = e.pageX - e.target.offsetLeft- 20
             let current_y = e.pageY - e.target.offsetTop-100
             this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
-            ReleStore.devices.filter(item => !item.belongs_to_graph).forEach(device => {
+            ReleStore.reles.filter(item => !item.belongs_to_graph).forEach(device => {
                 if (this.isOnItem(current_x, current_y, device)){
                     canvasStateForDraw.hoverDevice(device)
                     ReleState.setSelectedDevice(device)

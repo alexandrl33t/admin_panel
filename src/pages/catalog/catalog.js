@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Col, Menu, Row} from "antd";
 import '../../App.css';
 import {MenuProps} from "antd";
-import DeviceType from "./upperMenu/deviceType";
+import {DeviceType} from "./upperMenu/DeviceType";
 
 const Catalog = () => {
 

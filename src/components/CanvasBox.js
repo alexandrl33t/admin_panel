@@ -10,7 +10,7 @@ import ReleState from "../store/ReleState";
 import ConfirmReleModal from "../pages/plan/ConfirmReleModal";
 import {Button, Col, Divider, Form, Input, Row, Slider, Tooltip} from "antd";
 import {observable} from "mobx";
-import dependencesStore from "../store/DependencesStore";
+import dependencesStore from "../store/DevicesStore";
 import ReleStore from "../store/ReleStore";
 import ConfirmDependenceModal from "../pages/plan/ConfirmDependenceModal";
 import ConfirmGraphModal from "../pages/plan/ConfirmGraphModal";
@@ -263,16 +263,16 @@ export const CanvasBox = observer((props) => {
                             } else {
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
-                                ReleStore.devices.filter(item => !item.belongs_to_graph).forEach(device => {
+                                ReleStore.reles.filter(item => !item.belongs_to_graph).forEach(device => {
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, device)){
                                         canvasStateForDraw.hoverDevice(device)
                                         ReleState.setSelectedDevice(device)
                                     }
                                 })
-                                for (let i =0; i < dependencesStore.dependences.length; i++){
-                                    if (isOnItem(cursorPosition.x, cursorPosition.y, dependencesStore.dependences[i])){
-                                        canvasStateForDraw.hoverDevice(dependencesStore.dependences[i])
-                                        ReleState.setSelectedDevice(dependencesStore.dependences[i])
+                                for (let i =0; i < dependencesStore.devices.length; i++){
+                                    if (isOnItem(cursorPosition.x, cursorPosition.y, dependencesStore.devices[i])){
+                                        canvasStateForDraw.hoverDevice(dependencesStore.devices[i])
+                                        ReleState.setSelectedDevice(dependencesStore.devices[i])
                                     }
                                 }
 
@@ -323,11 +323,11 @@ export const CanvasBox = observer((props) => {
 
     const saveDevicesHandle = () => {
         if (ReleState.new_device.type === "device"){
-            ReleStore.addDevice(ReleState.new_device)
+            ReleStore.addRele(ReleState.new_device)
             ReleState.setDevice(null)
 
         } else if (ReleState.new_device.type === "dependence") {
-            dependencesStore.addDependence(ReleState.new_device)
+            dependencesStore.addDevice(ReleState.new_device)
         }
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
@@ -335,7 +335,7 @@ export const CanvasBox = observer((props) => {
 
     const connectDependence = () => {
         ReleState.reload()
-        console.log(dependencesStore.dependences)
+        console.log(dependencesStore.devices)
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
     }
@@ -360,15 +360,15 @@ export const CanvasBox = observer((props) => {
     }
     const deleteDependence = () => {
         setDeviceEdit(false)
-        dependencesStore.deleteDependece(ReleState.selected_device)
+        dependencesStore.deleteDevices(ReleState.selected_device)
         ReleState.reload()
     }
     const deleteDevice = () => {
         setDeviceEdit(false)
-        ReleStore.deleteDevice(ReleState.selected_device)
-        dependencesStore.dependences.forEach((dependence) => {
+        ReleStore.deleteRele(ReleState.selected_device)
+        dependencesStore.devices.forEach((dependence) => {
             if (dependence.belongs_to === ReleState.selected_device){
-                dependencesStore.deleteDependece(dependence)
+                dependencesStore.deleteDevices(dependence)
             }
         })
         ReleState.reload()
@@ -381,7 +381,7 @@ export const CanvasBox = observer((props) => {
         graphStore.addGraph(graph)
         ReleState.new_device.belongs_to_graph = graph
         ReleState.root_device.belongs_to_graph = graph
-        ReleStore.addDevice(ReleState.new_device)
+        ReleStore.addRele(ReleState.new_device)
         ReleState.reload()
         canvasStateForLoad.reload()
 

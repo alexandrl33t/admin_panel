@@ -2,7 +2,7 @@ import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import canvasStateForDraw from "./canvasStateForDraw";
 import {imgDimensions} from "../components/CanvasBox";
-import dependencesStore from "./DependencesStore";
+import dependencesStore from "./DevicesStore";
 import ReleStore from "./ReleStore";
 import graphStore from "./GraphStore";
 /**
@@ -98,7 +98,7 @@ class CanvasStateForLoad {
     }
 
     drawDevices() {
-        ReleStore.devices.filter(item => !item.belongs_to_graph).forEach((device) => {
+        ReleStore.reles.filter(item => !item.belongs_to_graph).forEach((device) => {
             this.imgURL = device.imgURL
             this.img = new Image();
             this.img.src = this.imgURL;
@@ -107,7 +107,7 @@ class CanvasStateForLoad {
     }
 
     drawDependences() {
-        dependencesStore.dependences.forEach((device) => {
+        dependencesStore.devices.forEach((device) => {
             this.imgURL = device.imgURL
             this.img = new Image();
             this.img.src = this.imgURL;
@@ -182,8 +182,8 @@ class CanvasStateForLoad {
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         this.drawAreas(this.areas)
         this.drawGraphs()
-        this.drawDevices(ReleStore.devices)
-        this.drawDependences(dependencesStore.dependences)
+        this.drawDevices(ReleStore.reles)
+        this.drawDependences(dependencesStore.devices)
         this.editable_item = null
     }
 }

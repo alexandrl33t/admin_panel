@@ -117,7 +117,7 @@ export default class AbstractDevice{
                     this.area_id = canvasStateForLoad.areas[i].id
                     this.area_name = canvasStateForLoad.areas[i].name
                     if (this.type === "device") {
-                        ReleStore.devices.forEach((device) => {
+                        ReleStore.reles.forEach((device) => {
                             if (this.isOnOtherDevice(this.currentX, this.currentY, device)){
                                 ReleState.set_root_device(device)
                             } else {

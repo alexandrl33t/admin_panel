@@ -177,7 +177,7 @@ const ToolBar = observer( () => {
             setCurrent(e.key)
         }
         else if (e.keyPath.includes('adddependence')){
-            if (ReleStore.devices.length === 0) {
+            if (ReleStore.reles.length === 0) {
                 message.error(`Вы не можете добавлять новые реле, пока на определенной области.`, 7).then()
             } else {
                 const dependence = {name: e.item.props.title, imgURL: e.item.props.imgURL}
