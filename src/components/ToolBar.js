@@ -11,13 +11,13 @@ import {
 import toolState from "../store/toolState";
 import Line from "../tools/Line"
 import Rect from "../tools/Rect"
-import Device from "../tools/Device";
+import Rele from "../tools/Rele";
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {observer} from "mobx-react-lite";
 import ReleState from "../store/ReleState";
 import {imgDimensions} from "./CanvasBox";
-import Dependence from "../tools/Dependence";
+import Device from "../tools/Device";
 import ReleStore from "../store/ReleStore";
 
 let areas = [
@@ -146,7 +146,7 @@ const ToolBar = observer( () => {
 
     const addDevice = (device)=>{
         if (!ReleState.new_device){
-            ReleState.setDevice(new Device(canvasStateForDraw.canvas, device))
+            ReleState.setDevice(new Rele(canvasStateForDraw.canvas, device))
             message.success(`${device.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then()
         } else
         {
@@ -156,7 +156,7 @@ const ToolBar = observer( () => {
 
     const addDependence = (dependence) => {
         if (!ReleState.new_device){
-            ReleState.setDevice(new Dependence(canvasStateForDraw.canvas, dependence))
+            ReleState.setDevice(new Device(canvasStateForDraw.canvas, dependence))
             message.success(`${dependence.name} успешно добавлен. В правом верхнем углу плана Вы можете переместить его в нужную область.`, 5).then(
                 message.info('Наведитесь на реле, к которму вы хотите подключить зависимость.', 5)
             )

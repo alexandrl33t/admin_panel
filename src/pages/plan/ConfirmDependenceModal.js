@@ -28,8 +28,7 @@ const ConfirmDependenceModal = (props) => {
                 <Form form={form} layout="vertical">
                     <Form.Item name="device">
                         <p>
-                            Вы действительно хотите добавить зависимость <h2>{ReleState?.new_device?.name}</h2>
-                            в область <h2>{ReleState?.new_device?.area_name}</h2>
+                            Вы действительно хотите добавить зависимость <strong>{ReleState?.new_device?.name}</strong> в область <strong>{ReleState?.new_device?.area_name}</strong>
                         </p>
                     </Form.Item>
                 </Form>

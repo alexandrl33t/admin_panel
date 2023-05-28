@@ -94,15 +94,14 @@ export const CanvasBox = observer((props) => {
         () => ReleState.is_on_area,
         () => {
             if (ReleState.is_on_area && !ReleState.root_device){
-                if (ReleState.new_device.type === "device" ){
+                if (ReleState.new_device.type === "rele" ){
                     setConfirmDeviceModal(true)
-                } else if (ReleState.new_device.type === "dependence"){
+                } else if (ReleState.new_device.type === "device"){
                     setConfirmDependenceModal(true)
                 }
             }
         }
     )
-
 
     useEffect(()=>{
         loadImage(plan.url);
@@ -210,6 +209,7 @@ export const CanvasBox = observer((props) => {
                     ReleState.setSelectedDevice(ReleState.selected_device)
             }
             setDeviceEdit(!deviceEdit)
+            console.log(ReleState.selected_device.type)
         }
 
     }
@@ -321,11 +321,11 @@ export const CanvasBox = observer((props) => {
     }
 
     const saveDevicesHandle = () => {
-        if (ReleState.new_device.type === "device"){
+        if (ReleState.new_device.type === "rele"){
             ReleStore.addRele(ReleState.new_device)
             ReleState.setDevice(null)
 
-        } else if (ReleState.new_device.type === "dependence") {
+        } else if (ReleState.new_device.type === "device") {
             dependencesStore.addDevice(ReleState.new_device)
         }
         canvasStateForLoad.reload()

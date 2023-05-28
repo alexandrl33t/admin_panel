@@ -27,8 +27,7 @@ const ConfirmDependenceConnectModal = (props) => {
             <Form form={form} layout="vertical">
                 <Form.Item name="device">
                     <p>
-                        Вы действительно хотите подключить зависимость <h2>{ReleState?.new_device?.name}</h2>
-                        к реле <h2>{ReleState?.selected_device?.name}</h2>
+                        Вы действительно хотите подключить зависимость <strong>{ReleState?.new_device?.name}</strong> к реле <strong>{ReleState?.selected_device?.name}</strong>
                     </p>
                 </Form.Item>
             </Form>
