@@ -2,7 +2,6 @@ import {makeAutoObservable, runInAction} from "mobx";
 import {imgDimensions} from "../components/CanvasBox";
 import canvasStateForDraw from "./canvasStateForDraw";
 import canvasStateForLoad from "./canvasStateForLoad";
-import axios from "axios";
 
 /**
  * Хранилище зависимостей
