@@ -175,7 +175,7 @@ export const DeviceType = observer(() => {
         <>
             <Row style={{marginLeft:15, marginTop:15}}>
                 <Col span={6}>
-                    <h2>Устройства</h2>
+                    <h2>Сенсоры</h2>
                 </Col>
                 <Col span={14}>
                 </Col>

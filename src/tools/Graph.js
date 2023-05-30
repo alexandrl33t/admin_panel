@@ -1,6 +1,6 @@
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {imgDimensions} from "../components/CanvasBox";
-import ReleState from "../store/ReleState";
+import ReleState from "../store/DeviceState";
 
 /**
  * Создается, когда реле накладываются друг на друга.

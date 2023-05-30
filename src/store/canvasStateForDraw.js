@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {areaStyle} from "../tools/ToolStyle/AreaStyle";
 import {imgDimensions} from "../components/CanvasBox";
-import ReleState from "./ReleState";
+import ReleState from "./DeviceState";
 import canvasStateForLoad from "./canvasStateForLoad";
 /**
  * Канвас для создания новых областей
@@ -47,6 +47,16 @@ class CanvasStateForDraw {
 
     drawline(point1, point2){
         this.ctx.beginPath()
+        this.ctx.moveTo(point1.x * imgDimensions.size_k, point1.y * imgDimensions.size_k)
+        this.ctx.lineTo(point2.x * imgDimensions.size_k, point2.y* imgDimensions.size_k)
+        this.ctx.lineJoin = "round"
+        this.ctx.stroke()
+        this.ctx.closePath();
+    }
+
+    drawline_between_devices(point1, point2){
+        this.ctx.beginPath()
+        this.ctx.setLineDash([5, 1]);
         this.ctx.moveTo(point1.x * imgDimensions.size_k, point1.y * imgDimensions.size_k)
         this.ctx.lineTo(point2.x * imgDimensions.size_k, point2.y* imgDimensions.size_k)
         this.ctx.lineJoin = "round"
@@ -207,8 +217,7 @@ class CanvasStateForDraw {
             }
             this.closed_area = false
         }
-
-
+        this.ctx.setLineDash([]);
     }
 }
 

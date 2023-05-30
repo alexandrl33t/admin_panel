@@ -1,6 +1,6 @@
 import React from 'react';
 import {Form, Modal} from "antd";
-import ReleState from "../../store/ReleState";
+import ReleState from "../../store/DeviceState";
 
 const ConfirmDependenceConnectModal = (props) => {
     const {confirmModal, setConfirmModal, connectFunc} = props

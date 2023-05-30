@@ -1,6 +1,6 @@
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {imgDimensions} from "../components/CanvasBox";
-import ReleState from "../store/ReleState";
+import ReleState from "../store/DeviceState";
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import ReleStore from "../store/ReleStore";
 

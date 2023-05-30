@@ -6,18 +6,19 @@ import canvasStateForLoad from "../store/canvasStateForLoad";
 import DeleteAreaModal from "../pages/plan/DeleteAreaModal";
 import toolState from "../store/toolState";
 import ConfirmAreaModal from "../pages/plan/ConfirmAreaModal";
-import ReleState from "../store/ReleState";
+import DeviceState from "../store/DeviceState";
 import ConfirmReleModal from "../pages/plan/ConfirmReleModal";
 import {Button, Col, Divider, Form, Input, Row, Slider, Tooltip} from "antd";
 import {observable} from "mobx";
 import dependencesStore from "../store/DevicesStore";
-import ReleStore from "../store/ReleStore";
+import releStore from "../store/ReleStore";
 import ConfirmDependenceModal from "../pages/plan/ConfirmDependenceModal";
 import ConfirmGraphModal from "../pages/plan/ConfirmGraphModal";
 import graphStore from "../store/GraphStore";
 import Graph from "../tools/Graph";
 import ConfirmDependenceConnectModal from "../pages/plan/ConfirmDependenceConnectModal";
 import DeleteReleModal from "../pages/plan/DeleteReleModal";
+import devicesStore from "../store/DevicesStore";
 
 
 export const imgDimensions = observable(
@@ -62,10 +63,10 @@ export const CanvasBox = observer((props) => {
      *reaction реагирует на изменение стейта и обрабатывает его
      */
     reaction(
-        () => ReleState.root_device,
+        () => DeviceState.root_device,
         change => {
             if (change) {
-                canvasStateForDraw.toolBeforeGraphCreated(ReleState.root_device)
+                canvasStateForDraw.toolBeforeGraphCreated(DeviceState.root_device)
             } else {
 
             }
@@ -91,12 +92,12 @@ export const CanvasBox = observer((props) => {
 
 
     reaction(
-        () => ReleState.is_on_area,
+        () => DeviceState.is_on_area,
         () => {
-            if (ReleState.is_on_area && !ReleState.root_device){
-                if (ReleState.new_device.type === "rele" ){
+            if (DeviceState.is_on_area && !DeviceState.root_device){
+                if (DeviceState.new_device.type === "rele" ){
                     setConfirmDeviceModal(true)
-                } else if (ReleState.new_device.type === "device"){
+                } else if (DeviceState.new_device.type === "device"){
                     setConfirmDependenceModal(true)
                 }
             }
@@ -188,11 +189,11 @@ export const CanvasBox = observer((props) => {
     }
 
     const mouseDownHandler = () =>{
-        if (ReleState.connecting_dependence){
+        if (DeviceState.connecting_dependence){
             setConfirmDependenceConnect(true)
             return;
         }
-        if (ReleState.new_device || toolState.tool || ReleState.root_device || deviceEdit) {
+        if (DeviceState.new_device || toolState.tool || DeviceState.root_device || deviceEdit) {
             return;
         }
         if (canvasStateForLoad.move){
@@ -201,24 +202,46 @@ export const CanvasBox = observer((props) => {
         else if (canvasStateForLoad.delete) {
             setDeleteModal(true)
         }
-        else if (ReleState.selected_device){
-            form.setFieldValue("nameInput", ReleState.selected_device.name)
-            form.setFieldValue("iconSize", ReleState.selected_device.size)
-            if (ReleState.selected_device.type === "graph"){
-                    canvasStateForDraw.hoverGraph(ReleState.selected_device)
-                    ReleState.setSelectedDevice(ReleState.selected_device)
+        else if (DeviceState.selected_device){
+            form.setFieldValue("nameInput", DeviceState.selected_device.name)
+            form.setFieldValue("iconSize", DeviceState.selected_device.size)
+            if (DeviceState.selected_device.type === "graph"){
+                    canvasStateForDraw.hoverGraph(DeviceState.selected_device)
+                    DeviceState.setSelectedDevice(DeviceState.selected_device)
             }
             setDeviceEdit(!deviceEdit)
-            console.log(ReleState.selected_device.type)
+            if (DeviceState.selected_device.type === "rele") {
+                devicesStore.devices.filter(item => item.belongs_to === DeviceState.selected_device).forEach(device => {
+                    let device_corrected_points = {
+                        x: device.points.x + device.size/2,
+                        y: device.points.y + device.size/2
+                    }
+                    let rele_corrected_points = {
+                        x: DeviceState.selected_device.points.x + DeviceState.selected_device.size/2,
+                        y: DeviceState.selected_device.points.y + DeviceState.selected_device.size/2
+                    }
+                    canvasStateForDraw.drawline_between_devices(device_corrected_points, rele_corrected_points)
+                })
+            } else if (DeviceState.selected_device.type === "device") {
+                let rele_corrected_points = {
+                    x: DeviceState.selected_device.belongs_to.points.x + DeviceState.selected_device.belongs_to.size/2,
+                    y: DeviceState.selected_device.belongs_to.points.y + DeviceState.selected_device.belongs_to.size/2
+                }
+                let device_corrected_points = {
+                    x: DeviceState.selected_device.points.x + DeviceState.selected_device.size/2,
+                    y: DeviceState.selected_device.points.y + DeviceState.selected_device.size/2
+                }
+                canvasStateForDraw.drawline_between_devices(device_corrected_points, rele_corrected_points)
+            }
         }
 
     }
 
     const mouseUpHandler = () => {
-        if (ReleState.root_device){
+        if (DeviceState.root_device){
             setConfirmGraphModal(true)
         }
-        if (ReleState.new_device || toolState.tool || deviceEdit) {
+        if (DeviceState.new_device || toolState.tool || deviceEdit) {
             return;
         }
 
@@ -236,7 +259,7 @@ export const CanvasBox = observer((props) => {
 
     const mouseMoveHandler = (e) => {
         getCursorPosition(e)
-        if (ReleState.new_device || toolState.tool || ReleState.root_device || ReleState.graph_selected || deviceEdit || ReleState.connecting_dependence) {
+        if (DeviceState.new_device || toolState.tool || DeviceState.root_device || DeviceState.graph_selected || deviceEdit || DeviceState.connecting_dependence) {
             canvasStateForLoad.setActive(false)
             return;
         }
@@ -255,33 +278,31 @@ export const CanvasBox = observer((props) => {
                                 return
                             }
                             else if (canvasStateForLoad.move){
-
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.fillAreaForDrag(canvasStateForLoad.areas[i])
                                 return;
                             } else {
                                 canvasStateForDraw.reload()
                                 canvasStateForDraw.hoverArea(canvasStateForLoad.areas[i])
-                                ReleStore.reles.filter(item => !item.belongs_to_graph).forEach(device => {
+                                releStore.reles.filter(item => !item.belongs_to_graph).forEach(device => {
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, device)){
                                         canvasStateForDraw.hoverDevice(device)
-                                        ReleState.setSelectedDevice(device)
+                                        DeviceState.setSelectedDevice(device)
                                     }
                                 })
                                 for (let i =0; i < dependencesStore.devices.length; i++){
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, dependencesStore.devices[i])){
                                         canvasStateForDraw.hoverDevice(dependencesStore.devices[i])
-                                        ReleState.setSelectedDevice(dependencesStore.devices[i])
+                                        DeviceState.setSelectedDevice(dependencesStore.devices[i])
                                     }
                                 }
 
                                 for (let i =0; i < graphStore.graphs.length; i++){
                                     if (isOnItem(cursorPosition.x, cursorPosition.y, graphStore.graphs[i])){
-
-                                        ReleState.setSelectedDevice(graphStore.graphs[i])
+                                        DeviceState.setSelectedDevice(graphStore.graphs[i])
                                         return;
                                     } else {
-                                        ReleState.setSelectedDevice(null)
+                                        DeviceState.setSelectedDevice(null)
                                     }
                                 }
 
@@ -321,27 +342,26 @@ export const CanvasBox = observer((props) => {
     }
 
     const saveDevicesHandle = () => {
-        if (ReleState.new_device.type === "rele"){
-            ReleStore.addRele(ReleState.new_device)
-            ReleState.setDevice(null)
+        if (DeviceState.new_device.type === "rele"){
+            releStore.addRele(DeviceState.new_device)
+            DeviceState.setDevice(null)
 
-        } else if (ReleState.new_device.type === "device") {
-            dependencesStore.addDevice(ReleState.new_device)
+        } else if (DeviceState.new_device.type === "device") {
+            dependencesStore.addDevice(DeviceState.new_device)
         }
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
     }
 
     const connectDependence = () => {
-        ReleState.reload()
-        console.log(dependencesStore.devices)
+        DeviceState.reload()
         canvasStateForLoad.reload()
         canvasStateForDraw.reload()
     }
 
     const changeIconSize = (value) => {
-        if (ReleState.selected_device){
-            ReleState.selected_device.size += value - ReleState.selected_device.size
+        if (DeviceState.selected_device){
+            DeviceState.selected_device.size += value - DeviceState.selected_device.size
             canvasStateForLoad.reload()
             canvasStateForDraw.reload()
         }
@@ -349,8 +369,8 @@ export const CanvasBox = observer((props) => {
 
     const changeDeviceName = () =>{
         let name = form.getFieldValue("nameInput")
-        if (ReleState.selected_device && name.length > 1){
-            ReleState.selected_device.name = name
+        if (DeviceState.selected_device && name.length > 1){
+            DeviceState.selected_device.name = name
         }
     }
 
@@ -359,18 +379,18 @@ export const CanvasBox = observer((props) => {
     }
     const deleteDependence = () => {
         setDeviceEdit(false)
-        dependencesStore.deleteDevices(ReleState.selected_device)
-        ReleState.reload()
+        dependencesStore.deleteDevices(DeviceState.selected_device)
+        DeviceState.reload()
     }
     const deleteDevice = () => {
         setDeviceEdit(false)
-        ReleStore.deleteRele(ReleState.selected_device)
+        releStore.deleteRele(DeviceState.selected_device)
         dependencesStore.devices.forEach((dependence) => {
-            if (dependence.belongs_to === ReleState.selected_device){
+            if (dependence.belongs_to === DeviceState.selected_device){
                 dependencesStore.deleteDevices(dependence)
             }
         })
-        ReleState.reload()
+        DeviceState.reload()
     }
 
     const createGraph = () => {
@@ -378,10 +398,10 @@ export const CanvasBox = observer((props) => {
         let graph = new Graph(canvasStateForDraw.canvas)
         graph.name = form.getFieldValue("graphName")
         graphStore.addGraph(graph)
-        ReleState.new_device.belongs_to_graph = graph
-        ReleState.root_device.belongs_to_graph = graph
-        ReleStore.addRele(ReleState.new_device)
-        ReleState.reload()
+        DeviceState.new_device.belongs_to_graph = graph
+        DeviceState.root_device.belongs_to_graph = graph
+        releStore.addRele(DeviceState.new_device)
+        DeviceState.reload()
         canvasStateForLoad.reload()
     }
 
@@ -434,11 +454,11 @@ export const CanvasBox = observer((props) => {
                                 </span>
                             </Button>
                         </Col>
-                        {ReleState?.selected_device?.type === 'dependence' &&
+                        {DeviceState?.selected_device?.type === 'dependence' &&
                             (
                                 <Col span={12} >
                                     <h3 style={{marginTop: 5}}>
-                                        Подключено к реле {ReleState.selected_device.belongs_to.name}
+                                        Подключено к реле {DeviceState.selected_device.belongs_to.name}
                                     </h3>
                                 </Col>
                             )

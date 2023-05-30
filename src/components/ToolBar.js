@@ -15,7 +15,7 @@ import Rele from "../tools/Rele";
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import canvasStateForLoad from "../store/canvasStateForLoad";
 import {observer} from "mobx-react-lite";
-import ReleState from "../store/ReleState";
+import ReleState from "../store/DeviceState";
 import {imgDimensions} from "./CanvasBox";
 import Device from "../tools/Device";
 import ReleStore from "../store/ReleStore";

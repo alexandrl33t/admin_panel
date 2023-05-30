@@ -15,7 +15,7 @@ class ReleStore {
     }
 
     addRele(item){
-        item.type = "device"
+        item.type = "rele"
         if (imgDimensions.size_k !== 1){
             item.points.x /= imgDimensions.size_k
             item.points.y /= imgDimensions.size_k

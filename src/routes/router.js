@@ -5,6 +5,7 @@ import NotFoundPage from "../components/notFoundPage";
 import Authorization from "../pages/authorization/authorization";
 import ObjectComponent from "../components/objectComponent";
 import {urls} from "./urls";
+import CreateUserPage from "../pages/usersPage/createUserPage/CreateUserPage";
 
 export const router = createBrowserRouter([
     {
@@ -25,6 +26,11 @@ export const router = createBrowserRouter([
     {
         path: urls.objectDetails(":id"),
         element: <ObjectComponent bg="bg-white" newObject={false}/>,
+        errorElement: <NotFoundPage />,
+    },
+    {
+        path: urls.createUser,
+        element: <CreateUserPage bg="bg-white"/>,
         errorElement: <NotFoundPage />,
     },
 ]);

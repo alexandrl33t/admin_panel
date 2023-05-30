@@ -1,6 +1,6 @@
 import {makeAutoObservable} from "mobx";
 
-class ReleState {
+class DeviceState {
     new_device = null
     selected_device = null
     is_on_area = false
@@ -46,4 +46,4 @@ class ReleState {
     }
 }
 
-export default new ReleState()
+export default new DeviceState()

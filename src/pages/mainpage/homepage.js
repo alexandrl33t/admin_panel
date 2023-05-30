@@ -3,7 +3,7 @@ import MainMenu from "../../components/mainMenu";
 import React, {useEffect, useState} from "react";
 import Objects from "../objects/objects";
 import {Col, Drawer, Row} from "antd";
-import UsersPage from "../usersPage/usersPage";
+import UsersPage from "../usersPage/UsersPage";
 import Catalog from "../catalog/catalog";
 import {ButtonStyled} from "../../styledAntd";
 import {MenuUnfoldOutlined} from "@ant-design/icons";

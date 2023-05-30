@@ -1,7 +1,7 @@
 import React from 'react';
 import canvasStateForLoad from "../../store/canvasStateForLoad";
 import {Modal} from "antd";
-import ReleState from "../../store/ReleState";
+import ReleState from "../../store/DeviceState";
 
 const DeleteReleModal = (props) => {
     const {deleteModal, setDeleteModal, deleteDevice, deleteDependence} = props

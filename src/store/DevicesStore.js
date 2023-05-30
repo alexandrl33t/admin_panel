@@ -15,7 +15,7 @@ class DevicesStore {
     }
 
     addDevice(item) {
-        item.type = "dependence"
+        item.type = "device"
         if (imgDimensions.size_k !== 1){
             item.points.x /= imgDimensions.size_k
             item.points.y /= imgDimensions.size_k

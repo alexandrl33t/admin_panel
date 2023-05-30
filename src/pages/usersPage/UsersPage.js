@@ -5,10 +5,12 @@ import { Table} from 'antd';
 import '../../App.css';
 import {ButtonStyled} from "../../styledAntd";
 import {PlusOutlined} from "@ant-design/icons";
+import {urls} from "../../routes/urls";
+import {useNavigate} from "react-router-dom";
 // import {useNavigate} from "react-router-dom";
 
 const UsersPage = () => {
-    // const navigateTo = useNavigate();
+    const navigateTo = useNavigate();
     const data = [
         {
             key: '1',
@@ -78,7 +80,7 @@ const UsersPage = () => {
     };
 
     const createUser = () => {
-
+        navigateTo(urls.createUser)
     }
 
     return (

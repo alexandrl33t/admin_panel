@@ -1,6 +1,6 @@
 import AbstractDevice from "./AbstractDevice";
 import canvasStateForLoad from "../store/canvasStateForLoad";
-import ReleState from "../store/ReleState";
+import ReleState from "../store/DeviceState";
 import canvasStateForDraw from "../store/canvasStateForDraw";
 import ReleStore from "../store/ReleStore";
 import {imgDimensions} from "../components/CanvasBox";
@@ -51,7 +51,7 @@ export default class Device extends AbstractDevice{
                     ReleState.setSelectedDevice(null)
                 }
             })
-            canvasStateForDraw.drawline({x: this.currentX, y: this.currentY}, {x: current_x, y: current_y})
+            canvasStateForDraw.drawline_between_devices({x: this.currentX, y: this.currentY}, {x: current_x, y: current_y})
         }
     }
 
