@@ -3,7 +3,7 @@ import HomePage from "../pages/mainpage/homepage";
 import React from "react";
 import NotFoundPage from "../components/notFoundPage";
 import Authorization from "../pages/authorization/authorization";
-import ObjectComponent from "../components/objectComponent";
+import ObjectComponent from "../pages/objects/objectDetails/objectComponent";
 import {urls} from "./urls";
 import CreateUserPage from "../pages/usersPage/createUserPage/CreateUserPage";
 

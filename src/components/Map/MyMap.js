@@ -4,6 +4,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import '../../App.css';
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
+import ObjectStore from "../../store/ObjectStore";
+import {Button} from "antd";
 export default function MyMap(props) {
     const {coords, setCoords } = props
     const { latitude, longitude } = coords;
@@ -15,8 +17,9 @@ export default function MyMap(props) {
     });
     const [showPopup, setShowPopup] = useState(false);
     const [adress, setAdress] = useState('')
-    const [markerClicked, setMarkerClicked] = useState(false)
-
+    const [popupSetMarker, setPopupSetMarker] = useState(false)
+    const [mapElement, setMapElement] = useState()
+    const [markerOpened, setMarkerOpened] = useState(false)
 
     useEffect(()=>{
         mapRef.current?.flyTo({center: [longitude, latitude]});
@@ -27,30 +30,60 @@ export default function MyMap(props) {
     };
 
     const handleClick = (e) => {
-        setCoords({
-            latitude: e.lngLat.lat,
-            longitude: e.lngLat.lng,
-        })
+        setMapElement(e)
+        if (!markerOpened) {
+            setPopupSetMarker(true)
+        }
     }
+
+    const getAddressByCoords = () => {
+        const url = `https://api.maptiler.com/geocoding/${longitude},${latitude}.json?key=gEzEVg0cbrHwyqDHzbit`
+        axios.get(url)
+            .then(response => {
+                if (response.data.features[0]) {
+                    setAdress(response.data.features[0].place_name_ru)
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    const setAddressByCoords = (lng = null, lat = null) => {
+        const url = `https://api.maptiler.com/geocoding/${lng},${lat}.json?key=gEzEVg0cbrHwyqDHzbit`
+        axios.get(url)
+            .then(response => {
+                if (response.data.features[0]) {
+                setAdress(response.data.features[0].place_name_ru)
+                ObjectStore.setAddress(response.data.features[0].place_name_ru)
+                ObjectStore.setPosition(response.data.features[0].place_name_ru)
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
     const markerClickHandler = (e) => {
         if (!showPopup) {
-            const url = `https://api.maptiler.com/geocoding/${longitude},${latitude}.json?key=gEzEVg0cbrHwyqDHzbit`
-            axios.get(url)
-                .then(response => {
-                    let add = ''
-                    response.data.features.forEach(item => {
-                        add += item.text_ru + ', '
-                    })
-                    setAdress(add)
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            getAddressByCoords()
             setShowPopup(true)
+            setMarkerOpened(true)
         } else {
             setShowPopup(false)
+            setMarkerOpened(false)
         }
 
+    }
+
+    const saveAddress = () => {
+        setCoords({
+            latitude: mapElement?.lngLat.lat,
+            longitude: mapElement?.lngLat.lng,
+        })
+        setAddressByCoords(mapElement?.lngLat.lng, mapElement?.lngLat.lat)
+        setPopupSetMarker(false)
+        //TODO: отправить put запрос на обновление объекта
     }
 
     return (
@@ -74,7 +107,17 @@ export default function MyMap(props) {
                            onClose={markerClickHandler}
                            closeOnClick={false}
                     >
-                        {adress}
+                        <div>
+                            {adress}
+                        </div>
+                    </Popup>)}
+                {popupSetMarker && (
+                    <Popup longitude={mapElement?.lngLat.lng} latitude={mapElement?.lngLat.lat}
+                           anchor="bottom"
+                           onClose={()=>setPopupSetMarker(false)}
+                           closeOnClick={false}
+                    >
+                        <Button onClick={saveAddress}>Установить адрес</Button>
                     </Popup>)}
                 <NavigationControl position="top-left" showCompass={false}/>
                 <Marker longitude={longitude} latitude={latitude} draggable={true} pitchAlignment={'viewport'} onClick={markerClickHandler}/>

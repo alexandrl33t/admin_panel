@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ButtonStyled} from "../../styledAntd";
 import {CanvasBox} from "../../components/CanvasBox";
 import ToolBar from "../../components/ToolBar";
@@ -6,7 +6,7 @@ import {Col, Row} from "antd";
 
 const Plan = (props) => {
     const {newObject} = props
-
+    const [showUploadButton, setShowUploadButton] = useState(false)
     const plan = {
         id: 1,
         name: 'ExamplePlan',
@@ -24,24 +24,32 @@ const Plan = (props) => {
     }
     return (
         <>
-            {newObject ?
-                (
-                    <div style={styleButton}>
-                        <ButtonStyled>Создать план</ButtonStyled>
-                    </div>
+            {showUploadButton ? (
+                <>
+
+                </>
                 ) :
-                (<div style={{marginTop: 5}}>
-                                    <Row gutter={[24, 24]}>
-                                        <Col span={24}>
-                                            <ToolBar />
-                                        </Col>
-                                    </Row>
-                                    <CanvasBox plan={plan}/>
+                ( <>
+                    {newObject ?
+                        (
+                            <div style={styleButton}>
+                                <ButtonStyled onClick={() => {setShowUploadButton(true)}}>Создать план</ButtonStyled>
+                            </div>
+                        ) :
+                        (<div style={{marginTop: 5}}>
+                                <Row gutter={[24, 24]}>
+                                    <Col span={24}>
+                                        <ToolBar />
+                                    </Col>
+                                </Row>
+                                <CanvasBox plan={plan}/>
 
-                    </div>
+                            </div>
+                        )}
+                    </>
                 )
-
             }
+
         </>
     )
 }

@@ -1,39 +1,57 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import '../../../App.css';
-import {Col, Row} from "antd";
+import {Col, Form, Row} from "antd";
 import {EditOutlined} from "@ant-design/icons";
 import {ButtonStyled} from "../../../styledAntd";
+import ObjectCommonInfoNotEdit from "./ObjectCommonInfoNotEdit";
+import ObjectCommonInfoEdit from "./ObjectCommonInfoEdit";
+import {useForm} from "antd/es/form/Form";
+import ObjectStore from "../../../store/ObjectStore";
+import {reaction} from "mobx";
+import {observer} from "mobx-react-lite";
 
-const ObjectCommonInfo= (props) => {
+const ObjectCommonInfo = observer((props) => {
     const {newObject} = props
+    const [form] = useForm()
+    const [edit, setEdit] = useState(false)
 
-    /**
-     * Ниже должны приходить данные об object
-     */
+    useEffect(()=>{
+        if (form) {
+            form.setFieldValue("address", ObjectStore.objectData.address)
+        }
+    }, [ObjectStore.objectData.address])
 
     const object = {
-        number: "124-312-20",
-        client: "some client",
+        number: "15f5bda5-f9c0-45de-8037-49d9df375166",
+        customer: "",
         others: "",
-        address: "Tutututututu",
+        address: "",
         phoneNumber: "8999999999",
         email: "sdsdsds@mail.ru",
         comments: "rararara",
     }
 
+    const onFinish = (values: any) => {
+        console.log(values)
+        setEdit(false)
+    };
 
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+    };
 
     const changeInfo = () => {
-        if (newObject){
-            /** Здесь должно быть заполнение, редактирование и валидация данных
-             */
-        }
-        console.log(object)
+        setEdit(true)
     }
 
     return (
         <>
             <div className="object-info">
+                <Form
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                form={form}
+                >
                 <h2>
                     <Row gutter={[24, 24]}>
                         <Col span={8}>
@@ -42,56 +60,20 @@ const ObjectCommonInfo= (props) => {
                         <Col span={8}>
                             №{object.number}
                         </Col>
-                        <Col span={6}></Col>
                         <Col span={2}>
-                            {newObject && (
-                                <ButtonStyled onClick={changeInfo} icon={<EditOutlined />}></ButtonStyled>
-                            )}
+                            <ButtonStyled onClick={changeInfo} icon={<EditOutlined />}></ButtonStyled>
                         </Col>
                     </Row></h2>
-                <Row gutter={24}>
-                    <Col span={8}>
-                        Заказчик:
-                    </Col>
-                    <Col span={8}>
-                        {object.client}
-                    </Col>
-                </Row>
-                <Row gutter={24}>
-                    <Col span={8}>
-                        Адрес:
-                    </Col>
-                    <Col span={8}>
-                        {object.address}
-                    </Col>
-                </Row>
-                <Row gutter={24}>
-                    <Col span={8}>
-                        Номер телефона:
-                    </Col>
-                    <Col span={8}>
-                        { object.phoneNumber}
-                    </Col>
-                </Row>
-                <Row gutter={24}>
-                    <Col span={8}>
-                        E-mail:
-                    </Col>
-                    <Col span={8}>
-                        {object.email}
-                    </Col>
-                </Row>
-                <Row gutter={24}>
-                    <Col span={8}>
-                        Комментарии:
-                    </Col>
-                    <Col span={8}>
-                        {object.comments}
-                    </Col>
-                </Row>
+                {edit ? (
+                    <ObjectCommonInfoEdit object={object}/>
+                ) : (
+                    <ObjectCommonInfoNotEdit object={object}/>
+                )}
+                </Form>
             </div>
         </>
     )
 
 }
+);
 export default ObjectCommonInfo;

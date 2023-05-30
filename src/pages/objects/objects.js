@@ -1,5 +1,5 @@
-import React from 'react';
-import { Checkbox, Col, Row, Select} from "antd";
+import React, {useEffect} from 'react';
+import { Checkbox, Col, Row, Select, message} from "antd";
 import Search from "antd/es/input/Search";
 import '../../App.css';
 import {Option} from "antd/es/mentions";
@@ -8,11 +8,20 @@ import {PlusOutlined} from "@ant-design/icons";
 import {ButtonStyled} from "../../styledAntd";
 import {useNavigate} from "react-router-dom";
 import {urls} from "../../routes/urls";
+import ObjectStore from "../../store/ObjectStore";
+import {observer} from "mobx-react-lite";
 
-const Objects = () => {
+const Objects = observer(() => {
     const navigateTo = useNavigate();
 
-
+    useEffect(()=>{
+        ObjectStore.getObjectsAsync()
+            .then(() => {
+                if (ObjectStore.status === "error") {
+                    message.error("Не удалось загрузить объекты.")
+                }
+            })
+        }, [])
     const townOptions = [
         {
             key: 'msc',
@@ -111,5 +120,6 @@ const Objects = () => {
     </>
     );
 }
+)
 
 export default Objects;

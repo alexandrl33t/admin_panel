@@ -1,20 +1,20 @@
 import React, {useRef, useState} from 'react';
-import '../App.css';
-import {ButtonStyled} from "../styledAntd";
+import '../../../App.css';
+import {ButtonStyled} from "../../../styledAntd";
 import {
     CaretLeftOutlined, ControlOutlined, FileTextOutlined,
     UnorderedListOutlined,
     VideoCameraOutlined
 } from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
-import {urls} from "../routes/urls";
-import ObjectCommonInfo from "../pages/objects/objectDetails/objectCommonInfo";
+import {urls} from "../../../routes/urls";
+import ObjectCommonInfo from "./objectCommonInfo";
 import {Col, Image, Menu, Row} from "antd";
 import type { MenuProps } from 'antd';
-import Plan from "../pages/plan/Plan";
-import Notifications from "../pages/objects/objectDetails/notifications";
-import MapComponent from "./Map/MapComponent";
-import CamerasPage from "../pages/cameras/CamerasPage";
+import Plan from "../../plan/Plan";
+import Notifications from "./notifications";
+import MapComponent from "../../../components/Map/MapComponent";
+import CamerasPage from "../../cameras/CamerasPage";
 const ObjectComponent = (props) => {
     const {bg, newObject} = props
     const [current, setCurrent] = useState('plan');
