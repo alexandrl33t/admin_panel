@@ -1,5 +1,8 @@
 export const urls = {
-    home: `/home`,
+    objects: `/objects`,
+    users: `/users`,
+    catalog: `/catalog`,
+    help: `/help`,
     createObject: `/home/create-object`,
     objectDetails: (id) => `/home/object-details/${id}`,
     createUser: `/create-user`,

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Col, Form, Input, Row, Select} from "antd";
+import {Col, DatePicker, Form, Input, Row, Select} from "antd";
 
 const CreateUserBaseInfo = () => {
     const rolesOptions = [
@@ -102,9 +102,9 @@ const CreateUserBaseInfo = () => {
             </Row>
             <Row>
                 <Col xxl={8} xl={8} lg={6} md={12} sm={24} xs={24} className="create-user-titles">
-                    Временный пароль
+                    Пароль
                 </Col>
-                <Col xxl={8} xl={8} lg={12} md={12} sm={24} xs={24} className="create-user-titles">
+                <Col xxl={8} xl={8} lg={12} md={12} sm={24} xs={24} className="time_password">
                     <Form.Item
                         name="password"
                         label=""
@@ -114,7 +114,7 @@ const CreateUserBaseInfo = () => {
                             },
                         ]}
                     >
-                        <Input placeholder="Введите пароль" />
+                        <input type="password"/>
                     </Form.Item>
                 </Col>
             </Row>
@@ -186,7 +186,7 @@ const CreateUserBaseInfo = () => {
                             },
                         ]}
                     >
-                        <Input placeholder="Введите дату рождения" />
+                        <DatePicker placeholder="Введите дату рождения" style={{width: "100%"}} />
                     </Form.Item>
                 </Col>
             </Row>
@@ -194,7 +194,7 @@ const CreateUserBaseInfo = () => {
                 <Col xxl={8} xl={8} lg={6} md={12} sm={24} xs={24} className="create-user-titles">
                     Временный пароль
                 </Col>
-                <Col xxl={8} xl={8} lg={6} md={12} sm={24} xs={24} className="create-user-titles">
+                <Col xxl={8} xl={8} lg={6} md={12} sm={24} xs={24} className="time_password">
                     <Form.Item
                         name="time_password"
                         label=""
@@ -204,7 +204,7 @@ const CreateUserBaseInfo = () => {
                             },
                         ]}
                     >
-                        <Input placeholder="Введите временный пароль" />
+                        <input/>
                     </Form.Item>
                 </Col>
             </Row>

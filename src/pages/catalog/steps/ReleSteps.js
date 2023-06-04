@@ -3,7 +3,7 @@ import {Button, Col, Form, Row, Steps} from "antd";
 import {InputStyled} from "../../../styledAntd";
 import {useForm} from "antd/es/form/Form";
 const { Step } = Steps;
-const DeviceSteps = (props) => {
+const ReleSteps = (props) => {
     const [form] = useForm()
 
     const [current, setCurrent] = useState(0)
@@ -329,4 +329,4 @@ const DeviceSteps = (props) => {
     );
 }
 
-export default DeviceSteps;
+export default ReleSteps;

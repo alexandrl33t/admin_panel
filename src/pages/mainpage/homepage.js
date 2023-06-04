@@ -1,10 +1,10 @@
 import '../../App.css';
 import MainMenu from "../../components/mainMenu";
 import React, {useEffect, useState} from "react";
-import Objects from "../objects/objects";
+import Objects from "../objects/Objects";
 import {Col, Drawer, Row} from "antd";
 import UsersPage from "../usersPage/UsersPage";
-import Catalog from "../catalog/catalog";
+import Catalog from "../catalog/Catalog";
 import {ButtonStyled} from "../../styledAntd";
 import {MenuUnfoldOutlined} from "@ant-design/icons";
 function HomePage(state) {

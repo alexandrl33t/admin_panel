@@ -3,18 +3,20 @@ import { Checkbox, Col, Row, Select, message} from "antd";
 import Search from "antd/es/input/Search";
 import '../../App.css';
 import {Option} from "antd/es/mentions";
-import ShowObjects from "./showObjects";
+import ShowObjects from "./ShowObjects";
 import {PlusOutlined} from "@ant-design/icons";
 import {ButtonStyled} from "../../styledAntd";
 import {useNavigate} from "react-router-dom";
 import {urls} from "../../routes/urls";
 import ObjectStore from "../../store/ObjectStore";
 import {observer} from "mobx-react-lite";
+import appGlobalStore from "../../store/AppGlobalStore";
 
 const Objects = observer(() => {
     const navigateTo = useNavigate();
 
     useEffect(()=>{
+        appGlobalStore.setUserIsAuth(true)
         ObjectStore.getObjectsAsync()
             .then(() => {
                 if (ObjectStore.status === "error") {
@@ -78,7 +80,7 @@ const Objects = observer(() => {
     }
 
     return (
-        <>
+        <div className="content">
             <Row gutter={[0, 32]}>
                 <Col span={24}>
                     <Search placeholder="Искать" onSearch={onSearch} />
@@ -117,7 +119,7 @@ const Objects = observer(() => {
                 </Col>
             </Row>
                 <ShowObjects/>
-    </>
+    </div>
     );
 }
 )

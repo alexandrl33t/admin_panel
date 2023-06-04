@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 import {useNavigate} from "react-router-dom";
 import {urls} from "../../routes/urls";
+import appGlobalStore from "../../store/AppGlobalStore";
 export default function PinCodeInput(props) {
     const {
         digits,
@@ -67,7 +68,7 @@ export default function PinCodeInput(props) {
         } else { // проверка кода и переход на последнюю страницу, если это было последнее поле
 
             //Здесь должна быть проверка кода
-            navigateTo(urls.home)
+            navigateTo(urls.objects)
         }
     }
     const divStyle = {

@@ -6,10 +6,11 @@ import {
 } from '@ant-design/icons';
 import React from 'react';
 import {MenuStyled} from "../styledAntd";
+import {useNavigate} from "react-router-dom";
+import {urls} from "../routes/urls";
 
-const MainMenu = (state) => {
-    const { openedPage, setOpenedPage} = state
-
+const MainMenu = (props) => {
+    const {openedPage, setOpenedPage} = props
     // const [collapsed, setCollapsed] = useState(false);
     function getItem(label, key, icon, children, type) {
         return {

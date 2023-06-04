@@ -2,24 +2,26 @@ import React, {useState} from 'react';
 import {Col, Menu, Row} from "antd";
 import '../../App.css';
 import {MenuProps} from "antd";
-import {DeviceType} from "./upperMenu/DeviceType";
+import {RelePage} from "./upperMenu/RelePage";
+import DevicePage from "./upperMenu/DevicePage";
 
 const Catalog = () => {
 
-    const [current, setCurrent] = useState('deviceType');
+    const [current, setCurrent] = useState('relePage');
 
     const pages = {
-        'deviceType' : <DeviceType />,
+        'relePage' : <RelePage />,
+        'devicePage': <DevicePage />,
     };
 
     const items: MenuProps['items'] = [
         {
             label: 'Тип оборудования',
-            key: 'deviceType',
+            key: 'relePage',
         },
         {
             label: 'Типы потребителей',
-            key: 'potrebType',
+            key: 'devicePage',
         },
         {
             label: 'Категории объектов',

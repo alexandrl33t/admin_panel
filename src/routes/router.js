@@ -3,9 +3,9 @@ import HomePage from "../pages/mainpage/homepage";
 import React from "react";
 import NotFoundPage from "../components/notFoundPage";
 import Authorization from "../pages/authorization/authorization";
-import ObjectComponent from "../pages/objects/objectDetails/objectComponent";
 import {urls} from "./urls";
 import CreateUserPage from "../pages/usersPage/createUserPage/CreateUserPage";
+import ObjectComponent from "../pages/objects/objectDetails/ObjectComponent";
 
 export const router = createBrowserRouter([
     {
@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
     },
     {
-        path: urls.home,
+        path: urls.objects,
         element: <HomePage bg="bg-white" />,
         errorElement: <NotFoundPage />,
     },

@@ -3,34 +3,11 @@ import {Button, Checkbox, Col, Row, Table} from "antd";
 import {ColumnsType} from "antd/es/table";
 import {Component} from "react";
 import {EditOutlined, PlusSquareOutlined} from "@ant-design/icons";
-import DeviceSteps from "../steps/deviceSteps";
+import ReleSteps from "../steps/ReleSteps";
 import devicesStore from "../../../store/DevicesStore";
 import {observer} from "mobx-react-lite";
 
-
-interface DataTypeSensor {
-    key: React.Key;
-    manufacturer: string;
-    model: string;
-    type: string;
-    compatibility: string | Checkbox;
-    protocol: string;
-    icon: Component;
-}
-
-interface DataTypeRele {
-    key: React.Key;
-    manufacturer: string;
-    model: string;
-    power: string;
-    channelAmmount: number;
-    protocol: string;
-    control: string | Checkbox;
-    sensor: string | Checkbox;
-    icon: Component;
-}
-
-const columnsSensor: ColumnsType<DataTypeSensor> = [
+const columnsSensor = [
     {
         title: 'Производитель',
         dataIndex: 'manufacturer',
@@ -57,7 +34,7 @@ const columnsSensor: ColumnsType<DataTypeSensor> = [
     },
 ];
 
-const columnsRele: ColumnsType<DataTypeRele> = [
+const columnsRele = [
     {
         title: 'Производитель',
         dataIndex: 'manufacturer',
@@ -135,14 +112,14 @@ const dataRele: DataTypeRele [] = [
     },
 ];
 
-export const DeviceType = observer(() => {
+export const RelePage = observer(() => {
 
     const [stepsVisible, setStepsVisible] = useState('')
     const [columns, setColumns] = useState(columnsSensor)
 
     const steps = {
-        'device': <DeviceSteps columns={columns} isSensor={true} />,
-        'rele': <DeviceSteps columns={columns} />,
+        'device': <ReleSteps columns={columns} isSensor={true} />,
+        'rele': <ReleSteps columns={columns} />,
     }
 
     useEffect(()=>{

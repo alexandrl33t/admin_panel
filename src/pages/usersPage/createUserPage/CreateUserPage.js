@@ -2,18 +2,27 @@ import React from 'react';
 import {Button, Col, Form, Row} from "antd";
 import CreateUserBaseInfo from "./CreateUserBaseInfo";
 import CreateUserAdditionalInfo from "./CreateUserAdditionalInfo";
+import {CaretLeftOutlined} from "@ant-design/icons";
+import {ButtonStyled} from "../../../styledAntd";
+import {urls} from "../../../routes/urls";
+import {useNavigate} from "react-router-dom";
 
 const CreateUserPage = () => {
     const [form] = Form.useForm();
-
+    const navigateTo = useNavigate()
     const onFinish = (values) => {
         console.log(values);
     };
     const onReset = () => {
         form.resetFields();
     };
+
+    const goHome = () => {
+        navigateTo(urls.objects)
+    }
     return (
         <div className="content">
+            <ButtonStyled className="button-home" onClick={goHome} type="default" icon={<CaretLeftOutlined/>}>HOME</ButtonStyled>
             <h1>Добавление пользователя</h1>
             <Form
             form={form}

@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import {urls} from "../../../routes/urls";
-import ObjectCommonInfo from "./objectCommonInfo";
+import ObjectCommonInfo from "./ObjectCommonInfo";
 import {Col, Image, Menu, Row} from "antd";
 import type { MenuProps } from 'antd';
 import Plan from "../../plan/Plan";
@@ -49,7 +49,7 @@ const ObjectComponent = (props) => {
     }
 
     const goHome = () => {
-        navigateTo(urls.home)
+        navigateTo(urls.objects)
     }
     const onClick: MenuProps['onClick'] = e => {
         setCurrent(e.key);
