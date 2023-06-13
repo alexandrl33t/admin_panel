@@ -26,7 +26,7 @@ const CreateUserBaseInfo = () => {
                 <Col xxl={8} xl={8} lg={6} md={12} sm={24} xs={24} className="create-user-titles">
                     Выбор роли
                 </Col>
-                <Col xxl={8} xl={8} lg={8} md={12} sm={24} xs={24} className="create-user-titles">
+                <Col xxl={8} xl={8} lg={6} md={12} sm={24} xs={24} className="create-user-titles">
                     <Form.Item
                         name="role"
                         label=""
@@ -192,9 +192,9 @@ const CreateUserBaseInfo = () => {
             </Row>
             <Row>
                 <Col xxl={8} xl={8} lg={6} md={12} sm={24} xs={24} className="create-user-titles">
-                    Временный пароль
+                    Пароль
                 </Col>
-                <Col xxl={8} xl={8} lg={6} md={12} sm={24} xs={24} className="time_password">
+                <Col xxl={8} xl={8} lg={12} md={12} sm={24} xs={24} className="time_password">
                     <Form.Item
                         name="time_password"
                         label=""
@@ -204,7 +204,7 @@ const CreateUserBaseInfo = () => {
                             },
                         ]}
                     >
-                        <input/>
+                        <input type="password"/>
                     </Form.Item>
                 </Col>
             </Row>

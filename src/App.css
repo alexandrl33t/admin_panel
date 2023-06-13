@@ -12,18 +12,18 @@ body{
   width: 100%;
 }
 .bg-black {
-  position: absolute;
   width: 100%;
   height: 100vh;
   justify-content: center;
   background-size: 300% 300%;
   background-image: linear-gradient(
           -45deg,
-          rgb(0, 0, 0) 20%,
-          rgb(35, 34, 34) 30%,
+          rgb(42, 41, 41) 20%,
+          rgb(30, 28, 28) 30%,
           rgba(0, 0, 0, 0.48) 21%,
-          rgb(24, 24, 24) 100%
+          rgb(0, 0, 0) 100%
   );
+  animation: AnimateBG2 5s linear infinite;
 }
 
 .bg-white {
@@ -31,10 +31,11 @@ body{
   width: 100%;
   max-height: 100vh;
   justify-content: center;
-  background: #fafdff1a;
+  background: rgba(255, 255, 255, 0.1);
 }
 .content {
-  padding: 25px 50px 25px 50px;
+  padding: 25px 0 25px 0;
+  width: 100%;
 }
 #header {
   display: block;
@@ -43,18 +44,15 @@ body{
   padding: 10px;
   width: 100%;
   border: hidden;
-  -moz-box-shadow:0 0 20px #fff1f1;
-  -webkit-box-shadow:0 0 20px #ec4747;
-  box-shadow:0 0 20px rgba(0, 0, 0, 0.31);
   margin-top: 0;
   text-align: center;
   left: 0;
   background-image: linear-gradient(
           -45deg,
           rgb(9, 174, 255) 0%,
-          rgb(143, 162, 255) 25%,
-          rgb(229, 254, 255) 51%,
-          rgb(175, 247, 250) 100%
+          rgb(252, 132, 132) 25%,
+          rgb(138, 179, 246) 51%,
+          rgb(252, 76, 76) 100%
   );
   background-size: 200%;
   backdrop-filter: blur(200px);
@@ -65,6 +63,11 @@ body{
   0%{background-position:20% 50%}
   50%{background-position:100% 50%}
   100%{background-position:20% 50%}
+}
+@keyframes AnimateBG2 {
+  0%{background-position:4% 8%}
+  50%{background-position: 8% 4%}
+  100%{background-position: 4% 8%}
 }
 
 #header h1{
@@ -89,7 +92,16 @@ p{
   z-index: 999;
   top: -70px;
 }
-
+#menu-drawer-button {
+  position: absolute;
+  margin-top: -65px;
+  margin-left: 15px;
+  background: transparent;
+  font-weight: 550;
+  font-size: 1.3em;
+  height: auto;
+  border: #363636 1px solid;
+}
 .button-menu {
   border: none;
   background: #ffffff;
@@ -272,20 +284,20 @@ img.absolute {
   position: relative;
   height: 100%;
   transform: translateX(-50%);
+  border-radius: 10%;
 }
 
 .picSmaller {
   position: relative;
   height: 400px;
   left: 50%;
-  border-radius: 50%;
 }
 
 .objectBox {
   margin: 5px;
   align-content: center;
   box-shadow: 0 0 2px rgb(0 0 0 / 29%);
-  border-radius: 1px;
+  border-radius: 5px;
   padding: -29px 25px 0;
 }
 
@@ -376,6 +388,7 @@ canvas {
 .create-user-titles {
   font-size: 1.5em;
   font-weight: 600;
+  width: 100%;
 }
 
 .time_password input{
@@ -389,6 +402,7 @@ canvas {
 
 .create-user-form {
   margin: 25px;
+  width: 100%;
 }
 
 .create-user-button {
@@ -415,6 +429,14 @@ canvas {
   100%{padding-left: 0; letter-spacing: normal; opacity: 1}
 }
 
+@keyframes slide {
+  0% {
+    transform: translate(0);
+  }
+  100% {
+    transform: translate(-3840px); /* The image width */
+  }
+}
 @keyframes bookAnimation {
   0%{opacity: 0; margin-left: 100%}
   100%{opacity: 1; margin-left: 0}

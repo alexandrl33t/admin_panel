@@ -81,14 +81,23 @@ const Objects = observer(() => {
 
     return (
         <div className="content">
-            <Row gutter={[0, 32]}>
-                <Col span={24}>
+            <Row gutter={[24, 24]}>
+                <Col xxl={6} xl={6} lg={6} md={6} sm={0} xs={0}>
+
+                </Col>
+                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Search placeholder="Искать" onSearch={onSearch} />
                 </Col>
-                <Col xs={8} lg={6}>
+                <Col xxl={6} xl={6} lg={6} md={10} sm={0} xs={0}>
+
+                </Col>
+                <Col xxl={4} xl={4} lg={4} md={10} sm={0} xs={0}>
+
+                </Col>
+                <Col xxl={3} xl={3} lg={6} md={6} sm={12} xs={12}>
                     <Checkbox onChange={turnWarning}>Предупреждение</Checkbox>
                 </Col>
-                <Col xs={8} lg={4} >
+                <Col xxl={3} xl={3} lg={6} md={6} sm={12} xs={12}>
                     <Select placeholder="Город" onChange={onChangeTown}>
                         {townOptions.map((town) =>
                             <Option key={town.key} value={town.name} />
@@ -96,7 +105,7 @@ const Objects = observer(() => {
 
                     </Select>
                 </Col>
-                <Col xs={8} lg={4}>
+                <Col xxl={3} xl={3} lg={6} md={6} sm={12} xs={12}>
                     <Select placeholder="Тип объекта" onChange={onChangeTown}>
                         {objectTypes.map((typeOfObject) =>
                             <Option key={typeOfObject.key} value={typeOfObject.name} />
@@ -104,7 +113,7 @@ const Objects = observer(() => {
 
                     </Select>
                 </Col>
-                <Col xs={8} lg={4}>
+                <Col xxl={3} xl={3} lg={6} md={6} sm={12} xs={12}>
                     <Select placeholder="Качество" onChange={onChangeTown}>
                         {quality.map((item) =>
                             <Option key={item.key} value={item.name} />
@@ -112,7 +121,7 @@ const Objects = observer(() => {
 
                     </Select>
                 </Col>
-                <Col xs={4} lg={2}>
+                <Col xxl={3} xl={3} lg={6} md={6} sm={12} xs={12}>
                     <ButtonStyled type="primary" icon={<PlusOutlined />} onClick={createObject}>
                             Добавить объект
                     </ButtonStyled>

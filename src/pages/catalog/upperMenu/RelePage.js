@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Checkbox, Col, Row, Table} from "antd";
+import {Button, Checkbox, Col, Row, Table, message} from "antd";
 import {ColumnsType} from "antd/es/table";
 import {Component} from "react";
 import {EditOutlined, PlusSquareOutlined} from "@ant-design/icons";
@@ -69,7 +69,7 @@ const columnsRele = [
     },
 ];
 
-const dataSensor: DataTypeSensor[] = [
+let dataSensor: DataTypeSensor[] = [
     {
         key: '1',
         manufacturer: 'Sonoff',
@@ -116,10 +116,10 @@ export const RelePage = observer(() => {
 
     const [stepsVisible, setStepsVisible] = useState('')
     const [columns, setColumns] = useState(columnsSensor)
-
+    const [vissible, setVisible] = useState(true)
     const steps = {
-        'device': <ReleSteps columns={columns} isSensor={true} />,
-        'rele': <ReleSteps columns={columns} />,
+        'device': <ReleSteps columns={columns} setVisible={setVisible} isSensor={true} />,
+        'rele': <ReleSteps columns={columns} setVisible={setVisible} />,
     }
 
     useEffect(()=>{
@@ -131,11 +131,13 @@ export const RelePage = observer(() => {
     }
 
     function addDevice() {
+        setVisible(true)
         setColumns(columnsSensor)
         setStepsVisible('device')
     }
 
     function addRele() {
+        setVisible(true)
         setColumns(columnsRele)
         setStepsVisible('rele')
     }
@@ -191,11 +193,11 @@ export const RelePage = observer(() => {
                     <Table columns={columnsRele} dataSource={dataRele} onChange={onChange} pagination={false} />
                 </Col>
             </Row>
-            <Row style={{marginTop:"30px"}}>
+            {vissible && <Row style={{marginTop:"30px"}}>
                 <Col span={24}>
                     {steps[stepsVisible]}
                 </Col>
-            </Row>
+            </Row>}
         </>
     );
 });

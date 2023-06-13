@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Col, Form, Row, Steps} from "antd";
+import {Button, Col, Form, Row, Steps, message} from "antd";
 import {InputStyled} from "../../../styledAntd";
 import {useForm} from "antd/es/form/Form";
 const { Step } = Steps;
@@ -8,14 +8,14 @@ const ReleSteps = (props) => {
 
     const [current, setCurrent] = useState(0)
     const [content, setContent] = useState()
-    const {columns, isSensor} = props
-
-    let values = []
+    const {columns, isSensor, setVisible} = props
+    const [values, setValues] = useState([])
 
     const refSteps = useRef()
     const next = () => {
         setCurrent((current) => current + 1);
-        values.push(form.getFieldsValue(content.props.name))
+        console.log(form.getFieldValue(content))
+        // setValues((current) => [...current,form.getFieldsValue(content.props.name)])
     };
 
     const back = () => {
@@ -35,7 +35,7 @@ const ReleSteps = (props) => {
                content:
                     <Row gutter = {24} >
                     <Col span = {10}>
-                        <Form.Item name = "manufacturer" >
+                        <Form.Item name="manufacturer">
                                 <InputStyled />
                         </Form.Item>
                     </Col>
@@ -286,6 +286,9 @@ const ReleSteps = (props) => {
             "channelAmmount", "protocolRele", "control", "sensor"
         ]
         console.log(form.getFieldsValue(isSensor ? formItemsNamesSensor : formItemsNamesRele))
+        setVisible(false)
+        message.success('Устройство успешно добавлено')
+
     };
 
     const onFinishFailed = (errorInfo: any) => {

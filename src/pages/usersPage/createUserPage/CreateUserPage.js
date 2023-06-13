@@ -1,5 +1,5 @@
-import React from 'react';
-import {Button, Col, Form, Row} from "antd";
+import React, {useState} from 'react';
+import {Button, Col, Form, Row, message} from "antd";
 import CreateUserBaseInfo from "./CreateUserBaseInfo";
 import CreateUserAdditionalInfo from "./CreateUserAdditionalInfo";
 import {CaretLeftOutlined} from "@ant-design/icons";
@@ -9,9 +9,12 @@ import {useNavigate} from "react-router-dom";
 
 const CreateUserPage = () => {
     const [form] = Form.useForm();
+    const [vissible, setVisible] = useState(true)
     const navigateTo = useNavigate()
     const onFinish = (values) => {
         console.log(values);
+        message.success("Пользователь успешно добавлен")
+        setVisible(false)
     };
     const onReset = () => {
         form.resetFields();
@@ -30,21 +33,23 @@ const CreateUserPage = () => {
             name="create-user"
             >
             <Row className="create-user-form">
-                <Col xxl={10} xl={10} lg={6} md={12} sm={24} xs={24}>
+                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                     <CreateUserBaseInfo />
                     <Row style={{marginTop: 10}}>
-                        <Col span={24}>
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit">
+                        {vissible && (
+                            <Col span={24}>
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit">
                                     <span className="create-user-button">
                                         Добавить пользователя
                                     </span>
-                                </Button>
-                            </Form.Item>
-                        </Col>
+                                    </Button>
+                                </Form.Item>
+                            </Col>
+                        )}
                     </Row>
                 </Col>
-                <Col span={12}>
+                <Col xxl={10} xl={10} lg={10} md={12} sm={24} xs={24}>
                     <CreateUserAdditionalInfo form={form}/>
                 </Col>
             </Row>

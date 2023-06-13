@@ -2,7 +2,7 @@ import '../../App.css';
 import MainMenu from "../../components/mainMenu";
 import React, {useEffect, useState} from "react";
 import Objects from "../objects/Objects";
-import {Col, Drawer, Row} from "antd";
+import {Button, Col, Drawer, Row} from "antd";
 import UsersPage from "../usersPage/UsersPage";
 import Catalog from "../catalog/Catalog";
 import {ButtonStyled} from "../../styledAntd";
@@ -42,8 +42,9 @@ function HomePage(state) {
         <div className={bg}>
                 <Row>
                     <Col span={1}>
-                        <ButtonStyled style={{margin:10}}  icon={<MenuUnfoldOutlined />} onClick={showDrawer}>
-                        </ButtonStyled>
+                        <Button id="menu-drawer-button"  icon={<MenuUnfoldOutlined />} onClick={showDrawer}>
+                            Меню
+                        </Button>
                             <Drawer title="Меню"
                                     placement='left'
                                     closable={false}

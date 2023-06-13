@@ -60,11 +60,11 @@ function ShowObjects() {
 
 
     return (
-        <div style={{marginTop: "20px"}}>
-            <Row gutter={[24, 24]}>
+        <div className={"content"}>
+            <Row gutter={[16, 16]} style={{paddingRight: 50}}>
                 {objects?.map((object) =>
 
-                    <Col span={8}>
+                    <Col xxl={6} xl={8} lg={12} md={12} sm={24} xs={24}>
                         <div className="objectBox">
                         <div className="innerBorder">
                         <Row>

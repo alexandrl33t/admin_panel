@@ -84,9 +84,9 @@ const UsersPage = () => {
     }
 
     return (
-        <>
+        <div className="content">
             <Row gutter={[0, 32]}>
-                <Col span={24}>
+                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Search placeholder="Искать" onSearch={onSearch} />
                 </Col>
 
@@ -102,7 +102,7 @@ const UsersPage = () => {
                     <ButtonStyled icon={<PlusOutlined />} onClick={createUser}>Добавить пользователя</ButtonStyled>
                 </Col>
             </Row>
-        </>
+        </div>
     );
 }
 

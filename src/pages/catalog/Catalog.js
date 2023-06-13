@@ -33,7 +33,7 @@ const Catalog = () => {
     };
 
     return (
-        <>
+        <div className="content" style={{paddingTop: 0}}>
             <Row gutter={[0, 32]}>
                 <Col span={24}>
                     <Menu onClick={onClick} defaultSelectedKeys={[current]} selectedKeys={[current]} mode="horizontal" items={items} />
@@ -48,7 +48,7 @@ const Catalog = () => {
                     </div>
                 </Col>
             </Row>
-        </>
+        </div>
     );
 }
 
